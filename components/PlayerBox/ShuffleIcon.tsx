@@ -8,8 +8,8 @@ type Props = {}
 export default function ShuffleIcon({ }: Props) {
     const [isOn, setIsOn] = useState(false);
     return (
-        <button onClick={() => setIsOn(!isOn)}>
+        <div onClick={() => setIsOn(!isOn)}>
             {isOn ? <ShuffleOn /> : <Shuffle />}
-        </button>
+        </div>
     )
 }

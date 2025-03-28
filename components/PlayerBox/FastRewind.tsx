@@ -1,3 +1,4 @@
+"use client"
 import React from 'react';
 import FastRewind from '@mui/icons-material/FastRewind';
 
