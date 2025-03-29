@@ -1,4 +1,3 @@
-"use client"
 import React from 'react';
 import FastForward from '@mui/icons-material/FastForward';
 

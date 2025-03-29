@@ -1,15 +1,16 @@
-import PlayerControls from "./PlayerControls"
-import PlayerImage from "./PlayerImage"
+import PlayerControls from "./PlayerControls/PlayerControls"
+import PlayerImage from "./PlayerImage/PlayerImage"
+import styles from "./PlayerBox.module.css"
 
 type Props = {}
 
 export default function PlayerBox({ }: Props) {
     return (
-        <div>
-            <div>
+        <div className={styles["main-container"]}>
+            <div className={styles["image-container"]}>
                 <PlayerImage />
             </div>
-            <div>
+            <div className={styles["controls-container"]}>
                 <PlayerControls />
             </div>
         </div>

@@ -1,7 +1,9 @@
 .main-container {
     display: flex;
-    gap: .5rem;
+    justify-content: center;
+    flex-wrap: nowrap;
+    width: 100%;
+    gap: 0rem .5rem;
     background-color: rgb(255, 230, 161);
     padding: .5rem;
-    width: fit-content;
 }

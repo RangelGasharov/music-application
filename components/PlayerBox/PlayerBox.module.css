@@ -1,0 +1,27 @@
+.main-container {
+    display: flex;
+    flex-direction: column;
+    width: fit-content;
+    max-width: 25vw;
+}
+
+@media (max-width: 1200px) {
+    .main-container {
+        max-width: 35vw;
+    }
+}
+
+@media (max-width: 480px) {
+    .main-container {
+        max-width: none;
+        width: fit-content;
+    }
+}
+
+.image-container {
+    width: 100%;
+}
+
+.controls-container {
+    width: 100%;
+}
