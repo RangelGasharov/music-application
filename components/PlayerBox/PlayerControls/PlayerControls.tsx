@@ -1,20 +1,18 @@
 "use client"
 import React from 'react'
-import PlayIcon from './PlayIcon'
-import ShuffleIcon from './ShuffleIcon'
-import FastRewindIcon from './FastRewind'
-import FastForwardIcon from './FastForwardIcon'
+import PlayButton from './PlayButton'
+import ShuffleButton from './ShuffleButton'
+import FastRewindButton from './FastRewindButton'
+import FastForwardButton from './FastForwardButton'
 import styles from "./PlayerControls.module.css"
 
-type Props = {}
-
-export default function PlayerControls({ }: Props) {
+export default function PlayerControls() {
     return (
         <div className={styles["main-container"]}>
-            <FastRewindIcon />
-            <PlayIcon />
-            <FastForwardIcon />
-            <ShuffleIcon />
+            <FastRewindButton />
+            <PlayButton />
+            <FastForwardButton />
+            <ShuffleButton />
         </div>
     )
 }

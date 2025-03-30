@@ -3,9 +3,8 @@ import Image from 'next/image'
 import ForestImage from "@/public/assets/images/forest_image.jpg"
 import styles from "./PlayerImage.module.css"
 
-type Props = {}
 
-export default function PlayerImage({ }: Props) {
+export default function PlayerImage() {
     return (
         <Image
             src={ForestImage}

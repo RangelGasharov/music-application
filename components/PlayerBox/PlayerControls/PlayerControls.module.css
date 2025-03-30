@@ -1,6 +1,7 @@
 .main-container {
     display: flex;
     justify-content: center;
+    align-items: center;
     flex-wrap: nowrap;
     width: 100%;
     gap: 0rem .5rem;
