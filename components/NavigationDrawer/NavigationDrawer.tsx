@@ -13,11 +13,7 @@ import ConfirmationNumberOutlinedIcon from '@mui/icons-material/ConfirmationNumb
 import HomeOutlinedIcon from '@mui/icons-material/HomeOutlined';
 import Link from 'next/link';
 
-type NavigationDrawerType = {
-    username: string
-}
-
-export default function NavigationDrawer({ username }: NavigationDrawerType) {
+export default function NavigationDrawer() {
     const [open, setOpen] = React.useState(false);
 
     const drawerSections = [
