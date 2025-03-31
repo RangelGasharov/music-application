@@ -1,0 +1,7 @@
+.navigation-drawer-container {
+    display: flex;
+}
+
+.children-container {
+    flex: 1;
+}

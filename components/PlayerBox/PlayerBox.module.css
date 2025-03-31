@@ -7,9 +7,21 @@
     overflow: hidden;
 }
 
-@media (max-width: 1200px) {
+@media (max-width: 1440px) {
     .main-container {
         max-width: 35vw;
+    }
+}
+
+@media (max-width: 1200px) {
+    .main-container {
+        max-width: 45vw;
+    }
+}
+
+@media (max-width: 720px) {
+    .main-container {
+        max-width: 60vw;
     }
 }
 

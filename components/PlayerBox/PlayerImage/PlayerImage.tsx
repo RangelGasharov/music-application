@@ -3,7 +3,6 @@ import Image from 'next/image'
 import ForestImage from "@/public/assets/images/forest_image.jpg"
 import styles from "./PlayerImage.module.css"
 
-
 export default function PlayerImage() {
     return (
         <Image
@@ -12,6 +11,7 @@ export default function PlayerImage() {
             width={4000}
             height={3000}
             className={styles["image"]}
+            draggable={false}
         />
     )
 }
