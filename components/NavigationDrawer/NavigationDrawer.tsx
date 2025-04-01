@@ -9,16 +9,17 @@ import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
 import ListIcon from '@mui/icons-material/List';
 import SettingsOutlinedIcon from '@mui/icons-material/SettingsOutlined';
-import ConfirmationNumberOutlinedIcon from '@mui/icons-material/ConfirmationNumberOutlined';
+import BarChartIcon from '@mui/icons-material/BarChart';
 import HomeOutlinedIcon from '@mui/icons-material/HomeOutlined';
 import Link from 'next/link';
+import styles from "./NavigationDrawer.module.css";
 
 export default function NavigationDrawer() {
     const [open, setOpen] = React.useState(false);
 
     const drawerSections = [
         { name: "Home", sectionIcon: <HomeOutlinedIcon />, path: "/" },
-        { name: "Dashboard", sectionIcon: <ConfirmationNumberOutlinedIcon />, path: "/dashboard" },
+        { name: "Dashboard", sectionIcon: <BarChartIcon />, path: "/dashboard" },
         { name: "Settings", sectionIcon: <SettingsOutlinedIcon />, path: "/settings" }
     ]
 
@@ -30,14 +31,10 @@ export default function NavigationDrawer() {
         <Box role="presentation">
             <List>
                 {drawerSections.map((element) => (
-                    <ListItem key={element.name} sx={{ padding: "0rem 1rem" }}>
-                        <Link href={element.path}>
-                            <ListItemIcon sx={{ color: "white" }}>
-                                {element.sectionIcon}
-                            </ListItemIcon>
-                            <ListItemText primary={element.name} />
-                        </Link>
-                    </ListItem>
+                    <Link key={element.path + element.name} className={styles["navigation-link-box"]} href={element.path}>
+                        <ListItemIcon sx={{ color: "inherit" }}>{element.sectionIcon}</ListItemIcon>
+                        <ListItemText primary={element.name} />
+                    </Link>
                 ))}
             </List>
         </Box>
@@ -45,9 +42,7 @@ export default function NavigationDrawer() {
 
     return (
         <Box>
-            <Box style={{
-                minHeight: "100vh", height: "100%", padding: ".75rem 0rem"
-            }}>
+            <Box className={styles["drawer-bar"]}>
                 <Button onClick={toggleDrawer}>
                     <ListIcon sx={{ color: "black", fontSize: "1.75rem", position: "fixed" }} />
                 </Button>
