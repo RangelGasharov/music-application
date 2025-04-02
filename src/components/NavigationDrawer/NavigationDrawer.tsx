@@ -29,14 +29,12 @@ export default function NavigationDrawer() {
 
     const DrawerList = (
         <Box role="presentation">
-            <List>
-                {drawerSections.map((element) => (
-                    <Link key={element.path + element.name} className={styles["navigation-link-box"]} href={element.path}>
-                        <ListItemIcon sx={{ color: "inherit" }}>{element.sectionIcon}</ListItemIcon>
-                        <ListItemText primary={element.name} />
-                    </Link>
-                ))}
-            </List>
+            {drawerSections.map((element) => (
+                <Link key={element.path + element.name} className={styles["navigation-link-box"]} href={element.path}>
+                    <ListItemIcon sx={{ color: "inherit" }}>{element.sectionIcon}</ListItemIcon>
+                    <ListItemText primary={element.name} />
+                </Link>
+            ))}
         </Box>
     );
 

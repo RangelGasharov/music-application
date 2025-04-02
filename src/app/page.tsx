@@ -1,5 +1,5 @@
 import styles from "./page.module.css";
-import PlayerBox from "../../components/PlayerBox/PlayerBox";
+import PlayerBox from "../components/PlayerBox/PlayerBox";
 
 export default function Home() {
   return (
