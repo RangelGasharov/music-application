@@ -1,6 +1,6 @@
 "use client"
 import React from 'react';
-import { useStore } from '@/stores/store';
+import { useStore } from '@/store/store';
 import { Box, Button } from '@mui/material';
 
 export default function DashboardPage() {
