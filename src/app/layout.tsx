@@ -3,7 +3,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import NavigationDrawer from "../components/NavigationDrawer/NavigationDrawer";
 import styles from "./layout-admin-page.module.css"
-import { ThemeProvider } from "@/components/ThemeProvider/ThemeProvider";
+import Providers from "@/components/Providers/Providers";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -26,15 +26,16 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="en" suppressContentEditableWarning>
       <body className={`${geistSans.variable} ${geistMono.variable}`}>
-        <div className={styles["navigation-drawer-container"]}>
-          <NavigationDrawer />
-          <ThemeProvider />
-          <div className={styles["children-container"]}>
-            {children}
-          </div>
-        </div>
+        <Providers>
+          <main className={styles["navigation-drawer-container"]}>
+            <NavigationDrawer />
+            <div className={styles["children-container"]}>
+              {children}
+            </div>
+          </main>
+        </Providers>
       </body>
     </html>
   );

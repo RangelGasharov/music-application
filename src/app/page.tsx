@@ -1,6 +1,6 @@
 import styles from "./page.module.css";
 import PlayerBox from "../components/PlayerBox/PlayerBox";
-import { ThemeToggle } from "@/components/ThemeToggle/ThemeToggle";
+import ThemeToggle from "@/components/ThemeToggle/ThemeToggle";
 
 export default function Home() {
   return (
