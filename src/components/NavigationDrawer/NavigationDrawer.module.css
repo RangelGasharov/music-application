@@ -6,12 +6,17 @@
     width: 100%;
 }
 
+.drawer-list {
+    background-color: rgb(74, 28, 28);
+    height: 100vh;
+}
+
 .navigation-link-box:hover {
     background: rgb(255, 192, 192);
 }
 
 .drawer-bar {
-    background-color: rgb(255, 192, 192);
+    background-color: rgba(239, 129, 129, 0.5);
     min-height: 100vh;
     height: 100%;
     padding: .75rem 0rem;

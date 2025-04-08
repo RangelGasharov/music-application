@@ -26,14 +26,12 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" suppressContentEditableWarning>
+    <html lang="en" suppressHydrationWarning>
       <body className={`${geistSans.variable} ${geistMono.variable}`}>
         <Providers>
           <main className={styles["navigation-drawer-container"]}>
             <NavigationDrawer />
-            <div className={styles["children-container"]}>
-              {children}
-            </div>
+            {children}
           </main>
         </Providers>
       </body>

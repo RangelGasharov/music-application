@@ -1,10 +1,7 @@
 "use client"
-import { ToggleButton, ToggleButtonGroup } from "@mui/material";
-import { useThemeStore } from "@/store/useThemeStore";
 import { Theme } from "@/types/ThemeType";
 import LightModeIcon from "@mui/icons-material/LightMode";
 import DarkModeIcon from "@mui/icons-material/DarkMode";
-import SettingsIcon from "@mui/icons-material/Settings";
 import { useEffect, useState } from "react";
 import { useTheme } from "next-themes";
 import Image from "next/image";
@@ -13,7 +10,7 @@ import ButtonClean from "../Buttons/ButtonClean";
 export default function ThemeToggle() {
     const [mounted, setMounted] = useState(false);
     const { setTheme, resolvedTheme } = useTheme();
-    useEffect(() => setMounted(true), [])
+    useEffect(() => setMounted(true), []);
 
     const handleChange = (
         _event: React.MouseEvent<HTMLElement>,

@@ -9,7 +9,6 @@ export default function PlayButton() {
     return (
         <ButtonClean onClick={() => setIsPlaying(!isPlaying)}>
             {isPlaying ? <Pause /> : <PlayArrowIcon />}
-
         </ButtonClean>
     )
 }

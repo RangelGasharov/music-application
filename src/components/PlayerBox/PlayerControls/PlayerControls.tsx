@@ -5,10 +5,12 @@ import ShuffleButton from './ShuffleButton'
 import FastRewindButton from './FastRewindButton'
 import FastForwardButton from './FastForwardButton'
 import styles from "./PlayerControls.module.css"
+import { useTheme } from 'next-themes'
 
 export default function PlayerControls() {
+    const theme = useTheme();
     return (
-        <div className={styles["main-container"]}>
+        <div className={`${styles["main-container"]} ${theme.resolvedTheme === "dark" ? "dark" : "light"}`}>
             <FastRewindButton />
             <PlayButton />
             <FastForwardButton />

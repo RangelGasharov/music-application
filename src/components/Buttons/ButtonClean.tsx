@@ -9,8 +9,14 @@ type Props = {
 
 export default function ButtonClean({ onClick, children }: Props) {
     return (
-        <Button
-            sx={{ color: "inherit", padding: ".2rem", minWidth: 0, width: 'auto', height: 'auto', }}
+        <Button disableTouchRipple
+            sx={{
+                color: "inherit", backgroundColor: "transparent", boxShadow: "none", padding: ".2rem", minWidth: 0, width: 'auto', height: 'auto',
+                transformOrigin: 'center',
+                '&:hover': {
+                    transform: "scale(1.2)"
+                }
+            }}
             onClick={onClick}>
             {children}
         </Button>
