@@ -9,15 +9,13 @@
 .light {
   --bg-color: #ffffff;
   --text-color: #121212;
-  --primary-color: #0070f3;
-  --secondary-color: #f0f0f0;
+  --text-shadow: #3f3f3f;
 }
 
 .dark {
-  --bg-color: #000000;
+  --bg-color: #121212;
   --text-color: #ffffff;
-  --primary-color: #1e90ff;
-  --secondary-color: #1a1a1a;
+  --text-shadow: #a0a0a0;
 }
 
 body {

@@ -7,8 +7,10 @@
 }
 
 .drawer-list {
-    background-color: rgb(74, 28, 28);
+    background-color: var(--bg-color);
+    color: var(--text-color);
     height: 100vh;
+    min-width: 25vw;
 }
 
 .navigation-link-box:hover {
@@ -16,8 +18,15 @@
 }
 
 .drawer-bar {
-    background-color: rgba(239, 129, 129, 0.5);
+    background-color: var(--bg-color);
+    color: var(--text-color);
     min-height: 100vh;
     height: 100%;
     padding: .75rem 0rem;
+    box-shadow: 0 0 7px -2px var(--text-shadow);
+}
+
+.drawer-menu-icon {
+    color: var(--text-color);
+    position: relative;
 }

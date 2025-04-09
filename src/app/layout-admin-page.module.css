@@ -1,3 +1,7 @@
 .navigation-drawer-container {
     display: flex;
 }
+
+.children-container {
+    padding: 1rem;
+}

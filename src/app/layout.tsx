@@ -31,7 +31,9 @@ export default function RootLayout({
         <Providers>
           <main className={styles["navigation-drawer-container"]}>
             <NavigationDrawer />
-            {children}
+            <div className={styles["children-container"]}>
+              {children}
+            </div>
           </main>
         </Providers>
       </body>

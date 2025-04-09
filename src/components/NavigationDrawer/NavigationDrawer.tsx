@@ -12,9 +12,10 @@ import HomeOutlinedIcon from '@mui/icons-material/HomeOutlined';
 import Link from 'next/link';
 import styles from "./NavigationDrawer.module.css";
 import "../../app/globals.css";
+import { useState } from 'react';
 
 export default function NavigationDrawer() {
-    const [open, setOpen] = React.useState(false);
+    const [open, setOpen] = useState(false);
 
     const drawerSections = [
         { name: "Home", sectionIcon: <HomeOutlinedIcon />, path: "/" },
@@ -29,7 +30,7 @@ export default function NavigationDrawer() {
     const DrawerList = (
         <Box role="presentation">
             {drawerSections.map((element) => (
-                <Link key={element.path + element.name} className={styles["navigation-link-box"]} href={element.path}>
+                <Link onClick={toggleDrawer} key={element.path + element.name} className={styles["navigation-link-box"]} href={element.path}>
                     <ListItemIcon sx={{ color: "inherit" }}>{element.sectionIcon}</ListItemIcon>
                     <ListItemText primary={element.name} />
                 </Link>
@@ -41,7 +42,7 @@ export default function NavigationDrawer() {
         <Box>
             <Box className={styles["drawer-bar"]}>
                 <Button onClick={toggleDrawer}>
-                    <ListIcon sx={{ color: "black", fontSize: "1.75rem", position: "fixed" }} />
+                    <ListIcon className={styles["drawer-menu-icon"]} sx={{ background: "inherit", fontSize: "1.75rem", position: "fixed" }} />
                 </Button>
             </Box>
             <Drawer open={open} onClose={toggleDrawer}>
