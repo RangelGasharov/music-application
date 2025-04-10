@@ -10,12 +10,14 @@
   --bg-color: #ffffff;
   --text-color: #121212;
   --text-shadow: #3f3f3f;
+  --navigation-drawer-hover-color: rgb(241, 241, 241);
 }
 
 .dark {
   --bg-color: #121212;
   --text-color: #ffffff;
   --text-shadow: #a0a0a0;
+  --navigation-drawer-hover-color: rgb(48, 48, 48);
 }
 
 body {

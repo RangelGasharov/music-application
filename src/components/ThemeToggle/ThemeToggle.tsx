@@ -1,5 +1,4 @@
 "use client"
-import { Theme } from "@/types/ThemeType";
 import LightModeIcon from "@mui/icons-material/LightMode";
 import DarkModeIcon from "@mui/icons-material/DarkMode";
 import { useEffect, useState } from "react";
@@ -11,15 +10,6 @@ export default function ThemeToggle() {
     const [mounted, setMounted] = useState(false);
     const { setTheme, resolvedTheme } = useTheme();
     useEffect(() => setMounted(true), []);
-
-    const handleChange = (
-        _event: React.MouseEvent<HTMLElement>,
-        newTheme: Theme | null
-    ) => {
-        if (newTheme) {
-            setTheme(newTheme);
-        }
-    };
 
     if (!mounted) return (
         <Image

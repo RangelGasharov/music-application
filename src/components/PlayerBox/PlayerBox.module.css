@@ -2,33 +2,32 @@
     display: flex;
     flex-direction: column;
     width: fit-content;
-    max-width: 25vw;
+    max-width: 25%;
     border-radius: 1rem;
     overflow: hidden;
 }
 
 @media (max-width: 1440px) {
     .main-container {
-        max-width: 35vw;
+        max-width: 35%;
     }
 }
 
 @media (max-width: 1200px) {
     .main-container {
-        max-width: 45vw;
+        max-width: 45%;
     }
 }
 
 @media (max-width: 720px) {
     .main-container {
-        max-width: 60vw;
+        max-width: 60%;
     }
 }
 
 @media (max-width: 480px) {
     .main-container {
-        max-width: none;
-        width: fit-content;
+        max-width: 80%;
     }
 }
 

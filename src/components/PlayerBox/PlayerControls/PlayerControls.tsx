@@ -5,11 +5,9 @@ import ShuffleButton from './ShuffleButton'
 import FastRewindButton from './FastRewindButton'
 import FastForwardButton from './FastForwardButton'
 import styles from "./PlayerControls.module.css"
-import { useTheme } from 'next-themes'
 import ReplayButton from './ReplayButton'
 
 export default function PlayerControls() {
-    const theme = useTheme();
     return (
         <div className={styles["main-container"]}>
             <ReplayButton />
