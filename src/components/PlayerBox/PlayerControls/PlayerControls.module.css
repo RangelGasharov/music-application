@@ -5,6 +5,6 @@
     flex-wrap: nowrap;
     width: 100%;
     gap: 0rem 0.25rem;
-    background-color: rgba(169, 159, 159, 0.356);
+    background-color: var(--player-box-controls-color);
     padding: .5rem;
 }
