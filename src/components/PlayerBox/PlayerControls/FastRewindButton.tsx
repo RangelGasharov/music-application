@@ -2,9 +2,13 @@ import React from 'react';
 import FastRewind from '@mui/icons-material/FastRewind';
 import ButtonClean from '../../Buttons/ButtonClean';
 
-export default function FastRewindButton() {
+type FastRewindButton = {
+    changeToPreviousTrack: React.MouseEventHandler<HTMLButtonElement>
+}
+
+export default function FastRewindButton({ changeToPreviousTrack }: FastRewindButton) {
     return (
-        <ButtonClean>
+        <ButtonClean onClick={changeToPreviousTrack}>
             <FastRewind />
         </ButtonClean>
     )

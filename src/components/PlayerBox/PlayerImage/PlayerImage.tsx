@@ -1,17 +1,22 @@
 import React from 'react'
 import Image from 'next/image'
-import ForestImage from "@/public/assets/images/forest_image.jpg"
 import styles from "./PlayerImage.module.css"
+import { MusicTrack } from '@/types/MusicTrack'
 
-export default function PlayerImage() {
+type PlayerImageType = {
+    currenTrack: MusicTrack
+}
+
+export default function PlayerImage({ currenTrack }: PlayerImageType) {
     return (
         <Image
-            src={ForestImage}
+            src={`/${currenTrack.track_image_source}`}
             alt='music track cover'
             width={4000}
             height={3000}
             className={styles["image"]}
             draggable={false}
+            priority
         />
     )
 }

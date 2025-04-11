@@ -3,7 +3,7 @@ import { Button } from '@mui/material'
 import React from 'react'
 
 type Props = {
-    onClick?: React.MouseEventHandler<HTMLButtonElement>,
+    onClick: React.MouseEventHandler<HTMLButtonElement>,
     children?: React.ReactNode
 }
 
