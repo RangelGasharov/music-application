@@ -16,15 +16,6 @@
     background: var(--navigation-drawer-hover-color);
 }
 
-.drawer-bar {
-    background-color: var(--bg-color);
-    color: var(--text-color);
-    min-height: 100vh;
-    height: 100%;
-    padding: .75rem 0rem;
-    box-shadow: 0 0 7px -2px var(--text-shadow);
-}
-
 .drawer-menu-icon {
     color: var(--text-color);
     position: relative;

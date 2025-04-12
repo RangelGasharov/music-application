@@ -40,11 +40,9 @@ export default function NavigationDrawer() {
 
     return (
         <Box>
-            <Box className={styles["drawer-bar"]}>
-                <Button onClick={toggleDrawer}>
-                    <ListIcon className={styles["drawer-menu-icon"]} sx={{ background: "inherit", fontSize: "1.75rem", position: "fixed" }} />
-                </Button>
-            </Box>
+            <Button onClick={toggleDrawer}>
+                <ListIcon className={styles["drawer-menu-icon"]} sx={{ background: "inherit", fontSize: "1.75rem" }} />
+            </Button>
             <Drawer open={open} onClose={toggleDrawer}>
                 <Box className={styles["drawer-list"]}>
                     {DrawerList}

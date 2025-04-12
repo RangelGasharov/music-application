@@ -11,13 +11,8 @@ export default function Home() {
   ]
 
   return (
-    <div className={styles["outer-container"]}>
-      <div className={styles["main-container"]}>
-        <h1>Music Player</h1>
-        <div className={styles["play-box-container"]}>
-          <PlayerBox musicTracks={musicTracks} />
-        </div>
-      </div>
+    <div className={styles["main-container"]}>
+      <PlayerBox musicTracks={musicTracks} />
     </div>
   );
 }
