@@ -9,6 +9,7 @@ import ListIcon from '@mui/icons-material/List';
 import SettingsOutlinedIcon from '@mui/icons-material/SettingsOutlined';
 import BarChartIcon from '@mui/icons-material/BarChart';
 import HomeOutlinedIcon from '@mui/icons-material/HomeOutlined';
+import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import Link from 'next/link';
 import styles from "./NavigationDrawer.module.css";
 import "../../app/globals.css";
@@ -20,7 +21,8 @@ export default function NavigationDrawer() {
     const drawerSections = [
         { name: "Home", sectionIcon: <HomeOutlinedIcon />, path: "/" },
         { name: "Dashboard", sectionIcon: <BarChartIcon />, path: "/dashboard" },
-        { name: "Settings", sectionIcon: <SettingsOutlinedIcon />, path: "/settings" }
+        { name: "Settings", sectionIcon: <SettingsOutlinedIcon />, path: "/settings" },
+        { name: "Profile", sectionIcon: <AccountCircleIcon />, path: "/profile" }
     ]
 
     const toggleDrawer = () => {
