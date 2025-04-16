@@ -4,7 +4,6 @@ export async function requestRefreshOfAccessToken(token: JWT) {
     const clientId = process.env.KEYCLOAK_CLIENT_ID;
     const clientSecret = process.env.KEYCLOAK_CLIENT_SECRET;
     const issuer = process.env.KEYCLOAK_ISSUER;
-    const refreshToken = token.refreshToken;
 
     if (!clientId || !clientSecret || !issuer || !token.refreshToken) {
         throw new Error("Missing required environment variables or refresh token.");
