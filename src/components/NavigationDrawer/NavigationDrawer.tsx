@@ -19,7 +19,7 @@ export default function NavigationDrawer() {
     const [open, setOpen] = useState(false);
 
     const drawerSections = [
-        { name: "Home", sectionIcon: <HomeOutlinedIcon />, path: "/" },
+        { name: "Home", sectionIcon: <HomeOutlinedIcon />, path: "/home" },
         { name: "Dashboard", sectionIcon: <BarChartIcon />, path: "/dashboard" },
         { name: "Settings", sectionIcon: <SettingsOutlinedIcon />, path: "/settings" },
         { name: "Profile", sectionIcon: <AccountCircleIcon />, path: "/profile" }
