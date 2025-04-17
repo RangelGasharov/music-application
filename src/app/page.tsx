@@ -1,14 +1,18 @@
-import LoginButton from '@/components/Authentication/LoginButton'
-import LogoutButton from '@/components/Authentication/LogoutButton'
-import { authOptions } from '@/lib/auth'
-import { getServerSession } from 'next-auth'
-import React from 'react'
+import styles from "./page.module.css";
+import PlayerBox from "../components/PlayerBox/PlayerBox";
+import { MusicTrack } from "@/types/MusicTrack";
 
-export default async function LoginPage() {
-    const session = await getServerSession(authOptions);
-    return (
-        <div>
-            {session ? (<div>You are logged in as: {session.user?.name}   <LogoutButton /></div>) : (<div>  <LoginButton /></div>)}
-        </div>
-    )
+export default function Home() {
+  const musicTracks: MusicTrack[] = [
+    { id: 1, track_name: "Forest", track_length: 200, track_image_source: "assets/images/forest_image.jpg" },
+    { id: 2, track_name: "Urban", track_length: 220, track_image_source: "assets/images/urban_landscape.jpg" },
+    { id: 3, track_name: "Sky", track_length: 196, track_image_source: "assets/images/sky.jpg" },
+    { id: 4, track_name: "Desert", track_length: 198, track_image_source: "assets/images/desert.jpg" }
+  ]
+
+  return (
+    <div className={styles["main-container"]}>
+      <PlayerBox musicTracks={musicTracks} />
+    </div>
+  );
 }

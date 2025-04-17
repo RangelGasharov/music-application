@@ -11,6 +11,6 @@ export default function LoginButton() {
             '&:hover': {
                 backgroundColor: Colors.button_blue_hover
             }
-        }} onClick={() => signIn("keycloak")}>Login</Button>
+        }} onClick={() => signIn("keycloak")}>Log in</Button>
     )
 }

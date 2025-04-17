@@ -11,6 +11,6 @@ export default function LogoutButton() {
             '&:hover': {
                 backgroundColor: Colors.button_red_hover
             }
-        }} onClick={() => federatedLogout()}>Logout</Button>
+        }} onClick={() => federatedLogout()}>Log out</Button>
     )
 }
