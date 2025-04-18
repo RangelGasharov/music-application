@@ -9,5 +9,6 @@ namespace MusicApplicationWebAPI.Models
         public string? LastName { get; set; }
         public DateTime? BirthDate { get; set; }
         public List<MusicArtistAlbum> MusicArtistAlbums { get; set; } = [];
+        public List<MusicArtistTrack> MusicArtistTrack { get; set; } = [];
     }
 }

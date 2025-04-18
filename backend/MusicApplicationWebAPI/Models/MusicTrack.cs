@@ -10,5 +10,7 @@ namespace MusicApplicationWebAPI.Models
         public required DateTime UploadedAt { get; set; }
         public required string CoverURL { get; set; }
         public required TimeSpan Duration { get; set; }
+        public List<MusicArtistTrack> MusicArtistTrack { get; set; } = [];
+        public List<MusicGenreTrack> MusicGenreTrack { get; set; } = [];
     }
 }
