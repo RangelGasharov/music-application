@@ -5,7 +5,9 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.EntityFrameworkCore;
 using MusicApplicationWebAPI.Data;
+using MusicApplicationWebAPI.Dtos;
 using MusicApplicationWebAPI.Dtos.MusicAlbum;
+using MusicApplicationWebAPI.Dtos.MusicArtist;
 using MusicApplicationWebAPI.Interfaces;
 using MusicApplicationWebAPI.Models.Entities;
 
@@ -45,9 +47,34 @@ namespace MusicApplicationWebAPI.Repository
             return await _context.MusicAlbum.ToListAsync();
         }
 
-        public async Task<MusicAlbum?> GetMusicAlbumById(Guid id)
+        public async Task<MusicAlbumDto?> GetMusicAlbumById(Guid id)
         {
-            return await _context.MusicAlbum.FindAsync(id);
+            var musicAlbum = await _context.MusicAlbum
+                .Include(album => album.MusicArtistAlbums)
+                .ThenInclude(artist_album => artist_album.MusicArtist)
+                .FirstOrDefaultAsync(album => album.Id == id);
+
+            if (musicAlbum is null)
+            {
+                return null;
+            }
+
+            var musicAlbumDto = new MusicAlbumDto
+            {
+                Id = musicAlbum.Id,
+                Title = musicAlbum.Title,
+                CoverURL = musicAlbum.CoverURL,
+                UploadedAt = musicAlbum.UploadedAt,
+                ReleaseDate = musicAlbum.ReleaseDate,
+                MusicArtists = musicAlbum.MusicArtistAlbums
+                    .Select(musicArtist => new MusicArtistShortFormDto
+                    {
+                        Id = musicArtist.MusicArtist.Id,
+                        Name = musicArtist.MusicArtist.Name
+                    }).ToList()
+            };
+
+            return musicAlbumDto;
         }
 
         public async Task<MusicAlbum?> UpdateMusicAlbum(Guid id, UpdateMusicAlbumDto musicAlbumDto)

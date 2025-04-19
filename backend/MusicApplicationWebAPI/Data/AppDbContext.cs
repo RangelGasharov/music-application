@@ -17,6 +17,17 @@ public class AppDbContext : DbContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+        modelBuilder.Entity<MusicArtistAlbum>()
+            .HasKey(artist_album => artist_album.Id);
 
+        modelBuilder.Entity<MusicArtistAlbum>()
+            .HasOne(artist_album => artist_album.MusicArtist)
+            .WithMany(artist => artist.MusicArtistAlbums)
+            .HasForeignKey(artist_album => artist_album.MusicArtistId);
+
+        modelBuilder.Entity<MusicArtistAlbum>()
+            .HasOne(artist_album => artist_album.MusicAlbum)
+            .WithMany(album => album.MusicArtistAlbums)
+            .HasForeignKey(artist_album => artist_album.MusicAlbumId);
     }
 }

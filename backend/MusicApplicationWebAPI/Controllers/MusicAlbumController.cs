@@ -1,6 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using MusicApplicationWebAPI.Data;
 using MusicApplicationWebAPI.Dtos.MusicAlbum;
 using MusicApplicationWebAPI.Interfaces;
 using MusicApplicationWebAPI.Models.Entities;
@@ -10,13 +9,11 @@ namespace MusicApplicationWebAPI.Controllers;
 [Route("music-album")]
 public class MusicAlbumController : ControllerBase
 {
-    private readonly AppDbContext _context;
     private readonly IMusicAlbumRepository _musicAlbumRepository;
 
-    public MusicAlbumController(AppDbContext dbContext, IMusicAlbumRepository musicAlbumRepository)
+    public MusicAlbumController(IMusicAlbumRepository musicAlbumRepository)
     {
         _musicAlbumRepository = musicAlbumRepository;
-        _context = dbContext;
     }
 
     [HttpGet]
