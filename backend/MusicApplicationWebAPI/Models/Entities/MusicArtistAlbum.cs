@@ -1,4 +1,4 @@
-namespace MusicApplicationWebAPI.Models
+namespace MusicApplicationWebAPI.Models.Entities
 {
     public class MusicArtistAlbum
     {

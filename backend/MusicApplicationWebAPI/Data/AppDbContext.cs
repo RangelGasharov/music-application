@@ -1,5 +1,5 @@
 using Microsoft.EntityFrameworkCore;
-using MusicApplicationWebAPI.Models;
+using MusicApplicationWebAPI.Models.Entities;
 
 namespace MusicApplicationWebAPI.Data;
 

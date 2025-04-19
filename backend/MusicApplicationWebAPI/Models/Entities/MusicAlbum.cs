@@ -1,4 +1,4 @@
-namespace MusicApplicationWebAPI.Models
+namespace MusicApplicationWebAPI.Models.Entities
 {
     public class MusicAlbum
     {
@@ -7,6 +7,5 @@ namespace MusicApplicationWebAPI.Models
         public required string CoverURL { get; set; }
         public required DateTime UploadedAt { get; set; }
         public required DateTime ReleaseDate { get; set; }
-        public List<MusicArtistAlbum> MusicArtistAlbums { get; set; } = [];
     }
 }
