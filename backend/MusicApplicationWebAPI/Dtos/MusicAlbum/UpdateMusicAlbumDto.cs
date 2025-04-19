@@ -1,6 +1,6 @@
 namespace MusicApplicationWebAPI.Dtos.MusicAlbum
 {
-    public class AddMusicAlbum
+    public class UpdateMusicAlbumDto
     {
         public required string Title { get; set; }
         public required string CoverURL { get; set; }

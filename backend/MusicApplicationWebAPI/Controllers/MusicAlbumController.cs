@@ -9,24 +9,24 @@ namespace MusicApplicationWebAPI.Controllers;
 [Route("music-album")]
 public class MusicAlbumController : ControllerBase
 {
-    private readonly AppDbContext dbContext;
+    private readonly AppDbContext _context;
 
     public MusicAlbumController(AppDbContext dbContext)
     {
-        this.dbContext = dbContext;
+        this._context = dbContext;
     }
 
     [HttpGet]
-    public IActionResult GetAllMusicAlbums()
+    public async Task<IActionResult> GetAllMusicAlbums()
     {
-        var musicAlbums = dbContext.MusicAlbum.ToList();
+        var musicAlbums = await _context.MusicAlbum.ToListAsync();
         return Ok(musicAlbums);
     }
 
     [HttpGet("{id:guid}")]
-    public IActionResult GetMusicAlbumById([FromRoute] Guid id)
+    public async Task<ActionResult> GetMusicAlbumById([FromRoute] Guid id)
     {
-        var musicAlbum = dbContext.MusicAlbum.Find(id);
+        var musicAlbum = await _context.MusicAlbum.FindAsync(id);
         if (musicAlbum is null)
         {
             return NotFound();
@@ -35,54 +35,54 @@ public class MusicAlbumController : ControllerBase
     }
 
     [HttpPost]
-    public IActionResult AddMusicAlbum(AddMusicAlbum addMusicAlbum)
+    public async Task<IActionResult> AddMusicAlbum(AddMusicAlbumDto addMusicAlbumDto)
     {
         var musicAlbumEntity = new MusicAlbum()
         {
-            Title = addMusicAlbum.Title,
-            CoverURL = addMusicAlbum.CoverURL,
-            UploadedAt = addMusicAlbum.UploadedAt,
-            ReleaseDate = addMusicAlbum.ReleaseDate
+            Title = addMusicAlbumDto.Title,
+            CoverURL = addMusicAlbumDto.CoverURL,
+            UploadedAt = addMusicAlbumDto.UploadedAt,
+            ReleaseDate = addMusicAlbumDto.ReleaseDate
         };
 
-        dbContext.MusicAlbum.Add(musicAlbumEntity);
-        dbContext.SaveChanges();
+        await _context.MusicAlbum.AddAsync(musicAlbumEntity);
+        await _context.SaveChangesAsync();
 
         return Ok(musicAlbumEntity);
     }
 
     [HttpPut]
     [Route("{id:guid}")]
-    public IActionResult UpdateMusicAlbum(Guid id, UpdateMusicAlbum updateMusicAlbum)
+    public async Task<IActionResult> UpdateMusicAlbum(Guid id, UpdateMusicAlbumDto updateMusicAlbumDto)
     {
-        var musicAlbum = dbContext.MusicAlbum.Find(id);
+        var musicAlbum = await _context.MusicAlbum.FindAsync(id);
 
         if (musicAlbum is null)
         {
             return NotFound();
         }
 
-        musicAlbum.Title = updateMusicAlbum.Title;
-        musicAlbum.CoverURL = updateMusicAlbum.CoverURL;
-        musicAlbum.UploadedAt = updateMusicAlbum.UploadedAt;
-        musicAlbum.ReleaseDate = updateMusicAlbum.ReleaseDate;
+        musicAlbum.Title = updateMusicAlbumDto.Title;
+        musicAlbum.CoverURL = updateMusicAlbumDto.CoverURL;
+        musicAlbum.UploadedAt = updateMusicAlbumDto.UploadedAt;
+        musicAlbum.ReleaseDate = updateMusicAlbumDto.ReleaseDate;
 
-        dbContext.SaveChanges();
+        await _context.SaveChangesAsync();
         return Ok(musicAlbum);
     }
 
     [HttpDelete]
     [Route("{id:guid}")]
-    public IActionResult DeleteAlbumById(Guid id)
+    public async Task<IActionResult> DeleteAlbumById(Guid id)
     {
-        var musicAlbum = dbContext.MusicAlbum.Find(id);
+        var musicAlbum = await _context.MusicAlbum.FindAsync(id);
         if (musicAlbum is null)
         {
             return NotFound();
         }
 
-        dbContext.MusicAlbum.Remove(musicAlbum);
-        dbContext.SaveChanges();
+        _context.MusicAlbum.Remove(musicAlbum);
+        await _context.SaveChangesAsync();
         return Ok();
     }
 }

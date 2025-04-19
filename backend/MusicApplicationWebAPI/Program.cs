@@ -24,11 +24,7 @@ builder.Services.AddSwaggerGen();
 var app = builder.Build();
 
 {
-    app.MapGet("/music-artist-photo", async (AppDbContext dbContext) =>
-    {
-        var musicArtistPhotos = await dbContext.MusicArtistPhoto.ToListAsync();
-        return Results.Ok(musicArtistPhotos);
-    });
+
 }
 
 if (app.Environment.IsDevelopment())
