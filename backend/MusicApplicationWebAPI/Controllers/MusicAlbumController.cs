@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using MusicApplicationWebAPI.Data;
 using MusicApplicationWebAPI.Dtos.MusicAlbum;
+using MusicApplicationWebAPI.Interfaces;
 using MusicApplicationWebAPI.Models.Entities;
 
 namespace MusicApplicationWebAPI.Controllers;
@@ -10,27 +11,31 @@ namespace MusicApplicationWebAPI.Controllers;
 public class MusicAlbumController : ControllerBase
 {
     private readonly AppDbContext _context;
+    private readonly IMusicAlbumRepository _musicAlbumRepository;
 
-    public MusicAlbumController(AppDbContext dbContext)
+    public MusicAlbumController(AppDbContext dbContext, IMusicAlbumRepository musicAlbumRepository)
     {
-        this._context = dbContext;
+        _musicAlbumRepository = musicAlbumRepository;
+        _context = dbContext;
     }
 
     [HttpGet]
     public async Task<IActionResult> GetAllMusicAlbums()
     {
-        var musicAlbums = await _context.MusicAlbum.ToListAsync();
+        var musicAlbums = await _musicAlbumRepository.GetAllMusicAlbums();
         return Ok(musicAlbums);
     }
 
     [HttpGet("{id:guid}")]
     public async Task<ActionResult> GetMusicAlbumById([FromRoute] Guid id)
     {
-        var musicAlbum = await _context.MusicAlbum.FindAsync(id);
+        var musicAlbum = await _musicAlbumRepository.GetMusicAlbumById(id);
+
         if (musicAlbum is null)
         {
             return NotFound();
         }
+
         return Ok(musicAlbum);
     }
 
@@ -45,9 +50,7 @@ public class MusicAlbumController : ControllerBase
             ReleaseDate = addMusicAlbumDto.ReleaseDate
         };
 
-        await _context.MusicAlbum.AddAsync(musicAlbumEntity);
-        await _context.SaveChangesAsync();
-
+        await _musicAlbumRepository.AddMusicAlbum(musicAlbumEntity);
         return Ok(musicAlbumEntity);
     }
 
@@ -55,19 +58,13 @@ public class MusicAlbumController : ControllerBase
     [Route("{id:guid}")]
     public async Task<IActionResult> UpdateMusicAlbum(Guid id, UpdateMusicAlbumDto updateMusicAlbumDto)
     {
-        var musicAlbum = await _context.MusicAlbum.FindAsync(id);
+        var musicAlbum = await _musicAlbumRepository.UpdateMusicAlbum(id, updateMusicAlbumDto);
 
         if (musicAlbum is null)
         {
             return NotFound();
         }
 
-        musicAlbum.Title = updateMusicAlbumDto.Title;
-        musicAlbum.CoverURL = updateMusicAlbumDto.CoverURL;
-        musicAlbum.UploadedAt = updateMusicAlbumDto.UploadedAt;
-        musicAlbum.ReleaseDate = updateMusicAlbumDto.ReleaseDate;
-
-        await _context.SaveChangesAsync();
         return Ok(musicAlbum);
     }
 
@@ -75,14 +72,13 @@ public class MusicAlbumController : ControllerBase
     [Route("{id:guid}")]
     public async Task<IActionResult> DeleteAlbumById(Guid id)
     {
-        var musicAlbum = await _context.MusicAlbum.FindAsync(id);
+        var musicAlbum = await _musicAlbumRepository.DeleteMusicAlbum(id);
+
         if (musicAlbum is null)
         {
             return NotFound();
         }
 
-        _context.MusicAlbum.Remove(musicAlbum);
-        await _context.SaveChangesAsync();
-        return Ok();
+        return NoContent();
     }
 }

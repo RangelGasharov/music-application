@@ -1,5 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using MusicApplicationWebAPI.Data;
+using MusicApplicationWebAPI.Interfaces;
+using MusicApplicationWebAPI.Repository;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -20,6 +22,8 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
+builder.Services.AddScoped<IMusicAlbumRepository, MusicAlbumRepository>();
 
 var app = builder.Build();
 
