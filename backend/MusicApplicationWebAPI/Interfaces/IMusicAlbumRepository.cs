@@ -10,7 +10,7 @@ namespace MusicApplicationWebAPI.Interfaces
 {
     public interface IMusicAlbumRepository
     {
-        Task<List<MusicAlbum>> GetAllMusicAlbums();
+        Task<List<MusicAlbumDto>> GetAllMusicAlbums();
         Task<MusicAlbumDto?> GetMusicAlbumById(Guid id);
         Task<MusicAlbum> AddMusicAlbum(AddMusicAlbumDto addMusicAlbumDto);
         Task<MusicAlbum?> UpdateMusicAlbum(Guid id, UpdateMusicAlbumDto musicAlbumDto);
