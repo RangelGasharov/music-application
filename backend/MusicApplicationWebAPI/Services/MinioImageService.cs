@@ -56,5 +56,26 @@ namespace MusicApplicationWebAPI.Services
             var objectName = $"cover/album/{albumId}/{albumId}.jpg";
             return $"{minioBaseUrl}/{BucketName}/{objectName}";
         }
+
+        public async Task<Stream?> GetImageStreamAsync(string bucketName, string objectName)
+        {
+            var stream = new MemoryStream();
+            try
+            {
+                var getObjectArgs = new GetObjectArgs()
+                    .WithBucket(bucketName)
+                    .WithObject(objectName)
+                    .WithCallbackStream(s => s.CopyTo(stream));
+
+                await _minioClient.GetObjectAsync(getObjectArgs);
+                stream.Seek(0, SeekOrigin.Begin);
+                return stream;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"[MinIO] Fehler beim Bildabruf: {ex.Message}");
+                return null;
+            }
+        }
     }
 }

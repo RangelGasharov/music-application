@@ -4,6 +4,7 @@ using MusicApplicationWebAPI.Dtos;
 using MusicApplicationWebAPI.Dtos.MusicAlbum;
 using MusicApplicationWebAPI.Interfaces;
 using MusicApplicationWebAPI.Models.Entities;
+using MusicApplicationWebAPI.Services;
 
 namespace MusicApplicationWebAPI.Controllers;
 [ApiController]
@@ -11,10 +12,12 @@ namespace MusicApplicationWebAPI.Controllers;
 public class MusicAlbumController : ControllerBase
 {
     private readonly IMusicAlbumRepository _musicAlbumRepository;
+    private readonly MinioImageService _minioImageService;
 
-    public MusicAlbumController(IMusicAlbumRepository musicAlbumRepository)
+    public MusicAlbumController(IMusicAlbumRepository musicAlbumRepository, MinioImageService minioImageService)
     {
         _musicAlbumRepository = musicAlbumRepository;
+        _minioImageService = minioImageService;
     }
 
     [HttpGet]
@@ -77,5 +80,17 @@ public class MusicAlbumController : ControllerBase
         }
 
         return NoContent();
+    }
+
+    [HttpGet("cover/{albumId}")]
+    public async Task<IActionResult> GetCover(Guid albumId)
+    {
+        var objectName = $"cover/album/{albumId}/{albumId}.jpg";
+        var stream = await _minioImageService.GetImageStreamAsync("music-application", objectName);
+
+        if (stream == null)
+            return NotFound("Bild nicht gefunden.");
+
+        return File(stream, "image/jpeg");
     }
 }
