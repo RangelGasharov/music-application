@@ -1,7 +1,9 @@
 using Microsoft.EntityFrameworkCore;
+using Minio;
 using MusicApplicationWebAPI.Data;
 using MusicApplicationWebAPI.Interfaces;
 using MusicApplicationWebAPI.Repository;
+using MusicApplicationWebAPI.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -19,6 +21,21 @@ builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseNpgsql(connectionString).UseSnakeCaseNamingConvention();
 });
 
+builder.Services.AddSingleton(sp =>
+{
+    var configuration = sp.GetRequiredService<IConfiguration>();
+
+    var baseUrl = Environment.GetEnvironmentVariable("MINIO_BASE_URL") ?? "";
+    var accessKey = Environment.GetEnvironmentVariable("MINIO_ACCESS_KEY");
+    var secretKey = Environment.GetEnvironmentVariable("MINIO_SECRET_KEY");
+
+    return new MinioClient()
+        .WithEndpoint(new Uri(baseUrl).Host, 9002)
+        .WithCredentials(accessKey, secretKey)
+        .WithSSL(baseUrl.StartsWith("https"))
+        .Build();
+});
+
 builder.Services.AddControllers().AddJsonOptions(options =>
     {
         options.JsonSerializerOptions.ReferenceHandler = System.Text.Json.Serialization.ReferenceHandler.IgnoreCycles;
@@ -29,6 +46,8 @@ builder.Services.AddSwaggerGen();
 
 builder.Services.AddScoped<IMusicAlbumRepository, MusicAlbumRepository>();
 builder.Services.AddScoped<IMusicArtistRepository, MusicArtistRepository>();
+
+builder.Services.AddSingleton<MinioImageService>();
 
 var app = builder.Build();
 

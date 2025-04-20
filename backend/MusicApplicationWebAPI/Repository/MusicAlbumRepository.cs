@@ -11,30 +11,18 @@ using MusicApplicationWebAPI.Dtos.MusicAlbum;
 using MusicApplicationWebAPI.Dtos.MusicArtist;
 using MusicApplicationWebAPI.Interfaces;
 using MusicApplicationWebAPI.Models.Entities;
+using MusicApplicationWebAPI.Services;
 
 namespace MusicApplicationWebAPI.Repository
 {
     public class MusicAlbumRepository : IMusicAlbumRepository
     {
         private readonly AppDbContext _context;
-        private readonly string minioBaseUrl;
-        private readonly string minioAccessKey;
-        private readonly string minioSecretKey;
-        private readonly MinioClient _minioClient;
-        public MusicAlbumRepository(AppDbContext dbContext)
+        private readonly MinioImageService _minioImageService;
+        public MusicAlbumRepository(AppDbContext dbContext, MinioImageService minioImageService)
         {
-            DotNetEnv.Env.Load();
-            minioBaseUrl = Environment.GetEnvironmentVariable("MINIO_BASE_URL") ?? "";
-            minioAccessKey = Environment.GetEnvironmentVariable("MINIO_ACCESS_KEY") ?? "";
-            minioSecretKey = Environment.GetEnvironmentVariable("MINIO_SECRET_KEY") ?? "";
-
+            _minioImageService = minioImageService;
             _context = dbContext;
-
-            _minioClient = new MinioClient()
-                .WithEndpoint(new Uri(minioBaseUrl).Host, 9002)
-                .WithCredentials(minioAccessKey, minioSecretKey)
-                .WithSSL(minioBaseUrl.StartsWith("https"))
-                .Build();
         }
 
         public async Task<MusicAlbum> AddMusicAlbum(AddMusicAlbumDto musicAlbumDto)
@@ -50,39 +38,13 @@ namespace MusicApplicationWebAPI.Repository
             await _context.MusicAlbum.AddAsync(musicAlbum);
             await _context.SaveChangesAsync();
 
-            if (musicAlbumDto.CoverImage != null && musicAlbumDto.CoverImage.Length > 0)
+            if (musicAlbumDto.CoverImage != null)
             {
-                string bucketName = "music-application";
-                string objectName = $"cover/album/{musicAlbum.Id}/{musicAlbum.Id}.jpg";
-
-                var bucketExistsArgs = new BucketExistsArgs().WithBucket(bucketName);
-                bool exists = await _minioClient.BucketExistsAsync(bucketExistsArgs);
-                if (!exists)
-                {
-                    var makeBucketArgs = new MakeBucketArgs().WithBucket(bucketName);
-                    await _minioClient.MakeBucketAsync(makeBucketArgs);
-                }
-
-                using var stream = musicAlbumDto.CoverImage.OpenReadStream();
-
-                var putObjectArgs = new PutObjectArgs()
-                    .WithBucket(bucketName)
-                    .WithObject(objectName)
-                    .WithStreamData(stream)
-                    .WithObjectSize(musicAlbumDto.CoverImage.Length)
-                    .WithContentType(musicAlbumDto.CoverImage.ContentType);
-
-                await _minioClient.PutObjectAsync(putObjectArgs);
-
-                musicAlbum.CoverURL = $"{minioBaseUrl}/music-application/{objectName}";
+                var coverUrl = await _minioImageService.UploadAlbumCoverAsync(musicAlbum.Id, musicAlbumDto.CoverImage); // ✳️ geändert
+                musicAlbum.CoverURL = coverUrl;
                 _context.MusicAlbum.Update(musicAlbum);
                 await _context.SaveChangesAsync();
             }
-
-            musicAlbum.CoverURL = $"{minioBaseUrl}/music-application/cover/album/{musicAlbum.Id}/{musicAlbum.Id}.jpg";
-            _context.MusicAlbum.Update(musicAlbum);
-            await _context.SaveChangesAsync();
-
             return musicAlbum;
         }
 
@@ -94,25 +56,11 @@ namespace MusicApplicationWebAPI.Repository
                 return null;
             }
 
-            string bucketName = "music-application";
-            string objectName = $"cover/album/{musicAlbum.Id}/{musicAlbum.Id}.jpg";
-
-            try
-            {
-                var removeObjectArgs = new RemoveObjectArgs()
-                    .WithBucket(bucketName)
-                    .WithObject(objectName);
-
-                await _minioClient.RemoveObjectAsync(removeObjectArgs);
-                Console.WriteLine("Cover-Bild erfolgreich aus MinIO gelöscht.");
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Fehler beim Löschen des Cover-Bildes: {ex.Message}");
-            }
+            await _minioImageService.DeleteAlbumCoverAsync(musicAlbum.Id);
 
             _context.MusicAlbum.Remove(musicAlbum);
             await _context.SaveChangesAsync();
+
             return musicAlbum;
         }
 
@@ -155,38 +103,13 @@ namespace MusicApplicationWebAPI.Repository
         {
             var musicAlbum = await _context.MusicAlbum.FindAsync(id);
             if (musicAlbum is null)
-            {
                 return null;
-            }
 
             if (musicAlbumDto.CoverImage != null)
             {
-                if (!string.IsNullOrEmpty(musicAlbum.CoverURL))
-                {
-                    var oldCoverPath = new Uri(musicAlbum.CoverURL).AbsolutePath;
-                    var oldCoverFileName = Path.GetFileName(oldCoverPath);
-                    var oldCoverObjectName = $"cover/album/{musicAlbum.Id}/{oldCoverFileName}";
-                    try
-                    {
-                        var removeObjectArgs = new RemoveObjectArgs()
-                            .WithBucket("music-application")
-                            .WithObject(oldCoverObjectName);
-
-                        await _minioClient.RemoveObjectAsync(removeObjectArgs);
-                        Console.WriteLine("Altes Cover-Bild erfolgreich aus MinIO gelöscht.");
-                    }
-                    catch (Exception ex)
-                    {
-                        Console.WriteLine($"Fehler beim Löschen des alten Cover-Bildes: {ex.Message}");
-                    }
-                }
-
-                string newCoverFileName = $"{musicAlbum.Id}.jpg";
-                string newCoverURL = $"{minioBaseUrl}/music-application/cover/album/{musicAlbum.Id}/{newCoverFileName}";
-
-                await UploadCoverImage(musicAlbumDto.CoverImage, musicAlbum.Id);
-
-                musicAlbum.CoverURL = newCoverURL;
+                await _minioImageService.DeleteAlbumCoverAsync(musicAlbum.Id);
+                var newCoverUrl = await _minioImageService.UploadAlbumCoverAsync(musicAlbum.Id, musicAlbumDto.CoverImage); // ✳️ geändert
+                musicAlbum.CoverURL = newCoverUrl;
             }
 
             musicAlbum.Title = musicAlbumDto.Title;
@@ -194,22 +117,6 @@ namespace MusicApplicationWebAPI.Repository
 
             await _context.SaveChangesAsync();
             return musicAlbum;
-        }
-
-        private async Task UploadCoverImage(IFormFile coverImage, Guid albumId)
-        {
-            var bucketName = "music-application";
-            var objectName = $"cover/album/{albumId}/{albumId}.jpg";
-            using var stream = coverImage.OpenReadStream();
-            var putObjectArgs = new PutObjectArgs()
-                .WithBucket(bucketName)
-                .WithObject(objectName)
-                .WithStreamData(stream)
-                .WithObjectSize(coverImage.Length)
-                .WithContentType("image/jpeg");
-
-            await _minioClient.PutObjectAsync(putObjectArgs);
-            Console.WriteLine("Neues Cover-Bild erfolgreich in MinIO hochgeladen.");
         }
     }
 }
