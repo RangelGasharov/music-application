@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using MusicApplicationWebAPI.Dtos;
 using MusicApplicationWebAPI.Dtos.MusicAlbum;
 using MusicApplicationWebAPI.Interfaces;
 using MusicApplicationWebAPI.Models.Entities;
@@ -39,16 +40,15 @@ public class MusicAlbumController : ControllerBase
     [HttpPost]
     public async Task<IActionResult> AddMusicAlbum(AddMusicAlbumDto addMusicAlbumDto)
     {
-        var musicAlbumEntity = new MusicAlbum()
+        var musicAlbumDto = new AddMusicAlbumDto()
         {
             Title = addMusicAlbumDto.Title,
-            CoverURL = addMusicAlbumDto.CoverURL,
-            UploadedAt = addMusicAlbumDto.UploadedAt,
-            ReleaseDate = addMusicAlbumDto.ReleaseDate
+            ReleaseDate = addMusicAlbumDto.ReleaseDate,
+            CoverImage = addMusicAlbumDto.CoverImage
         };
 
-        await _musicAlbumRepository.AddMusicAlbum(musicAlbumEntity);
-        return Ok(musicAlbumEntity);
+        var musicAlbum = await _musicAlbumRepository.AddMusicAlbum(musicAlbumDto);
+        return Ok(musicAlbum);
     }
 
     [HttpPut]

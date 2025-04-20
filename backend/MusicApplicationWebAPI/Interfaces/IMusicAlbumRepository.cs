@@ -12,7 +12,7 @@ namespace MusicApplicationWebAPI.Interfaces
     {
         Task<List<MusicAlbum>> GetAllMusicAlbums();
         Task<MusicAlbumDto?> GetMusicAlbumById(Guid id);
-        Task<MusicAlbum> AddMusicAlbum(MusicAlbum musicAlbum);
+        Task<MusicAlbum> AddMusicAlbum(AddMusicAlbumDto addMusicAlbumDto);
         Task<MusicAlbum?> UpdateMusicAlbum(Guid id, UpdateMusicAlbumDto musicAlbumDto);
         Task<MusicAlbum?> DeleteMusicAlbum(Guid id);
     }
