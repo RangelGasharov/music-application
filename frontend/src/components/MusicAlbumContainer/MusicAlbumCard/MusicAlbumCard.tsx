@@ -1,4 +1,3 @@
-"use client"
 import { MusicAlbumWithImageType } from '@/types/MusicAlbum';
 import Image from 'next/image';
 import React from 'react';
@@ -14,7 +13,7 @@ export default function MusicAlbumCard({ musicAlbum }: MusicAlbumCardType) {
         <div className={styles["main-container"]}>
             <Image
                 quality={50}
-                src={musicAlbum.imageUrl}
+                src={musicAlbum.cover_url}
                 alt={musicAlbum.title}
                 width={200}
                 height={200}

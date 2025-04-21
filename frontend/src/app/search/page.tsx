@@ -1,30 +1,15 @@
 import React from 'react'
-import { MusicAlbumType, MusicAlbumWithImageType } from '@/types/MusicAlbum';
+import { MusicAlbumWithImageType } from '@/types/MusicAlbum';
 import MusicAlbumContainer from '@/components/MusicAlbumContainer/MusicAlbumContainer';
 
-async function getMusicAlbumsWithImages(): Promise<MusicAlbumWithImageType[]> {
+async function getMusicAlbums(): Promise<MusicAlbumWithImageType[]> {
     const res = await fetch(`${process.env.WEB_API_URL}/music-album`);
     const musicAlbum = await res.json();
-
-    const withImages = await Promise.all(
-        musicAlbum.map(async (musicAlbum: MusicAlbumType) => {
-            const imageRes = await fetch(`${process.env.WEB_API_URL}/music-album/cover/${musicAlbum.id}`);
-            const buffer = await imageRes.arrayBuffer();
-            const base64 = Buffer.from(buffer).toString('base64');
-            const imageUrl = `data:image/jpeg;base64,${base64}`;
-
-            return {
-                ...musicAlbum,
-                imageUrl,
-            };
-        })
-    );
-
-    return withImages;
+    return musicAlbum;
 }
 
 export default async function SearchPage() {
-    const musicAlbums: MusicAlbumWithImageType[] = await getMusicAlbumsWithImages();
+    const musicAlbums: MusicAlbumWithImageType[] = await getMusicAlbums();
 
     return (
         <div>

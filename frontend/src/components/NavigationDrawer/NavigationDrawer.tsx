@@ -42,7 +42,7 @@ export default function NavigationDrawer() {
 
     return (
         <Box>
-            <Button onClick={toggleDrawer}>
+            <Button disableRipple onClick={toggleDrawer}>
                 <ListIcon className={styles["drawer-menu-icon"]} sx={{ background: "inherit", fontSize: "1.75rem" }} />
             </Button>
             <Drawer open={open} onClose={toggleDrawer}>
