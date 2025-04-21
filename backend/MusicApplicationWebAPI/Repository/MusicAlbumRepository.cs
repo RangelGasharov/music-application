@@ -66,19 +66,19 @@ namespace MusicApplicationWebAPI.Repository
 
         public async Task<List<MusicAlbumDto>> GetAllMusicAlbums()
         {
-            var albums = await _context.MusicAlbum
-            .Include(album => album.MusicArtistAlbums)
+            var musicAlbums = await _context.MusicAlbum
+            .Include(music_album => music_album.MusicArtistAlbums)
             .ThenInclude(music_artist_album => music_artist_album.MusicArtist)
             .ToListAsync();
 
-            return [.. albums.Select(album => new MusicAlbumDto
+            return [.. musicAlbums.Select(music_album => new MusicAlbumDto
             {
-                Id = album.Id,
-                Title = album.Title,
-                CoverURL = album.CoverURL,
-                UploadedAt = album.UploadedAt,
-                ReleaseDate = album.ReleaseDate,
-                MusicArtists = [.. album.MusicArtistAlbums
+                Id = music_album.Id,
+                Title = music_album.Title,
+                CoverURL = music_album.CoverURL,
+                UploadedAt = music_album.UploadedAt,
+                ReleaseDate = music_album.ReleaseDate,
+                MusicArtists = [.. music_album.MusicArtistAlbums
                     .Select(music_artist_album => new MusicArtistShortFormDto
                     {
                         Id = music_artist_album.MusicArtist.Id,

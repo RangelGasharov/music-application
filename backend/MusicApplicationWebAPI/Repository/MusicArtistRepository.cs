@@ -39,9 +39,31 @@ namespace MusicApplicationWebAPI.Repository
             return musicArtist;
         }
 
-        public async Task<List<MusicArtist>> GetAllMusicArtists()
+        public async Task<List<MusicArtistDto>> GetAllMusicArtists()
         {
-            return await _context.MusicArtist.ToListAsync();
+            var musicArtists = await _context.MusicArtist
+            .Include(music_artist => music_artist.MusicArtistAlbums)
+            .ThenInclude(music_artist_album => music_artist_album.MusicAlbum)
+            .ToListAsync();
+
+            return [.. musicArtists.Select(music_artist => new MusicArtistDto
+            {
+                Id = music_artist.Id,
+                Name = music_artist.Name,
+                Description = music_artist.Description,
+                FirstName = music_artist.FirstName,
+                LastName = music_artist.LastName,
+                BirthDate= music_artist.BirthDate,
+                MusicAlbums = [.. music_artist.MusicArtistAlbums
+                    .Select(music_artist_album => new MusicAlbumShortFormDto
+                    {
+                        Id = music_artist_album.MusicAlbum.Id,
+                        Title = music_artist_album.MusicAlbum.Title,
+                        CoverURL =  music_artist_album.MusicAlbum.CoverURL,
+                        UploadedAt = music_artist_album.MusicAlbum.UploadedAt,
+                        ReleaseDate = music_artist_album.MusicAlbum.ReleaseDate
+                    })]
+            })];
         }
 
         public async Task<MusicArtistDto?> GetMusicArtistById(Guid id)
