@@ -1,6 +1,13 @@
-namespace MusicApplicationWebAPI.Models.Entities
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using MusicApplicationWebAPI.Dtos.MusicArtist;
+using MusicApplicationWebAPI.Models.Entities;
+
+namespace MusicApplicationWebAPI.Dtos.MusicTrack
 {
-    public class MusicTrack
+    public class MusicTrackDto
     {
         public Guid Id { get; set; }
         public required string Title { get; set; }
@@ -10,7 +17,6 @@ namespace MusicApplicationWebAPI.Models.Entities
         public required DateTime UploadedAt { get; set; }
         public required string CoverURL { get; set; }
         public required TimeSpan Duration { get; set; }
-        public ICollection<MusicArtistTrack> MusicArtistTrack { get; set; } = [];
-        public ICollection<MusicGenreTrack> MusicGenreTrack { get; set; } = [];
+        public List<MusicArtistShortFormDto> MusicArtists { get; set; } = [];
     }
 }

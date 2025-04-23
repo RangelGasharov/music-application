@@ -18,8 +18,8 @@ namespace MusicApplicationWebAPI.Repository
     public class MusicAlbumRepository : IMusicAlbumRepository
     {
         private readonly AppDbContext _context;
-        private readonly MinioImageService _minioImageService;
-        public MusicAlbumRepository(AppDbContext dbContext, MinioImageService minioImageService)
+        private readonly MinioFileService _minioImageService;
+        public MusicAlbumRepository(AppDbContext dbContext, MinioFileService minioImageService)
         {
             _minioImageService = minioImageService;
             _context = dbContext;

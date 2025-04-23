@@ -6,7 +6,7 @@ using Minio;
 
 namespace MusicApplicationWebAPI.Services
 {
-    public class MinioImageService
+    public class MinioFileService
     {
 
         private readonly MinioClient _minioClient;
@@ -15,7 +15,7 @@ namespace MusicApplicationWebAPI.Services
         private readonly string minioAccessKey;
         private readonly string minioSecretKey;
 
-        public MinioImageService(MinioClient minioClient)
+        public MinioFileService(MinioClient minioClient)
         {
             _minioClient = minioClient;
             DotNetEnv.Env.Load();
@@ -76,6 +76,24 @@ namespace MusicApplicationWebAPI.Services
                 Console.WriteLine($"[MinIO] Fehler beim Bildabruf: {ex.Message}");
                 return null;
             }
+        }
+
+        public async Task<string> UploadAudioFileAsync(Guid trackId, IFormFile audioFile)
+        {
+            var extension = Path.GetExtension(audioFile.FileName);
+            var objectName = $"audio/track/{trackId}/{trackId}{extension}";
+
+            using var stream = audioFile.OpenReadStream();
+            var putObjectArgs = new PutObjectArgs()
+                .WithBucket(BucketName)
+                .WithObject(objectName)
+                .WithStreamData(stream)
+                .WithObjectSize(audioFile.Length)
+                .WithContentType(audioFile.ContentType);
+
+            await _minioClient.PutObjectAsync(putObjectArgs);
+
+            return $"{minioBaseUrl}/{BucketName}/{objectName}";
         }
     }
 }

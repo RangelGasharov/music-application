@@ -12,12 +12,12 @@ namespace MusicApplicationWebAPI.Controllers;
 public class MusicAlbumController : ControllerBase
 {
     private readonly IMusicAlbumRepository _musicAlbumRepository;
-    private readonly MinioImageService _minioImageService;
+    private readonly MinioFileService _minioFileService;
 
-    public MusicAlbumController(IMusicAlbumRepository musicAlbumRepository, MinioImageService minioImageService)
+    public MusicAlbumController(IMusicAlbumRepository musicAlbumRepository, MinioFileService minioFileService)
     {
         _musicAlbumRepository = musicAlbumRepository;
-        _minioImageService = minioImageService;
+        _minioFileService = minioFileService;
     }
 
     [HttpGet]
@@ -86,7 +86,7 @@ public class MusicAlbumController : ControllerBase
     public async Task<IActionResult> GetCover(Guid albumId)
     {
         var objectName = $"cover/album/{albumId}/{albumId}.jpg";
-        var stream = await _minioImageService.GetImageStreamAsync("music-application", objectName);
+        var stream = await _minioFileService.GetImageStreamAsync("music-application", objectName);
 
         if (stream == null)
             return NotFound("Bild nicht gefunden.");

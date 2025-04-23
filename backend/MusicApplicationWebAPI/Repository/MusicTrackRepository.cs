@@ -1,0 +1,120 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
+using MusicApplicationWebAPI.Data;
+using MusicApplicationWebAPI.Dtos.MusicAlbum;
+using MusicApplicationWebAPI.Dtos.MusicArtist;
+using MusicApplicationWebAPI.Dtos.MusicTrack;
+using MusicApplicationWebAPI.Interfaces;
+using MusicApplicationWebAPI.Models.Entities;
+using MusicApplicationWebAPI.Services;
+using NAudio.Wave;
+
+namespace MusicApplicationWebAPI.Repository
+{
+    public class MusicTrackRepository : IMusicTrackRepository
+    {
+        private readonly AppDbContext _context;
+        private readonly MinioFileService _minioFileService;
+
+        public MusicTrackRepository(AppDbContext dbContext, MinioFileService minioFileService)
+        {
+            _minioFileService = minioFileService;
+            _context = dbContext;
+        }
+        public async Task<List<MusicTrackDto>> GetAllMusicTracks()
+        {
+            var musicTracks = await _context.MusicTrack
+            .Include(music_track => music_track.MusicArtistTrack)
+             .ThenInclude(music_artist_track => music_artist_track.MusicArtist)
+             .ToListAsync();
+
+            return [.. musicTracks.Select(music_track => new MusicTrackDto
+            {
+                Id = music_track.Id,
+                Title = music_track.Title,
+                CoverURL = music_track.CoverURL,
+                UploadedAt = music_track.UploadedAt,
+                ReleaseDate = music_track.ReleaseDate,
+                FilePath = music_track.FilePath,
+                IsExplicit = music_track.IsExplicit,
+                Duration = music_track.Duration,
+                MusicArtists = [.. music_track.MusicArtistTrack
+                    .Select(music_artist_track => new MusicArtistShortFormDto
+                    {
+                        Id = music_artist_track.MusicArtist.Id,
+                        Name = music_artist_track.MusicArtist.Name
+                    })]
+            })];
+        }
+
+        public async Task<MusicTrack> AddMusicTrack(AddMusicTrackDto addMusicTrackDto)
+        {
+            var trackId = Guid.NewGuid();
+
+            var musicTrack = new MusicTrack
+            {
+                Title = addMusicTrackDto.Title,
+                IsExplicit = addMusicTrackDto.IsExplicit,
+                ReleaseDate = DateTime.SpecifyKind(addMusicTrackDto.ReleaseDate, DateTimeKind.Utc),
+                CoverURL = "",
+                FilePath = "",
+                UploadedAt = DateTime.UtcNow,
+                Duration = TimeSpan.Zero
+            };
+
+            if (addMusicTrackDto.AudioFile != null)
+            {
+                var audioUrl = await _minioFileService.UploadAudioFileAsync(trackId, addMusicTrackDto.AudioFile);
+                musicTrack.FilePath = audioUrl;
+
+                var duration = await GetAudioDurationAsync(addMusicTrackDto.AudioFile);
+                musicTrack.Duration = duration;
+            }
+
+            if (addMusicTrackDto.CoverImage != null)
+            {
+                var coverUrl = await _minioFileService.UploadAlbumCoverAsync(trackId, addMusicTrackDto.CoverImage);
+                musicTrack.CoverURL = coverUrl;
+            }
+
+            await _context.MusicTrack.AddAsync(musicTrack);
+            await _context.SaveChangesAsync();
+
+            return musicTrack;
+        }
+
+        public async Task<TimeSpan> GetAudioDurationAsync(IFormFile file)
+        {
+            await using var stream = file.OpenReadStream();
+
+            try
+            {
+                using var reader = new Mp3FileReader(stream);
+                return reader.TotalTime;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Fehler beim Auslesen der Audiodauer: {ex.Message}");
+                return TimeSpan.Zero;
+            }
+        }
+
+        public Task<MusicTrack?> DeleteMusicTrack(Guid id)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<MusicTrackDto?> GetMusicTrackById(Guid id)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<MusicTrack?> UpdateMusicTrack(Guid id, UpdateMusicTrackDto updateMusicTrackDto)
+        {
+            throw new NotImplementedException();
+        }
+    }
+}

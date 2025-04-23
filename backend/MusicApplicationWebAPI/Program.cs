@@ -48,8 +48,9 @@ builder.Services.AddSwaggerGen();
 
 builder.Services.AddScoped<IMusicAlbumRepository, MusicAlbumRepository>();
 builder.Services.AddScoped<IMusicArtistRepository, MusicArtistRepository>();
+builder.Services.AddScoped<IMusicTrackRepository, MusicTrackRepository>();
 
-builder.Services.AddSingleton<MinioImageService>();
+builder.Services.AddSingleton<MinioFileService>();
 
 var app = builder.Build();
 
