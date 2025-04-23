@@ -35,16 +35,28 @@ public class MusicTrackController : ControllerBase
     [HttpPost]
     public async Task<IActionResult> AddMusicTrack(AddMusicTrackDto addMusicTrackDto)
     {
-        var musicTrackDto = new AddMusicTrackDto()
-        {
-            Title = addMusicTrackDto.Title,
-            IsExplicit = addMusicTrackDto.IsExplicit,
-            ReleaseDate = addMusicTrackDto.ReleaseDate,
-            CoverImage = addMusicTrackDto.CoverImage,
-            AudioFile = addMusicTrackDto.AudioFile
-        };
-
         var musicTrack = await _musicTrackRepository.AddMusicTrack(addMusicTrackDto);
         return Ok(musicTrack);
+    }
+
+    [HttpPut("{trackId}")]
+    public async Task<IActionResult> UpdateMusicTrack(Guid trackId, [FromForm] UpdateMusicTrackDto updateMusicTrackDto)
+    {
+        var updated = await _musicTrackRepository.UpdateMusicTrack(trackId, updateMusicTrackDto);
+        return updated is not null ? Ok(updated) : NotFound();
+    }
+
+    [HttpDelete]
+    [Route("{id:guid}")]
+    public async Task<IActionResult> DeleteMusicTrackById(Guid id)
+    {
+        var musicTrack = await _musicTrackRepository.DeleteMusicTrack(id);
+
+        if (musicTrack is null)
+        {
+            return NotFound();
+        }
+
+        return NoContent();
     }
 }

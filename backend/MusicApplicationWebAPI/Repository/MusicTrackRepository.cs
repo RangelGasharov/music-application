@@ -56,6 +56,7 @@ namespace MusicApplicationWebAPI.Repository
 
             var musicTrack = new MusicTrack
             {
+                Id = trackId,
                 Title = addMusicTrackDto.Title,
                 IsExplicit = addMusicTrackDto.IsExplicit,
                 ReleaseDate = DateTime.SpecifyKind(addMusicTrackDto.ReleaseDate, DateTimeKind.Utc),
@@ -76,7 +77,7 @@ namespace MusicApplicationWebAPI.Repository
 
             if (addMusicTrackDto.CoverImage != null)
             {
-                var coverUrl = await _minioFileService.UploadAlbumCoverAsync(trackId, addMusicTrackDto.CoverImage);
+                var coverUrl = await _minioFileService.UploadMusicTrackCoverAsync(trackId, addMusicTrackDto.CoverImage);
                 musicTrack.CoverURL = coverUrl;
             }
 
@@ -102,17 +103,58 @@ namespace MusicApplicationWebAPI.Repository
             }
         }
 
-        public Task<MusicTrack?> DeleteMusicTrack(Guid id)
+        public async Task<MusicTrack?> UpdateMusicTrack(Guid musicTrackId, UpdateMusicTrackDto updateMusicTrackDto)
         {
-            throw new NotImplementedException();
+            var musicTrack = await _context.MusicTrack.FindAsync(musicTrackId);
+            if (musicTrack == null)
+                return null;
+
+            if (!string.IsNullOrWhiteSpace(updateMusicTrackDto.Title))
+                musicTrack.Title = updateMusicTrackDto.Title;
+
+            if (updateMusicTrackDto.ReleaseDate.HasValue)
+                musicTrack.ReleaseDate = updateMusicTrackDto.ReleaseDate.Value;
+
+            if (updateMusicTrackDto.IsExplicit.HasValue)
+                musicTrack.IsExplicit = updateMusicTrackDto.IsExplicit.Value;
+
+            if (updateMusicTrackDto.AudioFile != null)
+            {
+                await _minioFileService.DeleteMusicTrackAudioAsync(musicTrackId);
+                var audioUrl = await _minioFileService.UploadAudioFileAsync(musicTrackId, updateMusicTrackDto.AudioFile);
+                musicTrack.FilePath = audioUrl;
+                musicTrack.Duration = await GetAudioDurationAsync(updateMusicTrackDto.AudioFile);
+            }
+
+            if (updateMusicTrackDto.CoverImage != null)
+            {
+                await _minioFileService.DeleteMusicTrackCoverAsync(musicTrackId);
+                var coverUrl = await _minioFileService.UploadMusicTrackCoverAsync(musicTrackId, updateMusicTrackDto.CoverImage);
+                musicTrack.CoverURL = coverUrl;
+            }
+
+            await _context.SaveChangesAsync();
+            return musicTrack;
+        }
+
+        public async Task<MusicTrack?> DeleteMusicTrack(Guid id)
+        {
+            var musicTrack = await _context.MusicTrack.FindAsync(id);
+            if (musicTrack is null)
+            {
+                return null;
+            }
+
+            await _minioFileService.DeleteMusicTrackAudioAsync(musicTrack.Id);
+            await _minioFileService.DeleteMusicTrackCoverAsync(musicTrack.Id);
+
+            _context.MusicTrack.Remove(musicTrack);
+            await _context.SaveChangesAsync();
+
+            return musicTrack;
         }
 
         public Task<MusicTrackDto?> GetMusicTrackById(Guid id)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<MusicTrack?> UpdateMusicTrack(Guid id, UpdateMusicTrackDto updateMusicTrackDto)
         {
             throw new NotImplementedException();
         }

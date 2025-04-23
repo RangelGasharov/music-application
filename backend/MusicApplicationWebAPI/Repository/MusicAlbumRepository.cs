@@ -40,7 +40,7 @@ namespace MusicApplicationWebAPI.Repository
 
             if (musicAlbumDto.CoverImage != null)
             {
-                var coverUrl = await _minioImageService.UploadAlbumCoverAsync(musicAlbum.Id, musicAlbumDto.CoverImage); // ✳️ geändert
+                var coverUrl = await _minioImageService.UploadMusicAlbumCoverAsync(musicAlbum.Id, musicAlbumDto.CoverImage); // ✳️ geändert
                 musicAlbum.CoverURL = coverUrl;
                 _context.MusicAlbum.Update(musicAlbum);
                 await _context.SaveChangesAsync();
@@ -56,7 +56,7 @@ namespace MusicApplicationWebAPI.Repository
                 return null;
             }
 
-            await _minioImageService.DeleteAlbumCoverAsync(musicAlbum.Id);
+            await _minioImageService.DeleteMusicAlbumCoverAsync(musicAlbum.Id);
 
             _context.MusicAlbum.Remove(musicAlbum);
             await _context.SaveChangesAsync();
@@ -125,8 +125,8 @@ namespace MusicApplicationWebAPI.Repository
 
             if (musicAlbumDto.CoverImage != null)
             {
-                await _minioImageService.DeleteAlbumCoverAsync(musicAlbum.Id);
-                var newCoverUrl = await _minioImageService.UploadAlbumCoverAsync(musicAlbum.Id, musicAlbumDto.CoverImage); // ✳️ geändert
+                await _minioImageService.DeleteMusicAlbumCoverAsync(musicAlbum.Id);
+                var newCoverUrl = await _minioImageService.UploadMusicAlbumCoverAsync(musicAlbum.Id, musicAlbumDto.CoverImage); // ✳️ geändert
                 musicAlbum.CoverURL = newCoverUrl;
             }
 

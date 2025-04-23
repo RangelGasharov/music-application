@@ -24,7 +24,7 @@ namespace MusicApplicationWebAPI.Services
             minioSecretKey = Environment.GetEnvironmentVariable("MINIO_SECRET_KEY") ?? "";
         }
 
-        public async Task<string> UploadAlbumCoverAsync(Guid albumId, IFormFile image)
+        public async Task<string> UploadMusicAlbumCoverAsync(Guid albumId, IFormFile image)
         {
             var objectName = $"cover/album/{albumId}/{albumId}.jpg";
 
@@ -41,7 +41,24 @@ namespace MusicApplicationWebAPI.Services
             return $"{minioBaseUrl}/{BucketName}/{objectName}";
         }
 
-        public async Task DeleteAlbumCoverAsync(Guid albumId)
+        public async Task<string> UploadMusicTrackCoverAsync(Guid trackId, IFormFile image)
+        {
+            var objectName = $"cover/track/{trackId}/{trackId}.jpg";
+
+            using var stream = image.OpenReadStream();
+            var putObjectArgs = new PutObjectArgs()
+                .WithBucket(BucketName)
+                .WithObject(objectName)
+                .WithStreamData(stream)
+                .WithObjectSize(image.Length)
+                .WithContentType("image/jpeg");
+
+            await _minioClient.PutObjectAsync(putObjectArgs);
+
+            return $"{minioBaseUrl}/{BucketName}/{objectName}";
+        }
+
+        public async Task DeleteMusicAlbumCoverAsync(Guid albumId)
         {
             var objectName = $"cover/album/{albumId}/{albumId}.jpg";
 
@@ -94,6 +111,26 @@ namespace MusicApplicationWebAPI.Services
             await _minioClient.PutObjectAsync(putObjectArgs);
 
             return $"{minioBaseUrl}/{BucketName}/{objectName}";
+        }
+
+        public async Task DeleteMusicTrackAudioAsync(Guid trackId)
+        {
+            var objectName = $"audio/track/{trackId}/{trackId}.mp3";
+            var removeArgs = new RemoveObjectArgs()
+                .WithBucket("music-application")
+                .WithObject(objectName);
+            await _minioClient.RemoveObjectAsync(removeArgs);
+        }
+
+        public async Task DeleteMusicTrackCoverAsync(Guid trackId)
+        {
+            var objectName = $"cover/track/{trackId}/{trackId}.jpg";
+
+            var removeObjectArgs = new RemoveObjectArgs()
+                .WithBucket(BucketName)
+                .WithObject(objectName);
+
+            await _minioClient.RemoveObjectAsync(removeObjectArgs);
         }
     }
 }

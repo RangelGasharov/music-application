@@ -70,7 +70,7 @@ public class MusicAlbumController : ControllerBase
 
     [HttpDelete]
     [Route("{id:guid}")]
-    public async Task<IActionResult> DeleteAlbumById(Guid id)
+    public async Task<IActionResult> DeleteMusicAlbumById(Guid id)
     {
         var musicAlbum = await _musicAlbumRepository.DeleteMusicAlbum(id);
 
