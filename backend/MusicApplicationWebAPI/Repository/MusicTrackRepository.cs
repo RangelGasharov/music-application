@@ -28,8 +28,8 @@ namespace MusicApplicationWebAPI.Repository
         {
             var musicTracks = await _context.MusicTrack
             .Include(music_track => music_track.MusicArtistTrack)
-             .ThenInclude(music_artist_track => music_artist_track.MusicArtist)
-             .ToListAsync();
+            .ThenInclude(music_artist_track => music_artist_track.MusicArtist)
+            .ToListAsync();
 
             return [.. musicTracks.Select(music_track => new MusicTrackDto
             {
@@ -48,6 +48,37 @@ namespace MusicApplicationWebAPI.Repository
                         Name = music_artist_track.MusicArtist.Name
                     })]
             })];
+        }
+
+        public async Task<MusicTrackDto?> GetMusicTrackById(Guid id)
+        {
+            var musicTrack = await _context.MusicTrack
+            .Include(music_track => music_track.MusicArtistTrack)
+            .ThenInclude(music_artist_track => music_artist_track.MusicArtist)
+            .FirstOrDefaultAsync(musicTrack => musicTrack.Id == id);
+
+            if (musicTrack == null)
+            {
+                return null;
+            }
+            return new MusicTrackDto
+            {
+                Id = musicTrack.Id,
+                Title = musicTrack.Title,
+                CoverURL = musicTrack.CoverURL,
+                UploadedAt = musicTrack.UploadedAt,
+                ReleaseDate = musicTrack.ReleaseDate,
+                FilePath = musicTrack.FilePath,
+                IsExplicit = musicTrack.IsExplicit,
+                Duration = musicTrack.Duration,
+                MusicArtists = musicTrack.MusicArtistTrack
+                       .Select(music_artist_track => new MusicArtistShortFormDto
+                       {
+                           Id = music_artist_track.MusicArtist.Id,
+                           Name = music_artist_track.MusicArtist.Name
+                       })
+                       .ToList()
+            };
         }
 
         public async Task<MusicTrack> AddMusicTrack(AddMusicTrackDto addMusicTrackDto)
@@ -152,11 +183,6 @@ namespace MusicApplicationWebAPI.Repository
             await _context.SaveChangesAsync();
 
             return musicTrack;
-        }
-
-        public Task<MusicTrackDto?> GetMusicTrackById(Guid id)
-        {
-            throw new NotImplementedException();
         }
     }
 }

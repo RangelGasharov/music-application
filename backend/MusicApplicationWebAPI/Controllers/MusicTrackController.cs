@@ -32,6 +32,13 @@ public class MusicTrackController : ControllerBase
         return Ok(musicTracks);
     }
 
+    [HttpGet("{id:guid}")]
+    public async Task<IActionResult> GetMusicTrackById(Guid id)
+    {
+        var musicTrack = await _musicTrackRepository.GetMusicTrackById(id);
+        return Ok(musicTrack);
+    }
+
     [HttpPost]
     public async Task<IActionResult> AddMusicTrack(AddMusicTrackDto addMusicTrackDto)
     {
@@ -39,10 +46,10 @@ public class MusicTrackController : ControllerBase
         return Ok(musicTrack);
     }
 
-    [HttpPut("{trackId}")]
-    public async Task<IActionResult> UpdateMusicTrack(Guid trackId, [FromForm] UpdateMusicTrackDto updateMusicTrackDto)
+    [HttpPut("{id:guid}")]
+    public async Task<IActionResult> UpdateMusicTrack(Guid id, [FromForm] UpdateMusicTrackDto updateMusicTrackDto)
     {
-        var updated = await _musicTrackRepository.UpdateMusicTrack(trackId, updateMusicTrackDto);
+        var updated = await _musicTrackRepository.UpdateMusicTrack(id, updateMusicTrackDto);
         return updated is not null ? Ok(updated) : NotFound();
     }
 

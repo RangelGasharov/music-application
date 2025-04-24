@@ -82,7 +82,7 @@ public class MusicAlbumController : ControllerBase
         return NoContent();
     }
 
-    [HttpGet("cover/{albumId}")]
+    [HttpGet("cover/{id:guid}")]
     public async Task<IActionResult> GetCover(Guid albumId)
     {
         var objectName = $"cover/album/{albumId}/{albumId}.jpg";
