@@ -5,6 +5,7 @@ namespace MusicApplicationWebAPI.Models.Entities
         public Guid Id { get; set; }
         public Guid MusicTrackId { get; set; }
         public Guid MusicAlbumId { get; set; }
+        public int Order { get; set; }
         public required MusicTrack MusicTrack { get; set; }
         public required MusicAlbum MusicAlbum { get; set; }
     }

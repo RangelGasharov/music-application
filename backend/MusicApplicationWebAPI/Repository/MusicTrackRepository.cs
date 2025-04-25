@@ -102,7 +102,7 @@ namespace MusicApplicationWebAPI.Repository
                 var audioUrl = await _minioFileService.UploadAudioFileAsync(trackId, addMusicTrackDto.AudioFile);
                 musicTrack.FilePath = audioUrl;
 
-                var duration = await GetAudioDurationAsync(addMusicTrackDto.AudioFile);
+                var duration = await _minioFileService.GetAudioDurationAsync(addMusicTrackDto.AudioFile);
                 musicTrack.Duration = duration;
             }
 
@@ -116,22 +116,6 @@ namespace MusicApplicationWebAPI.Repository
             await _context.SaveChangesAsync();
 
             return musicTrack;
-        }
-
-        public async Task<TimeSpan> GetAudioDurationAsync(IFormFile file)
-        {
-            await using var stream = file.OpenReadStream();
-
-            try
-            {
-                using var reader = new Mp3FileReader(stream);
-                return reader.TotalTime;
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Fehler beim Auslesen der Audiodauer: {ex.Message}");
-                return TimeSpan.Zero;
-            }
         }
 
         public async Task<MusicTrack?> UpdateMusicTrack(Guid musicTrackId, UpdateMusicTrackDto updateMusicTrackDto)
@@ -154,7 +138,7 @@ namespace MusicApplicationWebAPI.Repository
                 await _minioFileService.DeleteMusicTrackAudioAsync(musicTrackId);
                 var audioUrl = await _minioFileService.UploadAudioFileAsync(musicTrackId, updateMusicTrackDto.AudioFile);
                 musicTrack.FilePath = audioUrl;
-                musicTrack.Duration = await GetAudioDurationAsync(updateMusicTrackDto.AudioFile);
+                musicTrack.Duration = await _minioFileService.GetAudioDurationAsync(updateMusicTrackDto.AudioFile);
             }
 
             if (updateMusicTrackDto.CoverImage != null)

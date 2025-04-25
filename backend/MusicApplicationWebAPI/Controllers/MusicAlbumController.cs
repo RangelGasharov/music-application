@@ -83,14 +83,27 @@ public class MusicAlbumController : ControllerBase
     }
 
     [HttpGet("cover/{id:guid}")]
-    public async Task<IActionResult> GetCover(Guid albumId)
+    public async Task<IActionResult> GetCover(Guid id)
     {
-        var objectName = $"cover/album/{albumId}/{albumId}.jpg";
+        var objectName = $"cover/album/{id}/{id}.jpg";
         var stream = await _minioFileService.GetImageStreamAsync("music-application", objectName);
 
         if (stream == null)
             return NotFound("Bild nicht gefunden.");
 
         return File(stream, "image/jpeg");
+    }
+
+    [HttpPost("with-tracks")]
+    [Consumes("multipart/form-data")]
+    public async Task<IActionResult> AddMusicAlbumWithTracks([FromForm] AddMusicAlbumWithMusicTracksDto addMusicAlbumWithMusicTracksDto)
+    {
+        if (addMusicAlbumWithMusicTracksDto == null)
+        {
+            return BadRequest("Album-Daten sind ungültig.");
+        }
+
+        var musicAlbum = await _musicAlbumRepository.AddMusicAlbumWithTracks(addMusicAlbumWithMusicTracksDto);
+        return CreatedAtAction(nameof(GetMusicAlbumById), new { id = musicAlbum.Id }, musicAlbum);
     }
 }

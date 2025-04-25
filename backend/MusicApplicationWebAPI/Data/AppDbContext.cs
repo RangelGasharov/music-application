@@ -15,6 +15,7 @@ public class AppDbContext : DbContext
     public DbSet<MusicArtistAlbum> MusicArtistAlbum { get; set; }
     public DbSet<MusicArtistPhoto> MusicArtistPhoto { get; set; }
     public DbSet<MusicTrack> MusicTrack { get; set; }
+    public DbSet<MusicTrackAlbum> MusicTrackAlbum { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

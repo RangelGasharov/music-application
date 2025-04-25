@@ -15,5 +15,6 @@ namespace MusicApplicationWebAPI.Interfaces
         Task<MusicAlbum> AddMusicAlbum(AddMusicAlbumDto addMusicAlbumDto);
         Task<MusicAlbum?> UpdateMusicAlbum(Guid id, UpdateMusicAlbumDto musicAlbumDto);
         Task<MusicAlbum?> DeleteMusicAlbum(Guid id);
+        Task<MusicAlbum> AddMusicAlbumWithTracks(AddMusicAlbumWithMusicTracksDto dto);
     }
 }

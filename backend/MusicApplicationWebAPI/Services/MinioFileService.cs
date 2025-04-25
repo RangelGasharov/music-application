@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Minio;
+using NAudio.Wave;
 
 namespace MusicApplicationWebAPI.Services
 {
@@ -131,6 +132,22 @@ namespace MusicApplicationWebAPI.Services
                 .WithObject(objectName);
 
             await _minioClient.RemoveObjectAsync(removeObjectArgs);
+        }
+
+        public async Task<TimeSpan> GetAudioDurationAsync(IFormFile file)
+        {
+            await using var stream = file.OpenReadStream();
+
+            try
+            {
+                using var reader = new Mp3FileReader(stream);
+                return reader.TotalTime;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Fehler beim Auslesen der Audiodauer: {ex.Message}");
+                return TimeSpan.Zero;
+            }
         }
     }
 }

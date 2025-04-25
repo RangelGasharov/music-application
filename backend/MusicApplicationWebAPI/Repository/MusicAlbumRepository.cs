@@ -18,10 +18,10 @@ namespace MusicApplicationWebAPI.Repository
     public class MusicAlbumRepository : IMusicAlbumRepository
     {
         private readonly AppDbContext _context;
-        private readonly MinioFileService _minioImageService;
-        public MusicAlbumRepository(AppDbContext dbContext, MinioFileService minioImageService)
+        private readonly MinioFileService _minioFileService;
+        public MusicAlbumRepository(AppDbContext dbContext, MinioFileService minioFileService)
         {
-            _minioImageService = minioImageService;
+            _minioFileService = minioFileService;
             _context = dbContext;
         }
 
@@ -40,7 +40,7 @@ namespace MusicApplicationWebAPI.Repository
 
             if (musicAlbumDto.CoverImage != null)
             {
-                var coverUrl = await _minioImageService.UploadMusicAlbumCoverAsync(musicAlbum.Id, musicAlbumDto.CoverImage); // ✳️ geändert
+                var coverUrl = await _minioFileService.UploadMusicAlbumCoverAsync(musicAlbum.Id, musicAlbumDto.CoverImage);
                 musicAlbum.CoverURL = coverUrl;
                 _context.MusicAlbum.Update(musicAlbum);
                 await _context.SaveChangesAsync();
@@ -56,7 +56,7 @@ namespace MusicApplicationWebAPI.Repository
                 return null;
             }
 
-            await _minioImageService.DeleteMusicAlbumCoverAsync(musicAlbum.Id);
+            await _minioFileService.DeleteMusicAlbumCoverAsync(musicAlbum.Id);
 
             _context.MusicAlbum.Remove(musicAlbum);
             await _context.SaveChangesAsync();
@@ -125,8 +125,8 @@ namespace MusicApplicationWebAPI.Repository
 
             if (musicAlbumDto.CoverImage != null)
             {
-                await _minioImageService.DeleteMusicAlbumCoverAsync(musicAlbum.Id);
-                var newCoverUrl = await _minioImageService.UploadMusicAlbumCoverAsync(musicAlbum.Id, musicAlbumDto.CoverImage); // ✳️ geändert
+                await _minioFileService.DeleteMusicAlbumCoverAsync(musicAlbum.Id);
+                var newCoverUrl = await _minioFileService.UploadMusicAlbumCoverAsync(musicAlbum.Id, musicAlbumDto.CoverImage);
                 musicAlbum.CoverURL = newCoverUrl;
             }
 
@@ -134,6 +134,72 @@ namespace MusicApplicationWebAPI.Repository
             musicAlbum.ReleaseDate = DateTime.SpecifyKind(musicAlbumDto.ReleaseDate, DateTimeKind.Utc);
 
             await _context.SaveChangesAsync();
+            return musicAlbum;
+        }
+
+        public async Task<MusicAlbum> AddMusicAlbumWithTracks(AddMusicAlbumWithMusicTracksDto dto)
+        {
+            var musicAlbumId = Guid.NewGuid();
+
+            var musicAlbum = new MusicAlbum
+            {
+                Id = musicAlbumId,
+                Title = dto.Title,
+                UploadedAt = DateTime.UtcNow,
+                ReleaseDate = DateTime.SpecifyKind(dto.ReleaseDate, DateTimeKind.Utc),
+                CoverURL = ""
+            };
+
+            await _context.MusicAlbum.AddAsync(musicAlbum);
+            await _context.SaveChangesAsync();
+
+            if (dto.CoverImage != null)
+            {
+                var coverUrl = await _minioFileService.UploadMusicAlbumCoverAsync(musicAlbum.Id, dto.CoverImage);
+                musicAlbum.CoverURL = coverUrl;
+                _context.MusicAlbum.Update(musicAlbum);
+            }
+
+            var musicTracks = dto.MusicTracks.Select(async musicTrackDto =>
+            {
+                var musicTrackId = Guid.NewGuid();
+
+                var duration = await _minioFileService.GetAudioDurationAsync(musicTrackDto.AudioFile);
+                var filePath = await _minioFileService.UploadAudioFileAsync(musicTrackId, musicTrackDto.AudioFile);
+                var coverUrl = musicTrackDto.CoverImage != null
+                    ? await _minioFileService.UploadMusicTrackCoverAsync(musicTrackId, musicTrackDto.CoverImage)
+                    : "";
+
+                var musicTrack = new MusicTrack
+                {
+                    Id = musicTrackId,
+                    Title = musicTrackDto.Title,
+                    ReleaseDate = DateTime.SpecifyKind(musicTrackDto.ReleaseDate, DateTimeKind.Utc),
+                    IsExplicit = musicTrackDto.IsExplicit,
+                    UploadedAt = DateTime.UtcNow,
+                    Duration = duration,
+                    FilePath = filePath,
+                    CoverURL = coverUrl
+                };
+
+                var musicTrackAlbum = new MusicTrackAlbum
+                {
+                    Id = Guid.NewGuid(),
+                    MusicAlbumId = musicAlbum.Id,
+                    MusicTrackId = musicTrackId,
+                    Order = musicTrackDto.Order,
+                    MusicTrack = musicTrack,
+                    MusicAlbum = musicAlbum
+                };
+
+                await _context.MusicTrack.AddAsync(musicTrack);
+                await _context.MusicTrackAlbum.AddAsync(musicTrackAlbum);
+            }).ToList();
+
+            await Task.WhenAll(musicTracks);
+
+            await _context.SaveChangesAsync();
+
             return musicAlbum;
         }
     }
