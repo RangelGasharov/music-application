@@ -18,6 +18,7 @@ export default function MusicAlbumCard({ musicAlbum }: MusicAlbumCardType) {
                 width={200}
                 height={200}
                 className={styles["image"]}
+                priority
             />
             <div className={styles["music-album-info"]}>
                 <div className={styles["music-album-title"]}>{musicAlbum.title}</div>
