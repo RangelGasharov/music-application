@@ -12,8 +12,8 @@ export const datePickerSlots = {
                 },
                 '& .MuiInputLabel-root': {
                     color: 'var(--text-color)',
-                    '&.Mui-focused': {  // Explicit focused state for label
-                        color: 'var(--text-color) !important',
+                    '&.Mui-focused': {
+                        color: 'var(--text-color) !important'
                     },
                 },
                 '& .MuiInputBase-input::placeholder': {
@@ -29,7 +29,7 @@ export const datePickerSlots = {
                     },
                     '&.Mui-focused fieldset': {
                         borderColor: 'var(--text-color)',
-                        borderWidth: '1px',
+                        borderWidth: '2px',
                     },
                     '&.Mui-error:not(.Mui-focused) fieldset': {
                         borderColor: 'var(--text-color) !important',
