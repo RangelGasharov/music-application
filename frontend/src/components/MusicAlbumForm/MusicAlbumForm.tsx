@@ -4,11 +4,12 @@ import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { textFieldSlotProps } from '@/themes/textFieldSlotProps';
 import { datePickerSlotProps, datePickerSlots } from '@/themes/datePickerStyles';
 import SingleImageUploader from '../FileUploaders/SingleImageUploader';
+import styles from "./MusicAlbumForm.module.css";
 
 export default function MusicAlbumForm() {
     return (
         <div>
-            <FormControl>
+            <FormControl className={styles['music-album-container']}>
                 <TextField
                     variant='outlined'
                     label='Title'

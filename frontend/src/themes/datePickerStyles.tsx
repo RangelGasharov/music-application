@@ -7,6 +7,7 @@ export const datePickerSlots = {
             {...params}
             sx={{
                 color: 'var(--text-color)',
+                backgroundColor: "var(--cards-background-color)",
                 '& .MuiOutlinedInput-input': {
                     color: 'var(--text-color)',
                 },

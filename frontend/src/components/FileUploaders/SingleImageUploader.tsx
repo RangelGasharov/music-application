@@ -1,17 +1,28 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import Image from 'next/image';
-import styles from "./SingleImageUploader.module.css";
-import { TextField } from '@mui/material';
-import { textFieldSlotProps } from '@/themes/textFieldSlotProps';
+import styles from './SingleImageUploader.module.css';
 
-const SingleImageUploader: React.FC = () => {
+export default function SingleImageUploader() {
     const [file, setFile] = useState<string | null>(null);
+    const inputRef = useRef<HTMLInputElement>(null);
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const selectedFile = e.target.files?.[0];
         if (selectedFile) {
             const imageUrl = URL.createObjectURL(selectedFile);
             setFile(imageUrl);
+        }
+        e.target.value = '';
+    };
+
+    const handleClick = () => {
+        inputRef.current?.click();
+    };
+
+    const handleRemoveImage = () => {
+        if (file) {
+            URL.revokeObjectURL(file);
+            setFile(null);
         }
     };
 
@@ -24,27 +35,33 @@ const SingleImageUploader: React.FC = () => {
     }, [file]);
 
     return (
-        <div className={styles["main-container"]}>
-            <TextField
+        <div className={styles['main-container']}>
+            <input
                 type="file"
-                inputProps={{ accept: 'image/*' }}
-                slotProps={textFieldSlotProps}
-                onChange={handleChange} />
-            {file && (
-                <div className={styles["image-container"]}>
-                    <div className={styles["image-wrapper"]}>
-                        <Image
-                            src={file}
-                            alt="Bildvorschau"
-                            fill
-                            className={styles["image"]}
-                            sizes="(max-width: 300px) 100vw, 300px"
-                        />
-                    </div>
-                </div>
-            )}
+                accept="image/*"
+                onChange={handleChange}
+                ref={inputRef}
+                style={{ display: 'none' }}
+            />
+            <div className={styles['image-container']} onClick={!file ? handleClick : undefined}>
+                {file ? (
+                    <>
+                        <div className={styles['image-wrapper']}>
+                            <Image
+                                src={file}
+                                alt="Preview"
+                                fill
+                                className={styles['image']}
+                            />
+                        </div>
+                        <button className={styles['close-button']} onClick={handleRemoveImage}>
+                            <p>&#x2716;</p>
+                        </button>
+                    </>
+                ) : (
+                    <span className={styles['placeholder-text']}>Insert your album cover here</span>
+                )}
+            </div>
         </div>
     );
 };
-
-export default SingleImageUploader;

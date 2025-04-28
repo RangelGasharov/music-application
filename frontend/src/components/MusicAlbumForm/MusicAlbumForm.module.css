@@ -1,0 +1,6 @@
+.music-album-container {
+    display: grid;
+    gap: 1rem;
+    width: fit-content;
+    padding: 1rem 0rem;
+}

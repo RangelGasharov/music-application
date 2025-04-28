@@ -1,6 +1,6 @@
 export const textFieldSlotProps = {
     input: {
-        sx: { color: 'var(--text-color)' },
+        sx: { color: 'var(--text-color)', backgroundColor: "var(--cards-background-color)" },
     },
     inputLabel: {
         sx: {
