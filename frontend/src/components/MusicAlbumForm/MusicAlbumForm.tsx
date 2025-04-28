@@ -5,6 +5,7 @@ import { textFieldSlotProps } from '@/themes/textFieldSlotProps';
 import { datePickerSlotProps, datePickerSlots } from '@/themes/datePickerStyles';
 import SingleImageUploader from '../FileUploaders/SingleImageUploader';
 import styles from "./MusicAlbumForm.module.css";
+import MusicTrackForm from './MusicTrackForm/MusicTrackForm';
 
 export default function MusicAlbumForm() {
     return (
@@ -21,7 +22,8 @@ export default function MusicAlbumForm() {
                     slots={datePickerSlots}
                     slotProps={datePickerSlotProps}
                 />
-                <SingleImageUploader />
+                <SingleImageUploader placeHolderText='Insert your album cover here' />
+                <MusicTrackForm />
             </FormControl>
         </div>
     )

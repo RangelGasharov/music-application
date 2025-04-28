@@ -2,7 +2,11 @@ import React, { useState, useEffect, useRef } from 'react';
 import Image from 'next/image';
 import styles from './SingleImageUploader.module.css';
 
-export default function SingleImageUploader() {
+type SingleImageUploaderType = {
+    placeHolderText: string;
+}
+
+export default function SingleImageUploader({ placeHolderText }: SingleImageUploaderType) {
     const [file, setFile] = useState<string | null>(null);
     const inputRef = useRef<HTMLInputElement>(null);
 
@@ -59,7 +63,7 @@ export default function SingleImageUploader() {
                         </button>
                     </>
                 ) : (
-                    <span className={styles['placeholder-text']}>Insert your album cover here</span>
+                    <span className={styles['placeholder-text']}>{placeHolderText}</span>
                 )}
             </div>
         </div>

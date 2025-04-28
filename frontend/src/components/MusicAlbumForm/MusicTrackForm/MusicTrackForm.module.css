@@ -1,0 +1,10 @@
+.music-track-container {
+    display: grid;
+    gap: 1rem 0;
+}
+
+.checkbox-container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
