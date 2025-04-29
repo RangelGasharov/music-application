@@ -3,7 +3,7 @@ import { FormControl, TextField } from '@mui/material';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { textFieldSlotProps } from '@/themes/textFieldSlotProps';
 import { datePickerSlotProps, datePickerSlots } from '@/themes/datePickerStyles';
-import SingleImageUploader from '../FileUploaders/SingleImageUploader';
+import SingleImageUploader from '../FileUploaders/SingleImageUploader/SingleImageUploader';
 import styles from "./MusicAlbumForm.module.css";
 import MusicTrackForm from './MusicTrackForm/MusicTrackForm';
 

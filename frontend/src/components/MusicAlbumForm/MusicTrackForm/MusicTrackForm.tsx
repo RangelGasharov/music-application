@@ -5,8 +5,9 @@ import styles from "./MusicTrackForm.module.css"
 import { textFieldSlotProps } from '@/themes/textFieldSlotProps'
 import { DatePicker } from '@mui/x-date-pickers/DatePicker'
 import { datePickerSlotProps, datePickerSlots } from '@/themes/datePickerStyles'
-import SingleImageUploader from '@/components/FileUploaders/SingleImageUploader'
+import SingleImageUploader from '@/components/FileUploaders/SingleImageUploader/SingleImageUploader'
 import { checkBoxSx } from '@/themes/checkBoxStyles'
+import AudioUploader from '@/components/FileUploaders/AudioUploader/AudioUploader'
 
 export default function MusicTrackForm() {
     const [isExplicit, setIsExplicit] = useState(false);
@@ -39,6 +40,7 @@ export default function MusicTrackForm() {
                     />
                 </div>
                 <SingleImageUploader placeHolderText='Insert your track cover here' />
+                <AudioUploader />
             </FormControl>
         </div>
     )
