@@ -1,13 +1,16 @@
 "use client"
-import { FormControl, TextField } from '@mui/material';
+import { Button, FormControl, TextField } from '@mui/material';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { textFieldSlotProps } from '@/themes/textFieldSlotProps';
 import { datePickerSlotProps, datePickerSlots } from '@/themes/datePickerStyles';
 import SingleImageUploader from '../FileUploaders/SingleImageUploader/SingleImageUploader';
 import styles from "./MusicAlbumForm.module.css";
-import MusicTrackForm from './MusicTrackForm/MusicTrackForm';
+import { useState } from 'react';
+import { MusicTrack, MusicTrackPost } from '@/types/MusicTrack';
+import ButtonClean from '../Buttons/ButtonClean';
 
 export default function MusicAlbumForm() {
+    const [musicTracks, setMusicTracks] = useState<MusicTrackPost[]>([]);
     return (
         <div>
             <FormControl className={styles['music-album-container']}>
@@ -23,7 +26,7 @@ export default function MusicAlbumForm() {
                     slotProps={datePickerSlotProps}
                 />
                 <SingleImageUploader placeHolderText='Insert your album cover here' />
-                <MusicTrackForm />
+                <Button onClick={() => { }}>Add</Button>
             </FormControl>
         </div>
     )

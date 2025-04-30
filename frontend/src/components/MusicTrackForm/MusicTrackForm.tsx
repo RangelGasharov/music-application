@@ -30,14 +30,16 @@ export default function MusicTrackForm() {
                     slots={datePickerSlots}
                     slotProps={datePickerSlotProps}
                 />
-                <div className={styles["checkbox-container"]}>
+                <div className={styles["checkbox-input-container"]}>
                     <div>is explicit?</div>
-                    <Checkbox
-                        disableRipple
-                        checked={isExplicit}
-                        onChange={handleChange}
-                        sx={checkBoxSx}
-                    />
+                    <div className={styles["checkbox-box"]}>
+                        <Checkbox
+                            disableRipple
+                            checked={isExplicit}
+                            onChange={handleChange}
+                            sx={checkBoxSx}
+                        />
+                    </div>
                 </div>
                 <SingleImageUploader placeHolderText='Insert your track cover here' />
                 <AudioUploader />

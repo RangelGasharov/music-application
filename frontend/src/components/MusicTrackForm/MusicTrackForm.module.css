@@ -1,0 +1,19 @@
+.music-track-container {
+    display: grid;
+    gap: 1rem 0;
+}
+
+.checkbox-input-container {
+    display: flex;
+    position: relative;
+    align-items: center;
+    padding: 1rem 1rem;
+    background-color: var(--cards-background-color);
+    border: 1px solid var(--text-color);
+    border-radius: .3rem;
+}
+
+.checkbox-box {
+    position: absolute;
+    right: .1rem;
+}
