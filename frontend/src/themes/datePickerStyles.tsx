@@ -23,7 +23,7 @@ export const datePickerSlots = {
                 },
                 '& .MuiOutlinedInput-root': {
                     '& fieldset': {
-                        borderColor: 'var(--text-color)',
+                        boxShadow: "1px 2px 2px var(--text-shadow)",
                     },
                     '&:hover fieldset': {
                         borderColor: 'var(--text-color)',

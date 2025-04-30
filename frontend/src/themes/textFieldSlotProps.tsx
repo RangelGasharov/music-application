@@ -15,7 +15,7 @@ export const textFieldSlotProps = {
             '& .MuiOutlinedInput-root': {
                 color: 'var(--text-color)',
                 '& fieldset': {
-                    borderColor: 'var(--text-color)',
+                    boxShadow: "1px 2px 3px var(--text-shadow)",
                 },
                 '&:hover fieldset': {
                     borderColor: 'var(--text-color)',

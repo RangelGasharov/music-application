@@ -12,16 +12,16 @@ export type MusicTrack = {
 export type MusicTrackPost = {
     title: string,
     release_date: string,
-    is_explicit: string,
-    cover_image: File,
-    audio_file: File
+    is_explicit: boolean,
+    cover_image?: File,
+    audio_file?: File
 }
 
 export type MusicTrackPut = {
     id: number,
     title: string,
     release_date: string,
-    is_explicit: string,
+    is_explicit: boolean,
     cover_image: File,
     audio_file: File
 }

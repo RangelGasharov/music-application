@@ -11,7 +11,7 @@
     max-width: 300px;
     aspect-ratio: 1 / 1;
     background-color: var(--cards-background-color);
-    border: 1px solid var(--text-color);
+    box-shadow: 1px 2px 3px var(--text-shadow);
     border-radius: .5rem;
     display: flex;
     align-items: center;
@@ -40,7 +40,7 @@
     position: absolute;
     top: .5rem;
     right: .5rem;
-    background: transparent;
+    color: var(--text-color);
     border: none;
     border-radius: 50%;
     font-size: 1rem;
@@ -52,5 +52,6 @@
 }
 
 .close-button:hover {
-    background: var(--cards-background-color);
+    background: var(--text-color);
+    color: var(--cards-background-color);
 }
