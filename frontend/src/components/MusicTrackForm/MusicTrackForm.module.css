@@ -1,5 +1,11 @@
 .music-track-container {
     display: grid;
+    grid-template-columns: repeat(2, 1fr);
+}
+
+.music-track-inputs {
+    display: flex;
+    flex-direction: column;
     gap: 1rem 0;
 }
 

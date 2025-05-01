@@ -8,6 +8,7 @@
 .upload-box {
     width: 100%;
     aspect-ratio: 1 / 1;
+    max-width: 15rem;
     box-shadow: 1px 2px 3px var(--text-shadow);
     border-radius: .5rem;
     background-color: var(--cards-background-color);

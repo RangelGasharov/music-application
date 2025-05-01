@@ -23,27 +23,28 @@ export default function MusicAlbumForm() {
     return (
         <div className={styles["main-container"]}>
             <div className={styles["music-album-container"]}>
-                <TextField
-                    variant="outlined"
-                    label="Title"
-                    slotProps={textFieldSlotProps}
-                />
-                <DatePicker
-                    label="Release date"
-                    enableAccessibleFieldDOMStructure={false}
-                    slots={datePickerSlots}
-                    slotProps={datePickerSlotProps}
-                />
+                <div className={styles["music-album-inputs"]}>
+                    <h1>Album</h1>
+                    <TextField
+                        variant="outlined"
+                        label="Title"
+                        slotProps={textFieldSlotProps}
+                    />
+                    <DatePicker
+                        label="Release date"
+                        enableAccessibleFieldDOMStructure={false}
+                        slots={datePickerSlots}
+                        slotProps={datePickerSlotProps}
+                    />
+                </div>
                 <SingleImageUploader placeHolderText="Insert your album cover here" />
             </div>
             <div className={styles["music-track-container"]}>
-                <div>
-                    {musicTracks.map((musciTrack: MusicTrackPost, index) => {
-                        return (
-                            <MusicTrackForm key={index} />
-                        )
-                    })}
-                </div>
+                {musicTracks.map((musciTrack: MusicTrackPost, index) => {
+                    return (
+                        <MusicTrackForm key={index} />
+                    )
+                })}
                 <Button onClick={addTrack} sx={buttonSx}>Add track</Button>
             </div>
         </div>

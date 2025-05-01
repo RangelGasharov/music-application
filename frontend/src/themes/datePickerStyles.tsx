@@ -6,10 +6,9 @@ export const datePickerSlots = {
         <TextField
             {...params}
             sx={{
-                color: 'var(--text-color)',
-                backgroundColor: "var(--cards-background-color)",
                 '& .MuiOutlinedInput-input': {
                     color: 'var(--text-color)',
+                    backgroundColor: "var(--cards-background-color)",
                 },
                 '& .MuiInputLabel-root': {
                     color: 'var(--text-color)',
@@ -22,6 +21,7 @@ export const datePickerSlots = {
                     opacity: 0.6,
                 },
                 '& .MuiOutlinedInput-root': {
+                    backgroundColor: 'var(--cards-background-color)',
                     '& fieldset': {
                         boxShadow: "1px 2px 2px var(--text-shadow)",
                     },

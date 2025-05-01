@@ -17,8 +17,8 @@ export default function MusicTrackForm() {
     };
 
     return (
-        <div>
-            <FormControl className={styles['music-track-container']}>
+        <div className={styles['music-track-container']}>
+            <div className={styles['music-track-inputs']}>
                 <TextField
                     variant='outlined'
                     label='Title'
@@ -41,9 +41,11 @@ export default function MusicTrackForm() {
                         />
                     </div>
                 </div>
+            </div>
+            <div>
                 <SingleImageUploader placeHolderText='Insert your track cover here' />
                 <AudioUploader />
-            </FormControl>
+            </div>
         </div>
     )
 }
