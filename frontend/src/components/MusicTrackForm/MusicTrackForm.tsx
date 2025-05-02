@@ -47,9 +47,9 @@ export default function MusicTrackForm({ order, musicTrack, onChange }: MusicTra
                             />
                         </div>
                     </div>
-                    <AudioUploader />
+                    <AudioUploader onFileSelected={(file) => onChange({ audio_file: file })} />
                 </div>
-                <SingleImageUploader placeHolderText='Insert your track cover here' />
+                <SingleImageUploader placeHolderText='Insert your track cover here' onFileSelected={(file) => onChange({ cover_image: file })} />
             </div>
         </div>
     )

@@ -12,11 +12,11 @@ export const buttonSx = {
 
 export const errorButtonSx = {
     ...buttonSx,
-    backgroundColor: "error.main",
+    backgroundColor: "error.dark",
     color: "white",
     padding: ".5rem",
     ":hover": {
-        backgroundColor: "error.dark",
+        backgroundColor: "error.main",
         color: "white",
     }
 }
