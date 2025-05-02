@@ -139,68 +139,94 @@ namespace MusicApplicationWebAPI.Repository
 
         public async Task<MusicAlbum> AddMusicAlbumWithTracks(AddMusicAlbumWithMusicTracksDto dto)
         {
-            var musicAlbumId = Guid.NewGuid();
+            using var transaction = await _context.Database.BeginTransactionAsync();
+            var uploadedMinioObjects = new List<string>();
 
-            var musicAlbum = new MusicAlbum
+            try
             {
-                Id = musicAlbumId,
-                Title = dto.Title,
-                UploadedAt = DateTime.UtcNow,
-                ReleaseDate = DateTime.SpecifyKind(dto.ReleaseDate, DateTimeKind.Utc),
-                CoverURL = ""
-            };
+                var musicAlbumId = Guid.NewGuid();
 
-            await _context.MusicAlbum.AddAsync(musicAlbum);
-            await _context.SaveChangesAsync();
-
-            if (dto.CoverImage != null)
-            {
-                var coverUrl = await _minioFileService.UploadMusicAlbumCoverAsync(musicAlbum.Id, dto.CoverImage);
-                musicAlbum.CoverURL = coverUrl;
-                _context.MusicAlbum.Update(musicAlbum);
-            }
-
-            var musicTracks = dto.MusicTracks.Select(async musicTrackDto =>
-            {
-                var musicTrackId = Guid.NewGuid();
-
-                var duration = await _minioFileService.GetAudioDurationAsync(musicTrackDto.AudioFile);
-                var filePath = await _minioFileService.UploadAudioFileAsync(musicTrackId, musicTrackDto.AudioFile);
-                var coverUrl = musicTrackDto.CoverImage != null
-                    ? await _minioFileService.UploadMusicTrackCoverAsync(musicTrackId, musicTrackDto.CoverImage)
-                    : "";
-
-                var musicTrack = new MusicTrack
+                var musicAlbum = new MusicAlbum
                 {
-                    Id = musicTrackId,
-                    Title = musicTrackDto.Title,
-                    ReleaseDate = DateTime.SpecifyKind(musicTrackDto.ReleaseDate, DateTimeKind.Utc),
-                    IsExplicit = musicTrackDto.IsExplicit,
+                    Id = musicAlbumId,
+                    Title = dto.Title,
                     UploadedAt = DateTime.UtcNow,
-                    Duration = duration,
-                    FilePath = filePath,
-                    CoverURL = coverUrl
+                    ReleaseDate = DateTime.SpecifyKind(dto.ReleaseDate, DateTimeKind.Utc),
+                    CoverURL = ""
                 };
 
-                var musicTrackAlbum = new MusicTrackAlbum
+                await _context.MusicAlbum.AddAsync(musicAlbum);
+                await _context.SaveChangesAsync();
+
+                if (dto.CoverImage != null)
                 {
-                    Id = Guid.NewGuid(),
-                    MusicAlbumId = musicAlbum.Id,
-                    MusicTrackId = musicTrackId,
-                    Order = musicTrackDto.Order,
-                    MusicTrack = musicTrack,
-                    MusicAlbum = musicAlbum
-                };
+                    var coverUrl = await _minioFileService.UploadMusicAlbumCoverAsync(musicAlbum.Id, dto.CoverImage);
+                    uploadedMinioObjects.Add(coverUrl);
 
-                await _context.MusicTrack.AddAsync(musicTrack);
-                await _context.MusicTrackAlbum.AddAsync(musicTrackAlbum);
-            }).ToList();
+                    musicAlbum.CoverURL = coverUrl;
+                    _context.MusicAlbum.Update(musicAlbum);
+                    await _context.SaveChangesAsync();
+                }
 
-            await Task.WhenAll(musicTracks);
+                var musicTracks = new List<MusicTrack>();
+                var musicTrackAlbums = new List<MusicTrackAlbum>();
 
-            await _context.SaveChangesAsync();
+                foreach (var musicTrackDto in dto.MusicTracks)
+                {
+                    var musicTrackId = Guid.NewGuid();
 
-            return musicAlbum;
+                    var duration = await _minioFileService.GetAudioDurationAsync(musicTrackDto.AudioFile);
+                    var filePath = await _minioFileService.UploadAudioFileAsync(musicTrackId, musicTrackDto.AudioFile);
+                    uploadedMinioObjects.Add(filePath);
+
+                    string musicTrackCoverUrl;
+                    if (musicTrackDto.CoverImage != null)
+                    {
+                        musicTrackCoverUrl = await _minioFileService.UploadMusicTrackCoverAsync(musicTrackId, musicTrackDto.CoverImage);
+                    }
+                    else
+                    {
+                        musicTrackCoverUrl = musicAlbum.CoverURL;
+                    }
+
+                    var musicTrack = new MusicTrack
+                    {
+                        Id = musicTrackId,
+                        Title = musicTrackDto.Title,
+                        ReleaseDate = DateTime.SpecifyKind(musicTrackDto.ReleaseDate, DateTimeKind.Utc),
+                        IsExplicit = musicTrackDto.IsExplicit,
+                        UploadedAt = DateTime.UtcNow,
+                        Duration = duration,
+                        FilePath = filePath,
+                        CoverURL = musicTrackCoverUrl
+                    };
+
+                    var musicTrackAlbum = new MusicTrackAlbum
+                    {
+                        Id = Guid.NewGuid(),
+                        MusicAlbumId = musicAlbum.Id,
+                        MusicTrackId = musicTrackId,
+                        Order = musicTrackDto.Order
+                    };
+
+                    musicTracks.Add(musicTrack);
+                    musicTrackAlbums.Add(musicTrackAlbum);
+                }
+
+                await _context.MusicTrack.AddRangeAsync(musicTracks);
+                await _context.MusicTrackAlbum.AddRangeAsync(musicTrackAlbums);
+
+                await _context.SaveChangesAsync();
+                await transaction.CommitAsync();
+
+                return musicAlbum;
+            }
+            catch (Exception ex)
+            {
+                await transaction.RollbackAsync();
+                Console.WriteLine($"Error while adding music album and its tracks: {ex.Message}");
+                throw;
+            }
         }
     }
 }
