@@ -6,7 +6,6 @@
 .music-album-container {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
-    gap: 1rem 0rem;
 }
 
 .music-album-inputs {
@@ -15,8 +14,13 @@
     justify-content: space-around;
 }
 
-.music-track-container {
+.music-tracks-container {
     width: 100%;
     display: grid;
-    gap: 1rem 0rem;
+    gap: 3rem 0rem;
+}
+
+.music-track-container {
+    display: grid;
+    gap: 1.5rem 0rem;
 }

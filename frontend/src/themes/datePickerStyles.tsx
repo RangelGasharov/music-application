@@ -24,6 +24,7 @@ export const datePickerSlots = {
                     backgroundColor: 'var(--cards-background-color)',
                     '& fieldset': {
                         boxShadow: "1px 2px 2px var(--text-shadow)",
+                        border: "none"
                     },
                     '&:hover fieldset': {
                         borderColor: 'var(--text-color)',

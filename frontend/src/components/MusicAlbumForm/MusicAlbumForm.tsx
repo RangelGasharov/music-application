@@ -1,5 +1,5 @@
 "use client"
-import { Button, FormControl, TextField } from '@mui/material';
+import { Button, TextField } from '@mui/material';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { textFieldSlotProps } from '@/themes/textFieldSlotProps';
 import { datePickerSlotProps, datePickerSlots } from '@/themes/datePickerStyles';
@@ -7,19 +7,34 @@ import SingleImageUploader from '../FileUploaders/SingleImageUploader/SingleImag
 import styles from "./MusicAlbumForm.module.css";
 import { useState } from 'react';
 import { MusicTrackPost } from '@/types/MusicTrack';
-import { buttonSx } from '@/themes/buttonStyles';
+import { buttonSx, errorButtonSx } from '@/themes/buttonStyles';
 import MusicTrackForm from '../MusicTrackForm/MusicTrackForm';
+import { v4 as uuidv4 } from 'uuid';
 
 export default function MusicAlbumForm() {
-    const [musicTracks, setMusicTracks] = useState<MusicTrackPost[]>([]);
-    const addTrack = () => {
-        const newMusicTrack: MusicTrackPost = {
-            title: "",
-            release_date: "",
-            is_explicit: false
-        }
+    type MusicTrackPostWithTempId = MusicTrackPost & { tempId: string };
+    const [musicTracks, setMusicTracks] = useState<MusicTrackPostWithTempId[]>([]);
+
+    const addMusicTrack = () => {
+        const newMusicTrack: MusicTrackPostWithTempId = {
+            title: "", release_date: "", is_explicit: false, tempId: uuidv4()
+        };
         setMusicTracks([...musicTracks, newMusicTrack]);
-    }
+    };
+
+    const removeMusicTrack = (tempId: string) => {
+        setMusicTracks(prevMusicTracks => {
+            const updatedMusicTracks = prevMusicTracks.filter(musicTrack => musicTrack.tempId !== tempId);
+            return updatedMusicTracks.map((musicTrack, index) => ({ ...musicTrack, order: index + 1 }));
+        });
+    };
+
+    const updateMusicTrack = (tempId: string, updatedFields: Partial<MusicTrackPost>) => {
+        setMusicTracks(prevMusicTracks =>
+            prevMusicTracks.map(musicTrack => musicTrack.tempId === tempId ? { ...musicTrack, ...updatedFields } : musicTrack)
+        );
+    };
+
     return (
         <div className={styles["main-container"]}>
             <div className={styles["music-album-container"]}>
@@ -37,15 +52,24 @@ export default function MusicAlbumForm() {
                         slotProps={datePickerSlotProps}
                     />
                 </div>
-                <SingleImageUploader placeHolderText="Insert your album cover here" />
+                <div className={styles["music-album-image-uploader"]}>
+                    <SingleImageUploader placeHolderText="Insert your album cover here" />
+                </div>
             </div>
-            <div className={styles["music-track-container"]}>
-                {musicTracks.map((musciTrack: MusicTrackPost, index) => {
+            <div className={styles["music-tracks-container"]}>
+                {musicTracks.map((musicTrack: MusicTrackPostWithTempId, index) => {
                     return (
-                        <MusicTrackForm key={index} />
+                        <div key={musicTrack.tempId} className={styles["music-track-container"]}>
+                            <MusicTrackForm
+                                order={index + 1}
+                                musicTrack={musicTrack}
+                                onChange={(updatedTrack) => updateMusicTrack(musicTrack.tempId, updatedTrack)}
+                            />
+                            <Button onClick={() => removeMusicTrack(musicTrack.tempId)} sx={errorButtonSx} > Remove music track</Button>
+                        </div>
                     )
                 })}
-                <Button onClick={addTrack} sx={buttonSx}>Add track</Button>
+                <Button onClick={addMusicTrack} sx={buttonSx}>Add music track</Button>
             </div>
         </div>
     )

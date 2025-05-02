@@ -9,3 +9,14 @@ export const buttonSx = {
         color: "var(--cards-background-color)",
     }
 }
+
+export const errorButtonSx = {
+    ...buttonSx,
+    backgroundColor: "error.main",
+    color: "white",
+    padding: ".5rem",
+    ":hover": {
+        backgroundColor: "error.dark",
+        color: "white",
+    }
+}

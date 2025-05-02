@@ -1,4 +1,9 @@
-.music-track-container {
+.main-container {
+    display: grid;
+    gap: 2rem;
+}
+
+.music-track-data-container {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
 }
@@ -13,7 +18,7 @@
     display: flex;
     position: relative;
     align-items: center;
-    padding: 1rem 1rem;
+    padding: 1.2rem;
     background-color: var(--cards-background-color);
     box-shadow: 1px 2px 2px var(--text-shadow);
     border-radius: .3rem;
