@@ -13,7 +13,7 @@ type PlayerBoxType = {
 export default function PlayerBox({ musicTracks }: PlayerBoxType) {
     const [availableTracks] = useState<MusicTrack[]>(musicTracks);
     const [currentTrackNumber, setCurrentTrackNumber] = useState<number>(0);
-    const [currenTrack, setCurrenTrack] = useState<MusicTrack>(availableTracks[currentTrackNumber]);
+    const [currentTrack, setCurrenTrack] = useState<MusicTrack>(availableTracks[currentTrackNumber]);
 
     useEffect(() => {
         setCurrenTrack(availableTracks[currentTrackNumber]);
@@ -34,9 +34,12 @@ export default function PlayerBox({ musicTracks }: PlayerBoxType) {
 
     return (
         <div className={styles["main-container"]}>
-            <PlayerBackgroundImage currentTrack={currenTrack} />
+            <PlayerBackgroundImage currentTrack={currentTrack} />
             <div className={styles["image-container"]}>
-                <PlayerImage currenTrack={currenTrack} />
+                <PlayerImage currenTrack={currentTrack} />
+            </div>
+            <div className={styles["music-track-information-container"]}>
+                <div>{currentTrack.title}</div>
             </div>
             <div className={styles["controls-container"]}>
                 <PlayerControls changeToPreviousTrack={changeToPreviousTrack} changeToNextTrack={changeToNextTrack} />

@@ -10,7 +10,7 @@ type PlayerImageType = {
 export default function PlayerImage({ currenTrack }: PlayerImageType) {
     return (
         <Image
-            src={`/${currenTrack.track_image_source}`}
+            src={`${currenTrack.cover_url}`}
             alt='music track cover'
             width={4000}
             height={3000}
