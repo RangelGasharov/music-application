@@ -2,7 +2,7 @@ import { MusicAlbumWithImageType } from '@/types/MusicAlbum';
 import Image from 'next/image';
 import React from 'react';
 import styles from "./MusicAlbumCard.module.css";
-import { MusicArtistShort } from '@/types/MusicArtistShort';
+import { MusicArtistShort } from '@/types/MusicArtist';
 
 type MusicAlbumCardType = {
     musicAlbum: MusicAlbumWithImageType;

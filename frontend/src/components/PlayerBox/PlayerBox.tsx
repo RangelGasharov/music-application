@@ -5,6 +5,7 @@ import styles from "./PlayerBox.module.css"
 import { MusicTrack } from "@/types/MusicTrack"
 import { useEffect, useState } from "react"
 import PlayerBackgroundImage from "./PlayerBackgroundImage/PlayerBackgroundImage"
+import PlayerMusicTrackInfo from "./PlayerMusicTrackInfo/PlayerMusicTrackInfo"
 
 type PlayerBoxType = {
     musicTracks: MusicTrack[]
@@ -35,15 +36,9 @@ export default function PlayerBox({ musicTracks }: PlayerBoxType) {
     return (
         <div className={styles["main-container"]}>
             <PlayerBackgroundImage currentTrack={currentTrack} />
-            <div className={styles["image-container"]}>
-                <PlayerImage currenTrack={currentTrack} />
-            </div>
-            <div className={styles["music-track-information-container"]}>
-                <div>{currentTrack.title}</div>
-            </div>
-            <div className={styles["controls-container"]}>
-                <PlayerControls changeToPreviousTrack={changeToPreviousTrack} changeToNextTrack={changeToNextTrack} />
-            </div>
+            <PlayerImage currenTrack={currentTrack} />
+            <PlayerMusicTrackInfo currentTrack={currentTrack} />
+            <PlayerControls changeToPreviousTrack={changeToPreviousTrack} changeToNextTrack={changeToNextTrack} />
         </div>
     )
 }

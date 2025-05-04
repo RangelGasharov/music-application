@@ -8,7 +8,7 @@ import { TextField, InputAdornment, List, ListItem, ListItemText, Paper, ListIte
 import SearchIcon from '@mui/icons-material/Search';
 import { useState, useEffect } from 'react';
 import { debounce } from 'lodash';
-import { useRouter } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 
 interface SearchResult {
     title?: string;
@@ -22,6 +22,13 @@ export default function NavigationHeader() {
     const [searchResults, setSearchResults] = useState<SearchResult[]>([]);
     const [isFocused, setIsFocused] = useState(false);
     const router = useRouter();
+    const pathname = usePathname();
+
+    const hiddenPaths = ['/login'];
+
+    if (hiddenPaths.includes(pathname)) {
+        return null;
+    }
 
     const fetchSearchResults = async (term: string) => {
         if (!term) {

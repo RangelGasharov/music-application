@@ -1,4 +1,4 @@
-import { MusicArtistShort } from "./MusicArtistShort";
+import { MusicArtistShort } from "./MusicArtist";
 
 export type MusicAlbumType = {
     id: string;

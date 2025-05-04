@@ -1,3 +1,5 @@
+import { MusicArtistShort } from "./MusicArtist";
+
 export type MusicTrack = {
     id: number;
     title: string;
@@ -7,6 +9,7 @@ export type MusicTrack = {
     uploaded_at: string;
     cover_url: string;
     duration: string;
+    music_artists: MusicArtistShort[]
 }
 
 export type MusicTrackPost = {
