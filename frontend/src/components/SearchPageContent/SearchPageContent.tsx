@@ -3,17 +3,25 @@
 import { useEffect, useState } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { List, ListItemText, Typography, Box, CircularProgress, ListItemButton } from '@mui/material';
+import MusicAlbumContainer from '../MusicAlbumContainer/MusicAlbumContainer';
+import { MusicAlbum } from '@/types/MusicAlbum';
+import { MusicArtist } from '@/types/MusicArtist';
+import { MusicTrack } from '@/types/MusicTrack';
 
 interface SearchResult {
-    Title?: string;
-    Name?: string;
-    Type?: string;
-    Id?: number;
+    music_album: MusicAlbum,
+    music_artist: MusicArtist,
+    music_track: MusicTrack,
+    title?: string;
+    name?: string;
+    type: string;
+    id: string;
 }
 
 export default function SearchPageContent() {
     const searchParams = useSearchParams();
     const term = searchParams.get('term');
+
     const [results, setResults] = useState<SearchResult[]>([]);
     const [loading, setLoading] = useState(true);
 
@@ -46,24 +54,54 @@ export default function SearchPageContent() {
         );
     }
 
+    const musicAlbums: MusicAlbum[] = results.filter(item => item.type === 'Music Album').map(item => item.music_album);
+    const musicArtists = results.filter(item => item.type === 'Music Artist');
+    const musicTracks = results.filter(item => item.type === 'Music Track');
+
     return (
         <Box p={2}>
             <Typography variant="h4" gutterBottom>Search results for &quot;{term}&quot;</Typography>
-            {results.length === 0 ? (
+
+            {results.length === 0 && (
                 <Typography>No results found.</Typography>
-            ) : (
-                <List>
-                    {results.map((item, index) => (
-                        <List key={index}>
-                            <ListItemButton>
+            )}
+
+            {musicTracks.length > 0 && (
+                <Box mt={4}>
+                    <Typography variant="h5" gutterBottom>Tracks</Typography>
+                    <List>
+                        {musicTracks.map((track, index) => (
+                            <ListItemButton key={`track-${index}`}>
                                 <ListItemText
-                                    primary={item.Title || item.Name}
-                                    secondary={item.Type}
+                                    primary={track.title}
+                                    secondary="Track"
                                 />
                             </ListItemButton>
-                        </List>
-                    ))}
-                </List>
+                        ))}
+                    </List>
+                </Box>
+            )}
+
+            {musicAlbums.length > 0 && (
+                <Box mt={4}>
+                    <MusicAlbumContainer musicAlbums={musicAlbums} />
+                </Box>
+            )}
+
+            {musicArtists.length > 0 && (
+                <Box mt={4}>
+                    <Typography variant="h5" gutterBottom>Artists</Typography>
+                    <List>
+                        {musicArtists.map((artist, index) => (
+                            <ListItemButton key={`artist-${index}`}>
+                                <ListItemText
+                                    primary={artist.name}
+                                    secondary="Artist"
+                                />
+                            </ListItemButton>
+                        ))}
+                    </List>
+                </Box>
             )}
         </Box>
     );

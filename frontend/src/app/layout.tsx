@@ -4,6 +4,7 @@ import "./globals.css";
 import styles from "./layout-admin-page.module.css"
 import Providers from "@/components/Providers/Providers";
 import NavigationHeader from "@/components/NavigationHeader/NavigationHeader";
+import { Suspense } from "react";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -30,7 +31,9 @@ export default function RootLayout({
       <body className={`${geistSans.variable} ${geistMono.variable}`}>
         <Providers>
           <main className={styles["main-container"]}>
-            <NavigationHeader />
+            <Suspense fallback={null}>
+              <NavigationHeader />
+            </Suspense>
             <div className={styles["children-container"]}>
               {children}
             </div>

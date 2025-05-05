@@ -1,4 +1,5 @@
-"use client"
+'use client';
+
 import * as React from 'react';
 import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
@@ -9,8 +10,14 @@ import SearchIcon from '@mui/icons-material/Search';
 import { useState, useEffect } from 'react';
 import { debounce } from 'lodash';
 import { usePathname, useRouter } from 'next/navigation';
+import { MusicAlbum } from '@/types/MusicAlbum';
+import { MusicArtist } from '@/types/MusicArtist';
+import { MusicTrack } from '@/types/MusicTrack';
 
 interface SearchResult {
+    music_album: MusicAlbum;
+    music_artist: MusicArtist;
+    music_track: MusicTrack;
     title?: string;
     name?: string;
     type: string;
@@ -25,7 +32,6 @@ export default function NavigationHeader() {
     const pathname = usePathname();
 
     const hiddenPaths = ['/login'];
-
     if (hiddenPaths.includes(pathname)) {
         return null;
     }
@@ -49,6 +55,12 @@ export default function NavigationHeader() {
     useEffect(() => {
         debouncedSearch(searchTerm);
     }, [searchTerm, debouncedSearch]);
+
+    useEffect(() => {
+        if (pathname !== '/search') {
+            setSearchTerm('');
+        }
+    }, [pathname]);
 
     const handleKeyDown = (e: React.KeyboardEvent) => {
         if (e.key === 'Enter') {
@@ -113,7 +125,11 @@ export default function NavigationHeader() {
                                             <ListItem key={index} disablePadding>
                                                 <ListItemButton onClick={() => handleItemClick(result)}>
                                                     <ListItemText
-                                                        primary={result.title || result.name || 'No title'}
+                                                        primary={
+                                                            result.music_album?.title ||
+                                                            result.music_artist?.name ||
+                                                            result.music_track?.title || 'No title'
+                                                        }
                                                         secondary={result.type || ''}
                                                     />
                                                 </ListItemButton>
