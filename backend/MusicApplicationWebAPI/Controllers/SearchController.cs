@@ -23,17 +23,17 @@ public class SearchController : Controller
 
         var albums = await _context.MusicAlbum
             .Where(a => a.Title.ToLower().Contains(lowerTerm))
-            .Select(a => new { Type = "Music Album", a.Id, a.Title })
+            .Select(a => new { Type = "Music Album", MusicAlbum = a })
             .ToListAsync();
 
         var artists = await _context.MusicArtist
             .Where(ar => ar.Name.ToLower().Contains(lowerTerm))
-            .Select(ar => new { Type = "Music Artist", ar.Id, Name = ar.Name })
+            .Select(ar => new { Type = "Music Artist", MusicArtist = ar })
             .ToListAsync();
 
         var tracks = await _context.MusicTrack
             .Where(t => t.Title.ToLower().Contains(lowerTerm))
-            .Select(t => new { Type = "Music Track", t.Id, t.Title })
+            .Select(t => new { Type = "Music Track", MusicTrack = t })
             .ToListAsync();
 
         var results = albums.Concat<object>(artists).Concat(tracks);
