@@ -15,9 +15,9 @@ import { MusicArtist } from '@/types/MusicArtist';
 import { MusicTrack } from '@/types/MusicTrack';
 
 interface SearchResult {
-    music_album: MusicAlbum;
-    music_artist: MusicArtist;
-    music_track: MusicTrack;
+    music_album?: MusicAlbum;
+    music_artist?: MusicArtist;
+    music_track?: MusicTrack;
     title?: string;
     name?: string;
     type: string;
@@ -37,7 +37,7 @@ export default function NavigationHeader() {
     }
 
     const fetchSearchResults = async (term: string) => {
-        if (!term) {
+        if (!term.trim()) {
             setSearchResults([]);
             return;
         }
@@ -54,11 +54,15 @@ export default function NavigationHeader() {
 
     useEffect(() => {
         debouncedSearch(searchTerm);
+        return () => {
+            debouncedSearch.cancel();
+        };
     }, [searchTerm, debouncedSearch]);
 
     useEffect(() => {
         if (pathname !== '/search') {
             setSearchTerm('');
+            setSearchResults([]);
         }
     }, [pathname]);
 
@@ -71,14 +75,31 @@ export default function NavigationHeader() {
         }
     };
 
+    const getResultTitle = (item: SearchResult) => {
+        return item.music_album?.title ||
+            item.music_artist?.name ||
+            item.music_track?.title ||
+            item.title ||
+            item.name ||
+            'No title';
+    };
+
     const handleItemClick = (item: SearchResult) => {
-        const term = item.title || item.name || 'No title';
+        const term = getResultTitle(item);
         router.push(`/search?term=${encodeURIComponent(term)}`);
     };
 
     return (
         <Box>
-            <AppBar elevation={0} sx={{ position: "static", backgroundColor: "var(--bg-color)", color: "var(--text-color)", boxShadow: "0px 1px 7px var(--text-color)" }}>
+            <AppBar
+                elevation={0}
+                sx={{
+                    position: 'static',
+                    backgroundColor: 'var(--bg-color)',
+                    color: 'var(--text-color)',
+                    boxShadow: '0px 1px 7px var(--text-color)',
+                }}
+            >
                 <Toolbar sx={{ display: 'flex', justifyContent: 'space-between' }}>
                     <NavigationDrawer />
                     <Box sx={{ position: 'relative', width: '400px' }}>
@@ -101,47 +122,67 @@ export default function NavigationHeader() {
                                 sx: {
                                     backgroundColor: 'white',
                                     borderRadius: 1,
-                                }
+                                },
                             }}
                         />
-                        {isFocused && (
-                            <Paper sx={{
-                                position: 'absolute',
-                                top: '100%',
-                                left: 0,
-                                right: 0,
-                                maxHeight: 300,
-                                overflowY: 'auto',
-                                zIndex: 10,
-                                backgroundColor: 'white',
-                                boxShadow: 3,
-                                borderRadius: 1,
-                                width: '100%',
-                                padding: '8px',
-                            }}>
+                        {isFocused && searchResults.length > 0 && (
+                            <Paper
+                                sx={{
+                                    position: 'absolute',
+                                    top: '100%',
+                                    left: 0,
+                                    right: 0,
+                                    maxHeight: 300,
+                                    overflowY: 'auto',
+                                    zIndex: 10,
+                                    backgroundColor: 'white',
+                                    boxShadow: 3,
+                                    borderRadius: 1,
+                                    width: '100%',
+                                    padding: '8px',
+                                }}
+                            >
                                 <List>
-                                    {searchResults.length > 0 ? (
-                                        searchResults.map((result, index) => (
-                                            <ListItem key={index} disablePadding>
-                                                <ListItemButton onClick={() => handleItemClick(result)}>
-                                                    <ListItemText
-                                                        primary={
-                                                            result.music_album?.title ||
-                                                            result.music_artist?.name ||
-                                                            result.music_track?.title || 'No title'
-                                                        }
-                                                        secondary={result.type || ''}
-                                                    />
-                                                </ListItemButton>
-                                            </ListItem>
-                                        ))
-                                    ) : (
-                                        <ListItem disablePadding>
-                                            <ListItemText
-                                                primary={<Typography variant="body2" color="textSecondary">No results found</Typography>}
-                                            />
+                                    {searchResults.map((result, index) => (
+                                        <ListItem key={index} disablePadding>
+                                            <ListItemButton onClick={() => handleItemClick(result)}>
+                                                <ListItemText
+                                                    primary={getResultTitle(result)}
+                                                    secondary={result.type || ''}
+                                                />
+                                            </ListItemButton>
                                         </ListItem>
-                                    )}
+                                    ))}
+                                </List>
+                            </Paper>
+                        )}
+                        {isFocused && searchResults.length === 0 && searchTerm.trim() !== '' && (
+                            <Paper
+                                sx={{
+                                    position: 'absolute',
+                                    top: '100%',
+                                    left: 0,
+                                    right: 0,
+                                    maxHeight: 300,
+                                    overflowY: 'auto',
+                                    zIndex: 10,
+                                    backgroundColor: 'white',
+                                    boxShadow: 3,
+                                    borderRadius: 1,
+                                    width: '100%',
+                                    padding: '8px',
+                                }}
+                            >
+                                <List>
+                                    <ListItem disablePadding>
+                                        <ListItemText
+                                            primary={
+                                                <Typography variant="body2" color="textSecondary">
+                                                    No results found
+                                                </Typography>
+                                            }
+                                        />
+                                    </ListItem>
                                 </List>
                             </Paper>
                         )}

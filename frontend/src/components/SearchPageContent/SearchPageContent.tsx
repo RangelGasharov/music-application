@@ -7,6 +7,7 @@ import MusicAlbumContainer from '../MusicAlbumContainer/MusicAlbumContainer';
 import { MusicAlbum } from '@/types/MusicAlbum';
 import { MusicArtist } from '@/types/MusicArtist';
 import { MusicTrack } from '@/types/MusicTrack';
+import MusicTrackContainer from '../MusicTrackContainer/MusicTrackContainer';
 
 interface SearchResult {
     music_album: MusicAlbum,
@@ -56,7 +57,7 @@ export default function SearchPageContent() {
 
     const musicAlbums: MusicAlbum[] = results.filter(item => item.type === 'Music Album').map(item => item.music_album);
     const musicArtists = results.filter(item => item.type === 'Music Artist');
-    const musicTracks = results.filter(item => item.type === 'Music Track');
+    const musicTracks: MusicTrack[] = results.filter(item => item.type === 'Music Track').map(item => item.music_track);
 
     return (
         <Box p={2}>
@@ -69,21 +70,13 @@ export default function SearchPageContent() {
             {musicTracks.length > 0 && (
                 <Box mt={4}>
                     <Typography variant="h5" gutterBottom>Tracks</Typography>
-                    <List>
-                        {musicTracks.map((track, index) => (
-                            <ListItemButton key={`track-${index}`}>
-                                <ListItemText
-                                    primary={track.title}
-                                    secondary="Track"
-                                />
-                            </ListItemButton>
-                        ))}
-                    </List>
+                    <MusicTrackContainer musicTracks={musicTracks} />
                 </Box>
             )}
 
             {musicAlbums.length > 0 && (
                 <Box mt={4}>
+                    <Typography variant="h5" gutterBottom>Albums</Typography>
                     <MusicAlbumContainer musicAlbums={musicAlbums} />
                 </Box>
             )}
