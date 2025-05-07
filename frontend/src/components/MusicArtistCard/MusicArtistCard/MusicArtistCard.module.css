@@ -1,0 +1,27 @@
+.main-container {
+    width: 100%;
+    color: var(--text-color);
+    background-color: var(--cards-background-color);
+    cursor: pointer;
+}
+
+.music-artist-info {
+    padding: 1rem;
+    font-size: 0.8rem;
+}
+
+.image {
+    width: 100%;
+    object-fit: cover;
+    aspect-ratio: 1/1;
+    height: auto;
+    display: block;
+    user-select: none;
+    pointer-events: none;
+    background-color: var(--skeleton-loading-color);
+}
+
+.music-artist-title {
+    font-size: 1.1rem;
+    font-weight: bold;
+}
