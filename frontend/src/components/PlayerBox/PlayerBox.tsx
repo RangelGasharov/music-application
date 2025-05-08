@@ -38,7 +38,7 @@ export default function PlayerBox({ musicTracks }: PlayerBoxType) {
             <PlayerBackgroundImage currentTrack={currentTrack} />
             <PlayerImage currenTrack={currentTrack} />
             <PlayerMusicTrackInfo currentTrack={currentTrack} />
-            <PlayerControls changeToPreviousTrack={changeToPreviousTrack} changeToNextTrack={changeToNextTrack} />
+            <PlayerControls currentTrack={currentTrack} changeToPreviousTrack={changeToPreviousTrack} changeToNextTrack={changeToNextTrack} />
         </div>
     )
 }

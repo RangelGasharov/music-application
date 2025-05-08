@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { useSearchParams } from 'next/navigation';
-import { List, ListItemText, Typography, Box, CircularProgress, ListItemButton } from '@mui/material';
+import { Typography, Box, CircularProgress } from '@mui/material';
 import MusicAlbumContainer from '../MusicAlbumContainer/MusicAlbumContainer';
 import { MusicAlbum } from '@/types/MusicAlbum';
 import { MusicArtist } from '@/types/MusicArtist';

@@ -1,7 +1,5 @@
-import { MusicTrack } from '@/types/MusicTrack';
 import React from 'react';
 import styles from "./MusicArtistCard.module.css";
-import Image from 'next/image';
 import { MusicArtist } from '@/types/MusicArtist';
 
 type MusicArtistCardType = {
