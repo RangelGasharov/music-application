@@ -1,10 +1,73 @@
 .main-container {
+    width: 100%;
+    display: grid;
+    justify-content: center;
+    background-color: var(--player-box-controls-color);
+    padding: .5rem;
+    gap: .5rem;
+}
+
+.progress-container {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    width: 100%;
+    padding: 0 1rem;
+}
+
+.progress-bar {
+    flex-grow: 1;
+    appearance: none;
+    height: 4px;
+    background: var(--text-color);
+    border-radius: 2px;
+    outline: none;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.progress-bar:hover,
+.progress-bar:focus {
+    background: var(--text-color);
+}
+
+.progress-bar::-webkit-slider-thumb {
+    appearance: none;
+    width: 12px;
+    height: 12px;
+    background: var(--text-color);
+    border-radius: 50%;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.progress-bar::-webkit-slider-thumb:hover,
+.progress-bar::-webkit-slider-thumb:focus {
+    background: var(--text-color);
+}
+
+.progress-bar::-moz-range-thumb {
+    width: 12px;
+    height: 12px;
+    background: var(--text-color);
+    border-radius: 50%;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.progress-bar::-moz-range-thumb:hover,
+.progress-bar::-moz-range-thumb:focus {
+    background: var(--text-color);
+}
+
+.control-buttons-container {
     display: flex;
     justify-content: center;
     align-items: center;
     flex-wrap: nowrap;
     width: 100%;
     gap: 0rem 0.25rem;
-    background-color: var(--player-box-controls-color);
-    padding: .5rem;
 }
