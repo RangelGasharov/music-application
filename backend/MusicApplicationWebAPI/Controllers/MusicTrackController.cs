@@ -39,6 +39,13 @@ public class MusicTrackController : ControllerBase
         return Ok(musicTrack);
     }
 
+    [HttpGet("music-artist/{id:guid}")]
+    public async Task<IActionResult> GetMusicTrackByMusicArtistId(Guid id)
+    {
+        var musicTrack = await _musicTrackRepository.GetMusicTracksByMusicArtistId(id);
+        return Ok(musicTrack);
+    }
+
     [HttpPost]
     public async Task<IActionResult> AddMusicTrack(AddMusicTrackDto addMusicTrackDto)
     {

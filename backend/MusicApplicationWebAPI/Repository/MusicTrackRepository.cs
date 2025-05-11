@@ -81,6 +81,34 @@ namespace MusicApplicationWebAPI.Repository
             };
         }
 
+        public async Task<List<MusicTrackDto>> GetMusicTracksByMusicArtistId(Guid artistId)
+        {
+            var musicTracks = await _context.MusicTrack
+                .Include(mt => mt.MusicArtistTrack)
+                    .ThenInclude(mat => mat.MusicArtist)
+                .Where(mt => mt.MusicArtistTrack.Any(mat => mat.MusicArtistId == artistId))
+                .ToListAsync();
+
+            return musicTracks.Select(music_track => new MusicTrackDto
+            {
+                Id = music_track.Id,
+                Title = music_track.Title,
+                CoverURL = music_track.CoverURL,
+                UploadedAt = music_track.UploadedAt,
+                ReleaseDate = music_track.ReleaseDate,
+                FilePath = music_track.FilePath,
+                IsExplicit = music_track.IsExplicit,
+                Duration = music_track.Duration,
+                MusicArtists = music_track.MusicArtistTrack
+                    .Select(music_artist_track => new MusicArtistShortFormDto
+                    {
+                        Id = music_artist_track.MusicArtist.Id,
+                        Name = music_artist_track.MusicArtist.Name
+                    })
+                    .ToList()
+            }).ToList();
+        }
+
         public async Task<MusicTrack> AddMusicTrack(AddMusicTrackDto addMusicTrackDto)
         {
             var trackId = Guid.NewGuid();
