@@ -12,7 +12,6 @@ export default function MusicAlbumCard({ musicAlbum }: MusicAlbumCardType) {
     return (
         <div className={styles["main-container"]}>
             <Image
-                quality={50}
                 src={musicAlbum.cover_url}
                 alt={musicAlbum.title}
                 width={200}

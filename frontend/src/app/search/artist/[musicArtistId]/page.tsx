@@ -1,3 +1,4 @@
+import MusicTrackListItem from '@/components/MusicTrackContainer/MusicTrackListItem/MusicTrackListItem';
 import { MusicArtist } from '@/types/MusicArtist';
 import { MusicTrack } from '@/types/MusicTrack';
 import { notFound } from 'next/navigation';
@@ -42,7 +43,7 @@ async function getMusicTracksByArtistId(musicArtistId: string): Promise<MusicTra
 }
 
 export default async function MusicArtistPage({ params }: MusicArtistPageType) {
-    const { musicArtistId } = params;
+    const { musicArtistId } = await params;
     try {
         const [musicArtist, musicTracks] = await Promise.all([
             getMusicArtistById(musicArtistId),
@@ -52,15 +53,12 @@ export default async function MusicArtistPage({ params }: MusicArtistPageType) {
         return (
             <div>
                 <h1>{musicArtist.name}</h1>
-                <h2>Tracks</h2>
                 {musicTracks.length === 0 ? (<p>No tracks found for this artist.</p>) : (
-                    <ul>
-                        {musicTracks.map(track => (
-                            <li key={track.id}>
-                                {track.title}
-                            </li>
+                    <div>
+                        {musicTracks.map((musicTrack: MusicTrack, index) => (
+                            <MusicTrackListItem order={index + 1} key={musicTrack.id} musicTrack={musicTrack} />
                         ))}
-                    </ul>
+                    </div>
                 )}
             </div>
         );
