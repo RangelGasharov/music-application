@@ -3,6 +3,7 @@ import { MusicArtist } from '@/types/MusicArtist';
 import { MusicTrack } from '@/types/MusicTrack';
 import { notFound } from 'next/navigation';
 import React from 'react'
+import styles from "./music-artist-page.module.css"
 
 type MusicArtistPageType = {
     params: {
@@ -54,7 +55,8 @@ export default async function MusicArtistPage({ params }: MusicArtistPageType) {
             <div>
                 <h1>{musicArtist.name}</h1>
                 {musicTracks.length === 0 ? (<p>No tracks found for this artist.</p>) : (
-                    <div>
+                    <div className={styles["music-tracks-container"]}>
+                        <h2>Popular Tracks</h2>
                         {musicTracks.map((musicTrack: MusicTrack, index) => (
                             <MusicTrackListItem order={index + 1} key={musicTrack.id} musicTrack={musicTrack} />
                         ))}
