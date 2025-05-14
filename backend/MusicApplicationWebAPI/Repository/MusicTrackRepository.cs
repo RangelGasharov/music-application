@@ -109,6 +109,48 @@ namespace MusicApplicationWebAPI.Repository
             }).ToList();
         }
 
+        public async Task<List<MusicTrackDto>> GetMusicTracksByMusicAlbumId(Guid albumId)
+        {
+            var musicTracks = await _context.MusicTrack
+                .Include(mt => mt.MusicArtistTrack)
+                    .ThenInclude(mat => mat.MusicArtist)
+                .Include(mt => mt.MusicTrackAlbums)
+                    .ThenInclude(mta => mta.MusicAlbum)
+                .Where(mt => mt.MusicTrackAlbums.Any(mta => mta.MusicAlbumId == albumId))
+                .OrderBy(mt => mt.MusicTrackAlbums
+                    .FirstOrDefault(mta => mta.MusicAlbumId == albumId)!.Order)
+                .ToListAsync();
+
+            return musicTracks.Select(music_track => new MusicTrackDto
+            {
+                Id = music_track.Id,
+                Title = music_track.Title,
+                CoverURL = music_track.CoverURL,
+                UploadedAt = music_track.UploadedAt,
+                ReleaseDate = music_track.ReleaseDate,
+                FilePath = music_track.FilePath,
+                IsExplicit = music_track.IsExplicit,
+                Duration = music_track.Duration,
+                MusicArtists = music_track.MusicArtistTrack
+                    .Select(music_artist_track => new MusicArtistShortFormDto
+                    {
+                        Id = music_artist_track.MusicArtist.Id,
+                        Name = music_artist_track.MusicArtist.Name
+                    })
+                    .ToList(),
+                MusicAlbums = music_track.MusicTrackAlbums
+                    .Select(mta => new MusicAlbumShortFormDto
+                    {
+                        Id = mta.MusicAlbum!.Id,
+                        Title = mta.MusicAlbum.Title,
+                        CoverURL = mta.MusicAlbum.CoverURL,
+                        UploadedAt = mta.MusicAlbum.UploadedAt,
+                        ReleaseDate = mta.MusicAlbum.ReleaseDate
+                    })
+                    .ToList()
+            }).ToList();
+        }
+
         public async Task<MusicTrack> AddMusicTrack(AddMusicTrackDto addMusicTrackDto)
         {
             var trackId = Guid.NewGuid();

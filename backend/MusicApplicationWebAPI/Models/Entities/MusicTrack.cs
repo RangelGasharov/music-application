@@ -11,6 +11,7 @@ namespace MusicApplicationWebAPI.Models.Entities
         public required string CoverURL { get; set; }
         public required TimeSpan Duration { get; set; }
         public ICollection<MusicArtistTrack> MusicArtistTrack { get; set; } = [];
+        public ICollection<MusicTrackAlbum> MusicTrackAlbums { get; set; } = [];
         public ICollection<MusicGenreTrack> MusicGenreTrack { get; set; } = [];
     }
 }

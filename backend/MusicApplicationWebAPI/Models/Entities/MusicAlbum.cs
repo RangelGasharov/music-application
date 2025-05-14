@@ -8,5 +8,6 @@ namespace MusicApplicationWebAPI.Models.Entities
         public required DateTime UploadedAt { get; set; }
         public required DateTime ReleaseDate { get; set; }
         public ICollection<MusicArtistAlbum> MusicArtistAlbums { get; set; } = [];
+        public ICollection<MusicTrackAlbum> MusicTrackAlbums { get; set; } = [];
     }
 }
