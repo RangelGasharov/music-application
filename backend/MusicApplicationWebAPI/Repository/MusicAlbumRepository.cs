@@ -78,6 +78,7 @@ namespace MusicApplicationWebAPI.Repository
                 CoverURL = music_album.CoverURL,
                 UploadedAt = music_album.UploadedAt,
                 ReleaseDate = music_album.ReleaseDate,
+                Description = music_album.Description,
                 MusicArtists = [.. music_album.MusicArtistAlbums
                     .Select(music_artist_album => new MusicArtistShortFormDto
                     {
@@ -106,6 +107,7 @@ namespace MusicApplicationWebAPI.Repository
                 CoverURL = musicAlbum.CoverURL,
                 UploadedAt = musicAlbum.UploadedAt,
                 ReleaseDate = musicAlbum.ReleaseDate,
+                Description = musicAlbum.Description,
                 MusicArtists = musicAlbum.MusicArtistAlbums
                     .Select(musicArtist => new MusicArtistShortFormDto
                     {
