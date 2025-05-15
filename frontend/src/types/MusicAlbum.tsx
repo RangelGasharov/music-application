@@ -7,4 +7,5 @@ export type MusicAlbum = {
     release_date: string;
     uploaded_at: string;
     music_artists: MusicArtistShort[];
+    description?: string;
 }

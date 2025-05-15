@@ -1,0 +1,35 @@
+.main-container {
+    display: grid;
+    gap: 2rem;
+}
+
+.music-album-information-container {
+    display: flex;
+    justify-content: space-between;
+    padding: 1rem;
+    gap: 5%;
+}
+
+.music-album-title-description-container {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+}
+
+.music-album-title-container {
+    display: flex;
+    font-size: 1.5rem;
+}
+
+.music-tracks-title {
+    font-size: 2rem;
+    margin-bottom: 1rem;
+}
+
+.music-tracks-container {
+    border-radius: .5rem;
+    background-color: var(--cards-background-color);
+    padding: .5rem;
+    display: grid;
+    gap: .1rem;
+}
