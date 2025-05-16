@@ -1,7 +1,16 @@
+.main-container {
+    display: grid;
+    gap: 1rem;
+}
+
 .music-tracks-container {
     border-radius: .5rem;
     background-color: var(--cards-background-color);
     padding: .5rem;
     display: grid;
     gap: .1rem;
+}
+
+.music-albums-container {
+    width: fit-content;
 }
