@@ -12,6 +12,7 @@ namespace MusicApplicationWebAPI.Interfaces
     {
         Task<List<MusicAlbumDto>> GetAllMusicAlbums();
         Task<MusicAlbumDto?> GetMusicAlbumById(Guid id);
+        Task<List<MusicAlbumDto>> GetMusicAlbumsByMusicArtistId(Guid artistId);
         Task<MusicAlbum> AddMusicAlbum(AddMusicAlbumDto addMusicAlbumDto);
         Task<MusicAlbum?> UpdateMusicAlbum(Guid id, UpdateMusicAlbumDto musicAlbumDto);
         Task<MusicAlbum?> DeleteMusicAlbum(Guid id);

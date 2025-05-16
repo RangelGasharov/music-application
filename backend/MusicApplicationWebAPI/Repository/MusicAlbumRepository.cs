@@ -119,6 +119,31 @@ namespace MusicApplicationWebAPI.Repository
             return musicAlbumDto;
         }
 
+        public async Task<List<MusicAlbumDto>> GetMusicAlbumsByMusicArtistId(Guid artistId)
+        {
+            var albums = await _context.MusicAlbum
+                .Include(album => album.MusicArtistAlbums)
+                    .ThenInclude(maa => maa.MusicArtist)
+                .Where(album => album.MusicArtistAlbums.Any(maa => maa.MusicArtistId == artistId))
+                .ToListAsync();
+
+            return albums.Select(album => new MusicAlbumDto
+            {
+                Id = album.Id,
+                Title = album.Title,
+                CoverURL = album.CoverURL,
+                UploadedAt = album.UploadedAt,
+                ReleaseDate = album.ReleaseDate,
+                Description = album.Description,
+                MusicArtists = album.MusicArtistAlbums
+                    .Select(maa => new MusicArtistShortFormDto
+                    {
+                        Id = maa.MusicArtist.Id,
+                        Name = maa.MusicArtist.Name
+                    }).ToList()
+            }).ToList();
+        }
+
         public async Task<MusicAlbum?> UpdateMusicAlbum(Guid id, UpdateMusicAlbumDto musicAlbumDto)
         {
             var musicAlbum = await _context.MusicAlbum.FindAsync(id);

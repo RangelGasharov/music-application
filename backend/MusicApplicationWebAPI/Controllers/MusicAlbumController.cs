@@ -7,6 +7,7 @@ using MusicApplicationWebAPI.Models.Entities;
 using MusicApplicationWebAPI.Services;
 
 namespace MusicApplicationWebAPI.Controllers;
+
 [ApiController]
 [Route("music-album")]
 public class MusicAlbumController : ControllerBase
@@ -38,6 +39,19 @@ public class MusicAlbumController : ControllerBase
         }
 
         return Ok(musicAlbum);
+    }
+
+    [HttpGet("music-artist/{id:guid}")]
+    public async Task<ActionResult> GetMusicAlbumByMusicArtistId([FromRoute] Guid id)
+    {
+        var musicAlbums = await _musicAlbumRepository.GetMusicAlbumsByMusicArtistId(id);
+
+        if (musicAlbums is null)
+        {
+            return NotFound();
+        }
+
+        return Ok(musicAlbums);
     }
 
     [HttpPost]
