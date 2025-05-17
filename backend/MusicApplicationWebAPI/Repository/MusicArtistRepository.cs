@@ -55,13 +55,22 @@ namespace MusicApplicationWebAPI.Repository
                 LastName = music_artist.LastName,
                 BirthDate= music_artist.BirthDate,
                 MusicAlbums = [.. music_artist.MusicArtistAlbums
-                    .Select(music_artist_album => new MusicAlbumShortFormDto
+                .Select(music_artist_album => new MusicAlbumShortFormDto
                     {
                         Id = music_artist_album.MusicAlbum.Id,
                         Title = music_artist_album.MusicAlbum.Title,
                         CoverURL =  music_artist_album.MusicAlbum.CoverURL,
                         UploadedAt = music_artist_album.MusicAlbum.UploadedAt,
                         ReleaseDate = music_artist_album.MusicAlbum.ReleaseDate
+                    })],
+
+                Photos = [.. music_artist.MusicArtistPhotos
+                .Select(p => new MusicArtistPhotoDto
+                    {
+                        Id = p.Id,
+                        FilePath = p.FilePath,
+                        UploadedAt = p.UploadedAt,
+                        IsPrimary = p.IsPrimary
                     })]
             })];
         }

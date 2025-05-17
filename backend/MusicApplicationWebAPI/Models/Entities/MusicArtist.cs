@@ -10,5 +10,6 @@ namespace MusicApplicationWebAPI.Models.Entities
         public DateTime? BirthDate { get; set; }
         public ICollection<MusicArtistAlbum> MusicArtistAlbums { get; set; } = [];
         public ICollection<MusicArtistTrack> MusicArtistTracks { get; set; } = [];
+        public ICollection<MusicArtistPhoto> MusicArtistPhotos { get; set; } = [];
     }
 }

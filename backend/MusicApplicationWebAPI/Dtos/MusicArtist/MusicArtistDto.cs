@@ -1,7 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using MusicApplicationWebAPI.Dtos.MusicAlbum;
 
 namespace MusicApplicationWebAPI.Dtos.MusicArtist
@@ -15,5 +11,7 @@ namespace MusicApplicationWebAPI.Dtos.MusicArtist
         public string? LastName { get; set; }
         public DateTime? BirthDate { get; set; }
         public List<MusicAlbumShortFormDto> MusicAlbums { get; set; } = [];
+        public List<MusicArtistPhotoDto> Photos { get; set; } = [];
+        public MusicArtistPhotoDto? PrimaryPhoto => Photos.FirstOrDefault(p => p.IsPrimary);
     }
 }
