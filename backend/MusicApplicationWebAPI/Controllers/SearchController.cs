@@ -2,10 +2,12 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using MusicApplicationWebAPI.Data;
 using MusicApplicationWebAPI.Dtos;
+using MusicApplicationWebAPI.Dtos.MusicAlbum;
 using MusicApplicationWebAPI.Dtos.MusicArtist;
 using MusicApplicationWebAPI.Dtos.MusicTrack;
 
 namespace MusicApplicationWebAPI.Controllers;
+
 [ApiController]
 [Route("search")]
 public class SearchController : Controller
@@ -52,9 +54,41 @@ public class SearchController : Controller
             .ToListAsync();
 
         var artists = await _context.MusicArtist
-            .Where(ar => ar.Name.ToLower().Contains(lowerTerm))
-            .Select(ar => new { Type = "Music Artist", MusicArtist = ar })
-            .ToListAsync();
+     .Include(ar => ar.MusicArtistAlbums)
+         .ThenInclude(aa => aa.MusicAlbum)
+     .Include(ar => ar.MusicArtistPhotos)
+     .Where(ar => ar.Name.ToLower().Contains(lowerTerm))
+     .Select(ar => new
+     {
+         Type = "Music Artist",
+         MusicArtist = new MusicArtistDto
+         {
+             Id = ar.Id,
+             Name = ar.Name,
+             Description = ar.Description,
+             FirstName = ar.FirstName,
+             LastName = ar.LastName,
+             BirthDate = ar.BirthDate,
+             MusicAlbums = ar.MusicArtistAlbums
+                 .Select(aa => new MusicAlbumShortFormDto
+                 {
+                     Id = aa.MusicAlbum.Id,
+                     Title = aa.MusicAlbum.Title,
+                     CoverURL = aa.MusicAlbum.CoverURL,
+                     UploadedAt = aa.MusicAlbum.UploadedAt,
+                     ReleaseDate = aa.MusicAlbum.ReleaseDate
+                 }).ToList(),
+             Photos = ar.MusicArtistPhotos
+                 .Select(p => new MusicArtistPhotoDto
+                 {
+                     Id = p.Id,
+                     FilePath = p.FilePath,
+                     UploadedAt = p.UploadedAt,
+                     IsPrimary = p.IsPrimary
+                 }).ToList()
+         }
+     })
+     .ToListAsync();
 
         var tracks = await _context.MusicTrack
      .Include(t => t.MusicArtistTrack)

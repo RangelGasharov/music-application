@@ -44,17 +44,18 @@ namespace MusicApplicationWebAPI.Repository
             var musicArtists = await _context.MusicArtist
             .Include(music_artist => music_artist.MusicArtistAlbums)
             .ThenInclude(music_artist_album => music_artist_album.MusicAlbum)
+            .Include(music_artist => music_artist.MusicArtistPhotos)
             .ToListAsync();
 
-            return [.. musicArtists.Select(music_artist => new MusicArtistDto
+            return [.. musicArtists.Select(musicArtist => new MusicArtistDto
             {
-                Id = music_artist.Id,
-                Name = music_artist.Name,
-                Description = music_artist.Description,
-                FirstName = music_artist.FirstName,
-                LastName = music_artist.LastName,
-                BirthDate= music_artist.BirthDate,
-                MusicAlbums = [.. music_artist.MusicArtistAlbums
+                Id = musicArtist.Id,
+                Name = musicArtist.Name,
+                Description = musicArtist.Description,
+                FirstName = musicArtist.FirstName,
+                LastName = musicArtist.LastName,
+                BirthDate= musicArtist.BirthDate,
+                MusicAlbums = [.. musicArtist.MusicArtistAlbums
                 .Select(music_artist_album => new MusicAlbumShortFormDto
                     {
                         Id = music_artist_album.MusicAlbum.Id,
@@ -64,7 +65,7 @@ namespace MusicApplicationWebAPI.Repository
                         ReleaseDate = music_artist_album.MusicAlbum.ReleaseDate
                     })],
 
-                Photos = [.. music_artist.MusicArtistPhotos
+                Photos = [.. musicArtist.MusicArtistPhotos
                 .Select(p => new MusicArtistPhotoDto
                     {
                         Id = p.Id,
@@ -78,9 +79,10 @@ namespace MusicApplicationWebAPI.Repository
         public async Task<MusicArtistDto?> GetMusicArtistById(Guid id)
         {
             var musicArtist = await _context.MusicArtist
-                .Include(artist => artist.MusicArtistAlbums)
-                .ThenInclude(artist_album => artist_album.MusicAlbum)
-                .FirstOrDefaultAsync(artist => artist.Id == id);
+            .Include(artist => artist.MusicArtistAlbums)
+            .ThenInclude(artist_album => artist_album.MusicAlbum)
+            .Include(music_artist => music_artist.MusicArtistPhotos)
+            .FirstOrDefaultAsync(artist => artist.Id == id);
 
             if (musicArtist is null)
             {
@@ -95,15 +97,23 @@ namespace MusicApplicationWebAPI.Repository
                 FirstName = musicArtist.FirstName,
                 LastName = musicArtist.LastName,
                 BirthDate = musicArtist.BirthDate,
-                MusicAlbums = musicArtist.MusicArtistAlbums
-                    .Select(musicAlbum => new MusicAlbumShortFormDto
+                MusicAlbums = [.. musicArtist.MusicArtistAlbums
+                .Select(musicAlbum => new MusicAlbumShortFormDto
                     {
                         Id = musicAlbum.MusicAlbum.Id,
                         Title = musicAlbum.MusicAlbum.Title,
                         CoverURL = musicAlbum.MusicAlbum.CoverURL,
                         UploadedAt = musicAlbum.MusicAlbum.UploadedAt,
                         ReleaseDate = musicAlbum.MusicAlbum.ReleaseDate
-                    }).ToList()
+                    })],
+                Photos = [.. musicArtist.MusicArtistPhotos
+                .Select(p => new MusicArtistPhotoDto
+                    {
+                        Id = p.Id,
+                        FilePath = p.FilePath,
+                        UploadedAt = p.UploadedAt,
+                        IsPrimary = p.IsPrimary
+                    })]
             };
 
             return musicArtistDto;
