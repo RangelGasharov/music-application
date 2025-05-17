@@ -6,6 +6,7 @@ import { notFound } from 'next/navigation';
 import React from 'react'
 import styles from "./music-artist-page.module.css"
 import MusicAlbumCard from '@/components/MusicAlbumContainer/MusicAlbumCard/MusicAlbumCard';
+import Image from 'next/image';
 
 type MusicArtistPageType = {
     params: {
@@ -72,23 +73,37 @@ export default async function MusicArtistPage({ params }: MusicArtistPageType) {
 
         return (
             <div className={styles["main-container"]}>
-                <h1>{musicArtist.name}</h1>
-                {musicTracks.length === 0 ? (<p>No tracks found for this artist.</p>) : (
-                    <div className={styles["music-tracks-container"]}>
-                        <h2>Popular Tracks</h2>
-                        {musicTracks.map((musicTrack: MusicTrack, index) => (
-                            <MusicTrackListItem order={index + 1} key={musicTrack.id} musicTrack={musicTrack} />
-                        ))}
-                    </div>
-                )}
-                {musicAlbums.length === 0 ? (<p>No albums found for this artist.</p>) : (
-                    <div className={styles["music-albums-container"]}>
-                        <h2>Music Albums</h2>
-                        {musicAlbums.map((musicAlbum: MusicAlbum) => (
-                            <MusicAlbumCard key={musicAlbum.id} musicAlbum={musicAlbum} />
-                        ))}
-                    </div>
-                )}
+                <div className={styles["artist-header-container"]}>
+                    <Image
+                        fill
+                        src={musicArtist.primary_photo.file_path}
+                        alt={`Photo of ${musicArtist.name}`}
+                        className={styles["artist-primary-image"]}
+                    />
+                    <h1 className={styles["artist-title"]}>{musicArtist.name}</h1>
+                </div>
+                <div className={styles["music-tracks-wrapper"]}>
+                    <h2>Popular Tracks</h2>
+                    {musicTracks.length === 0 ? (<p>No tracks found for this artist.</p>) : (
+                        <div className={styles["music-tracks-container"]}>
+                            {musicTracks.map((musicTrack: MusicTrack, index) => (
+                                <MusicTrackListItem order={index + 1} key={musicTrack.id} musicTrack={musicTrack} />
+                            ))}
+                        </div>
+                    )}
+                </div>
+
+                <div className={styles["music-albums-wrapper"]}>
+                    <h2>Music Albums</h2>
+                    {musicAlbums.length === 0 ? (<p>No albums found for this artist.</p>) : (
+                        <div className={styles["music-albums-container"]}>
+                            {musicAlbums.map((musicAlbum: MusicAlbum) => (
+                                <MusicAlbumCard key={musicAlbum.id} musicAlbum={musicAlbum} />
+                            ))}
+                        </div>
+                    )}
+                </div>
+
             </div>
         );
     } catch (error) {

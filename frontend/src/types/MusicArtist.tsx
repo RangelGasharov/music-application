@@ -1,3 +1,5 @@
+import { MusicArtistPhoto } from "./MusicArtistPhoto";
+
 export type MusicArtist = {
     id: string;
     name: string;
@@ -5,6 +7,8 @@ export type MusicArtist = {
     firstName?: string;
     lastName?: string;
     birthDate?: string;
+    photos: MusicArtistPhoto[],
+    primary_photo: MusicArtistPhoto
 }
 
 export type MusicArtistShort = {

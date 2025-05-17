@@ -60,6 +60,9 @@ export default function SearchPageContent() {
     const musicArtists: MusicArtist[] = results.filter(item => item.type === 'Music Artist').map(item => item.music_artist);
     const musicTracks: MusicTrack[] = results.filter(item => item.type === 'Music Track').map(item => item.music_track);
 
+
+    console.log(musicArtists);
+
     return (
         <Box p={2}>
             <Typography variant="h4" gutterBottom>Search results for &quot;{term}&quot;</Typography>

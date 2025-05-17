@@ -1,4 +1,25 @@
+.artist-header-container {
+    position: relative;
+    height: 30vh;
+}
+
+.artist-primary-image {
+    z-index: -1;
+    object-fit: cover;
+}
+
+.artist-title {
+    position: absolute;
+    bottom: 20%;
+    left: 2%;
+}
+
 .main-container {
+    display: grid;
+    gap: 1rem;
+}
+
+.music-tracks-wrapper {
     display: grid;
     gap: 1rem;
 }
@@ -9,6 +30,11 @@
     padding: .5rem;
     display: grid;
     gap: .1rem;
+}
+
+.music-albums-wrapper {
+    display: grid;
+    gap: 1rem;
 }
 
 .music-albums-container {
