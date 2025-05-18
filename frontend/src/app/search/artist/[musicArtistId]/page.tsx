@@ -8,11 +8,7 @@ import styles from "./music-artist-page.module.css"
 import MusicAlbumCard from '@/components/MusicAlbumContainer/MusicAlbumCard/MusicAlbumCard';
 import Image from 'next/image';
 
-type MusicArtistPageType = {
-    params: {
-        musicArtistId: string;
-    };
-}
+type Params = Promise<{ musicArtistId: string }>
 
 async function getMusicArtistById(musicArtistId: string): Promise<MusicArtist> {
     try {
@@ -62,7 +58,7 @@ async function getMusicAlbumsByArtistId(musicArtistId: string): Promise<MusicAlb
     }
 }
 
-export default async function MusicArtistPage({ params }: MusicArtistPageType) {
+export default async function MusicArtistPage({ params }: { params: Params }) {
     const { musicArtistId } = await params;
     try {
         const [musicArtist, musicTracks, musicAlbums] = await Promise.all([
@@ -76,7 +72,7 @@ export default async function MusicArtistPage({ params }: MusicArtistPageType) {
                 <div className={styles["artist-header-container"]}>
                     <Image
                         fill
-                        src={musicArtist.primary_photo.file_path}
+                        src={musicArtist?.primary_photo?.file_path}
                         alt={`Photo of ${musicArtist.name}`}
                         className={styles["artist-primary-image"]}
                     />
@@ -107,6 +103,7 @@ export default async function MusicArtistPage({ params }: MusicArtistPageType) {
             </div>
         );
     } catch (error) {
+        console.log(`An error has occured: ${error}`);
         notFound();
     }
 }

@@ -25,16 +25,14 @@ interface SearchResult {
 }
 
 export default function NavigationHeader() {
+    const pathname = usePathname();
+    const router = useRouter();
+
     const [searchTerm, setSearchTerm] = useState('');
     const [searchResults, setSearchResults] = useState<SearchResult[]>([]);
     const [isFocused, setIsFocused] = useState(false);
-    const router = useRouter();
-    const pathname = usePathname();
 
     const hiddenPaths = ['/login'];
-    if (hiddenPaths.includes(pathname)) {
-        return null;
-    }
 
     const fetchSearchResults = async (term: string) => {
         if (!term.trim()) {
@@ -65,6 +63,10 @@ export default function NavigationHeader() {
             setSearchResults([]);
         }
     }, [pathname]);
+
+    if (hiddenPaths.includes(pathname)) {
+        return null;
+    }
 
     const handleKeyDown = (e: React.KeyboardEvent) => {
         if (e.key === 'Enter') {

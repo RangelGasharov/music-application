@@ -5,11 +5,7 @@ import styles from "./music-album-page.module.css";
 import { MusicAlbum } from '@/types/MusicAlbum';
 import Image from 'next/image';
 
-type MusicAlbumPageType = {
-    params: {
-        musicAlbumId: string;
-    };
-}
+type Params = Promise<{ musicAlbumId: string }>
 
 async function getMusicAlbumById(musicAlbumId: string): Promise<MusicAlbum> {
     try {
@@ -43,7 +39,7 @@ async function getMusicTracksByAlbumId(musicAlbumId: string): Promise<MusicTrack
     }
 }
 
-export default async function MusicAlbumPage({ params }: MusicAlbumPageType) {
+export default async function MusicAlbumPage({ params }: { params: Params }) {
     const { musicAlbumId } = await params;
     try {
         const [musicAlbum, musicTracks] = await Promise.all([
@@ -83,11 +79,11 @@ export default async function MusicAlbumPage({ params }: MusicAlbumPageType) {
                             ))}
                         </div>
                     </div>
-
                 )}
             </div>
         );
     } catch (error) {
+        console.log(`An error has occurred: ${error}`);
         notFound();
     }
 }

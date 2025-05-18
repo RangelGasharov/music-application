@@ -1,0 +1,16 @@
+.main-container {
+    display: grid;
+    gap: 1rem;
+}
+
+.dark-mode-container {
+    width: fit-content;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+}
+
+.dark-mode-text {
+    font-size: 1.2rem;
+}
