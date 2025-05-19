@@ -1,0 +1,40 @@
+.main-container {
+    display: grid;
+    gap: 2rem;
+}
+
+.no-results-container {
+    width: 100%;
+    display: grid;
+    gap: 1rem;
+    justify-content: center;
+    align-items: center;
+}
+
+.no-results-icon-container {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    font-size: 5rem;
+}
+
+.no-results-text {
+    display: flex;
+    justify-content: center;
+    font-size: 2rem;
+}
+
+.music-artists-container {
+    display: grid;
+    gap: 1rem;
+}
+
+.music-albums-container {
+    display: grid;
+    gap: 1rem;
+}
+
+.music-tracks-container {
+    display: grid;
+    gap: 1rem;
+}

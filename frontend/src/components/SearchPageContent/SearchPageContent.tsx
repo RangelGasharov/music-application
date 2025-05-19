@@ -9,6 +9,8 @@ import { MusicArtist } from '@/types/MusicArtist';
 import { MusicTrack } from '@/types/MusicTrack';
 import MusicTrackContainer from '../MusicTrackContainer/MusicTrackContainer';
 import MusicArtistContainer from '../MusicArtistCard/MusicArtistContainer';
+import styles from "./SearchpageContent.module.css";
+import { Cancel } from '@mui/icons-material';
 
 interface SearchResult {
     music_album: MusicAlbum,
@@ -60,37 +62,41 @@ export default function SearchPageContent() {
     const musicArtists: MusicArtist[] = results.filter(item => item.type === 'Music Artist').map(item => item.music_artist);
     const musicTracks: MusicTrack[] = results.filter(item => item.type === 'Music Track').map(item => item.music_track);
 
-
-    console.log(musicArtists);
-
     return (
-        <Box p={2}>
-            <Typography variant="h4" gutterBottom>Search results for &quot;{term}&quot;</Typography>
+        <div className={styles["main-container"]}>
+            <h1>Search results for &quot;{term}&quot;</h1>
 
             {results.length === 0 && (
-                <Typography>No results found.</Typography>
-            )}
-
-            {musicTracks.length > 0 && (
-                <Box mt={4}>
-                    <Typography variant="h5" gutterBottom>Tracks</Typography>
-                    <MusicTrackContainer musicTracks={musicTracks} />
-                </Box>
-            )}
-
-            {musicAlbums.length > 0 && (
-                <Box mt={4}>
-                    <Typography variant="h5" gutterBottom>Albums</Typography>
-                    <MusicAlbumContainer musicAlbums={musicAlbums} />
-                </Box>
+                <div className={styles["no-results-container"]}>
+                    <div className={styles["no-results-icon-container"]}>
+                        <Cancel sx={{ fontSize: "5rem" }} />
+                    </div>
+                    <div className={styles["no-results-text"]}>
+                        No results found.
+                    </div>
+                </div>
             )}
 
             {musicArtists.length > 0 && (
-                <Box mt={4}>
-                    <Typography variant="h5" gutterBottom>Artists</Typography>
+                <div className={styles["music-artists-container"]}>
+                    <h2>Artists</h2>
                     <MusicArtistContainer musicArtists={musicArtists} />
-                </Box>
+                </div>
             )}
-        </Box>
+
+            {musicTracks.length > 0 && (
+                <div className={styles["music-tracks-container"]}>
+                    <h2>Tracks</h2>
+                    <MusicTrackContainer musicTracks={musicTracks} />
+                </div>
+            )}
+
+            {musicAlbums.length > 0 && (
+                <div className={styles["music-albums-container"]}>
+                    <h2>Albums</h2>
+                    <MusicAlbumContainer musicAlbums={musicAlbums} />
+                </div>
+            )}
+        </div>
     );
 }
