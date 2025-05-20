@@ -27,12 +27,18 @@ public class SearchController : Controller
 
         var lowerTerm = term.ToLower();
 
-        var albums = await _context.MusicAlbum
+        var albumEntities = await _context.MusicAlbum
             .Include(a => a.MusicArtistAlbums)
                 .ThenInclude(aa => aa.MusicArtist)
+            .ToListAsync();
+
+        var albums = albumEntities
             .Where(a =>
-                a.Title.ToLower().Contains(lowerTerm) ||
-                a.MusicArtistAlbums.Any(aa => aa.MusicArtist.Name.ToLower().Contains(lowerTerm))
+                a.Title.Split(' ', StringSplitOptions.RemoveEmptyEntries).Any(word => word.StartsWith(lowerTerm, StringComparison.OrdinalIgnoreCase)) ||
+                a.MusicArtistAlbums.Any(aa =>
+                    aa.MusicArtist.Name.Split(' ', StringSplitOptions.RemoveEmptyEntries)
+                        .Any(word => word.StartsWith(lowerTerm, StringComparison.OrdinalIgnoreCase))
+                )
             )
             .Select(a => new
             {
@@ -50,74 +56,82 @@ public class SearchController : Controller
                         Name = aa.MusicArtist.Name
                     }).ToList()
                 }
-            })
+            });
+
+        var artistEntities = await _context.MusicArtist
+            .Include(ar => ar.MusicArtistAlbums)
+                .ThenInclude(aa => aa.MusicAlbum)
+            .Include(ar => ar.MusicArtistPhotos)
             .ToListAsync();
 
-        var artists = await _context.MusicArtist
-     .Include(ar => ar.MusicArtistAlbums)
-         .ThenInclude(aa => aa.MusicAlbum)
-     .Include(ar => ar.MusicArtistPhotos)
-     .Where(ar => ar.Name.ToLower().Contains(lowerTerm))
-     .Select(ar => new
-     {
-         Type = "Music Artist",
-         MusicArtist = new MusicArtistDto
-         {
-             Id = ar.Id,
-             Name = ar.Name,
-             Description = ar.Description,
-             FirstName = ar.FirstName,
-             LastName = ar.LastName,
-             BirthDate = ar.BirthDate,
-             MusicAlbums = ar.MusicArtistAlbums
-                 .Select(aa => new MusicAlbumShortFormDto
-                 {
-                     Id = aa.MusicAlbum.Id,
-                     Title = aa.MusicAlbum.Title,
-                     CoverURL = aa.MusicAlbum.CoverURL,
-                     UploadedAt = aa.MusicAlbum.UploadedAt,
-                     ReleaseDate = aa.MusicAlbum.ReleaseDate
-                 }).ToList(),
-             Photos = ar.MusicArtistPhotos
-                 .Select(p => new MusicArtistPhotoDto
-                 {
-                     Id = p.Id,
-                     FilePath = p.FilePath,
-                     UploadedAt = p.UploadedAt,
-                     IsPrimary = p.IsPrimary
-                 }).ToList()
-         }
-     })
-     .ToListAsync();
+        var artists = artistEntities
+            .Where(ar =>
+                ar.Name.Split(' ', StringSplitOptions.RemoveEmptyEntries).Any(word => word.StartsWith(lowerTerm, StringComparison.OrdinalIgnoreCase))
+            )
+            .Select(ar => new
+            {
+                Type = "Music Artist",
+                MusicArtist = new MusicArtistDto
+                {
+                    Id = ar.Id,
+                    Name = ar.Name,
+                    Description = ar.Description,
+                    FirstName = ar.FirstName,
+                    LastName = ar.LastName,
+                    BirthDate = ar.BirthDate,
+                    MusicAlbums = ar.MusicArtistAlbums
+                        .Select(aa => new MusicAlbumShortFormDto
+                        {
+                            Id = aa.MusicAlbum.Id,
+                            Title = aa.MusicAlbum.Title,
+                            CoverURL = aa.MusicAlbum.CoverURL,
+                            UploadedAt = aa.MusicAlbum.UploadedAt,
+                            ReleaseDate = aa.MusicAlbum.ReleaseDate
+                        }).ToList(),
+                    Photos = ar.MusicArtistPhotos
+                        .Select(p => new MusicArtistPhotoDto
+                        {
+                            Id = p.Id,
+                            FilePath = p.FilePath,
+                            UploadedAt = p.UploadedAt,
+                            IsPrimary = p.IsPrimary
+                        }).ToList()
+                }
+            });
 
-        var tracks = await _context.MusicTrack
-     .Include(t => t.MusicArtistTrack)
-         .ThenInclude(at => at.MusicArtist)
-     .Where(t =>
-         t.Title.ToLower().Contains(lowerTerm) ||
-         t.MusicArtistTrack.Any(at => at.MusicArtist.Name.ToLower().Contains(lowerTerm))
-     )
-     .Select(t => new
-     {
-         Type = "Music Track",
-         MusicTrack = new MusicTrackDto
-         {
-             Id = t.Id,
-             Title = t.Title,
-             ReleaseDate = t.ReleaseDate,
-             FilePath = t.FilePath,
-             IsExplicit = t.IsExplicit,
-             UploadedAt = t.UploadedAt,
-             CoverURL = t.CoverURL,
-             Duration = t.Duration,
-             MusicArtists = t.MusicArtistTrack.Select(at => new MusicArtistShortFormDto
-             {
-                 Id = at.MusicArtist.Id,
-                 Name = at.MusicArtist.Name
-             }).ToList()
-         }
-     })
-     .ToListAsync();
+        var trackEntities = await _context.MusicTrack
+            .Include(t => t.MusicArtistTrack)
+                .ThenInclude(at => at.MusicArtist)
+            .ToListAsync();
+
+        var tracks = trackEntities
+            .Where(t =>
+                t.Title.Split(' ', StringSplitOptions.RemoveEmptyEntries).Any(word => word.StartsWith(lowerTerm, StringComparison.OrdinalIgnoreCase)) ||
+                t.MusicArtistTrack.Any(at =>
+                    at.MusicArtist.Name.Split(' ', StringSplitOptions.RemoveEmptyEntries)
+                        .Any(word => word.StartsWith(lowerTerm, StringComparison.OrdinalIgnoreCase))
+                )
+            )
+            .Select(t => new
+            {
+                Type = "Music Track",
+                MusicTrack = new MusicTrackDto
+                {
+                    Id = t.Id,
+                    Title = t.Title,
+                    ReleaseDate = t.ReleaseDate,
+                    FilePath = t.FilePath,
+                    IsExplicit = t.IsExplicit,
+                    UploadedAt = t.UploadedAt,
+                    CoverURL = t.CoverURL,
+                    Duration = t.Duration,
+                    MusicArtists = t.MusicArtistTrack.Select(at => new MusicArtistShortFormDto
+                    {
+                        Id = at.MusicArtist.Id,
+                        Name = at.MusicArtist.Name
+                    }).ToList()
+                }
+            });
 
         var results = albums.Concat<object>(artists).Concat(tracks);
 
