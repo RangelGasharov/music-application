@@ -1,0 +1,26 @@
+.app-bar-container {
+    position: static !important;
+    background-color: var(--bg-color) !important;
+    color: var(--text-color) !important;
+    box-shadow: 0px 1px 7px var(--text-color) !important;
+}
+
+.tool-bar-container {
+    display: flex;
+    gap: 1rem;
+}
+
+.search-elements-container {
+    display: flex;
+    flex: 1;
+}
+
+.text-field-container {
+    display: flex;
+    flex: 1;
+    justify-content: center;
+}
+
+.text-field-search {
+    width: 400px !important;
+}

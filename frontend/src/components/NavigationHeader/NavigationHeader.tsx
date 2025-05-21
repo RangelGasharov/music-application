@@ -13,6 +13,7 @@ import { usePathname, useRouter } from 'next/navigation';
 import { MusicAlbum } from '@/types/MusicAlbum';
 import { MusicArtist } from '@/types/MusicArtist';
 import { MusicTrack } from '@/types/MusicTrack';
+import styles from "./NavigationHeader.module.css";
 
 interface SearchResult {
     music_album?: MusicAlbum;
@@ -92,41 +93,36 @@ export default function NavigationHeader() {
     };
 
     return (
-        <Box>
-            <AppBar
-                elevation={0}
-                sx={{
-                    position: 'static',
-                    backgroundColor: 'var(--bg-color)',
-                    color: 'var(--text-color)',
-                    boxShadow: '0px 1px 7px var(--text-color)',
-                }}
-            >
-                <Toolbar sx={{ display: 'flex', justifyContent: 'space-between' }}>
+        <div>
+            <AppBar className={styles["app-bar-container"]}>
+                <Toolbar className={styles["tool-bar-container"]}>
                     <NavigationDrawer />
-                    <Box sx={{ position: 'relative', width: '400px' }}>
-                        <TextField
-                            variant="outlined"
-                            size="small"
-                            fullWidth
-                            placeholder="Search albums, artists, tracks, playlists..."
-                            value={searchTerm}
-                            onChange={(e) => setSearchTerm(e.target.value)}
-                            onFocus={() => setIsFocused(true)}
-                            onBlur={() => setTimeout(() => setIsFocused(false), 200)}
-                            onKeyDown={handleKeyDown}
-                            InputProps={{
-                                startAdornment: (
-                                    <InputAdornment position="start">
-                                        <SearchIcon />
-                                    </InputAdornment>
-                                ),
-                                sx: {
-                                    backgroundColor: 'white',
-                                    borderRadius: 1,
-                                },
-                            }}
-                        />
+                    <div className={styles["search-elements-container"]}>
+                        <div className={styles["text-field-container"]}>
+                            <TextField
+                                className={styles["text-field-search"]}
+                                variant="outlined"
+                                size="small"
+                                fullWidth
+                                placeholder="Search albums, artists, tracks, playlists..."
+                                value={searchTerm}
+                                onChange={(e) => setSearchTerm(e.target.value)}
+                                onFocus={() => setIsFocused(true)}
+                                onBlur={() => setTimeout(() => setIsFocused(false), 200)}
+                                onKeyDown={handleKeyDown}
+                                InputProps={{
+                                    startAdornment: (
+                                        <InputAdornment position="start">
+                                            <SearchIcon />
+                                        </InputAdornment>
+                                    ),
+                                    sx: {
+                                        backgroundColor: 'white',
+                                        borderRadius: 1,
+                                    },
+                                }}
+                            />
+                        </div>
                         {isFocused && searchResults.length > 0 && (
                             <Paper
                                 sx={{
@@ -188,9 +184,9 @@ export default function NavigationHeader() {
                                 </List>
                             </Paper>
                         )}
-                    </Box>
+                    </div>
                 </Toolbar>
             </AppBar>
-        </Box>
+        </div>
     );
 }
