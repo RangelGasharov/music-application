@@ -25,7 +25,11 @@ public class SearchController : Controller
         if (string.IsNullOrWhiteSpace(term))
             return BadRequest("Search term is required.");
 
-        var lowerTerm = term.ToLower();
+        var normalizedTerm = term.Trim().ToLower();
+        var searchPhrases = normalizedTerm
+            .Split(' ', StringSplitOptions.RemoveEmptyEntries)
+            .Where(p => p.Length >= 2)
+            .ToList();
 
         var albumEntities = await _context.MusicAlbum
             .Include(a => a.MusicArtistAlbums)
@@ -34,10 +38,11 @@ public class SearchController : Controller
 
         var albums = albumEntities
             .Where(a =>
-                a.Title.Split(' ', StringSplitOptions.RemoveEmptyEntries).Any(word => word.StartsWith(lowerTerm, StringComparison.OrdinalIgnoreCase)) ||
-                a.MusicArtistAlbums.Any(aa =>
-                    aa.MusicArtist.Name.Split(' ', StringSplitOptions.RemoveEmptyEntries)
-                        .Any(word => word.StartsWith(lowerTerm, StringComparison.OrdinalIgnoreCase))
+                a.Title.ToLower().Contains(normalizedTerm) ||
+                a.MusicArtistAlbums.Any(aa => aa.MusicArtist.Name.ToLower().Contains(normalizedTerm)) ||
+                searchPhrases.Any(p =>
+                    a.Title.ToLower().Contains(p) ||
+                    a.MusicArtistAlbums.Any(aa => aa.MusicArtist.Name.ToLower().Contains(p))
                 )
             )
             .Select(a => new
@@ -66,7 +71,8 @@ public class SearchController : Controller
 
         var artists = artistEntities
             .Where(ar =>
-                ar.Name.Split(' ', StringSplitOptions.RemoveEmptyEntries).Any(word => word.StartsWith(lowerTerm, StringComparison.OrdinalIgnoreCase))
+                ar.Name.ToLower().Contains(normalizedTerm) ||
+                searchPhrases.Any(p => ar.Name.ToLower().Contains(p))
             )
             .Select(ar => new
             {
@@ -106,10 +112,11 @@ public class SearchController : Controller
 
         var tracks = trackEntities
             .Where(t =>
-                t.Title.Split(' ', StringSplitOptions.RemoveEmptyEntries).Any(word => word.StartsWith(lowerTerm, StringComparison.OrdinalIgnoreCase)) ||
-                t.MusicArtistTrack.Any(at =>
-                    at.MusicArtist.Name.Split(' ', StringSplitOptions.RemoveEmptyEntries)
-                        .Any(word => word.StartsWith(lowerTerm, StringComparison.OrdinalIgnoreCase))
+                t.Title.ToLower().Contains(normalizedTerm) ||
+                t.MusicArtistTrack.Any(at => at.MusicArtist.Name.ToLower().Contains(normalizedTerm)) ||
+                searchPhrases.Any(p =>
+                    t.Title.ToLower().Contains(p) ||
+                    t.MusicArtistTrack.Any(at => at.MusicArtist.Name.ToLower().Contains(p))
                 )
             )
             .Select(t => new
