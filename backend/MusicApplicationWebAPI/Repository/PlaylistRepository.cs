@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using MusicApplicationWebAPI.Data;
+using MusicApplicationWebAPI.Dtos.MusicAlbum;
 using MusicApplicationWebAPI.Models.Entities;
 
 namespace MusicApplicationWebAPI.Repository
@@ -27,11 +28,18 @@ namespace MusicApplicationWebAPI.Repository
             return await _context.Playlist.FindAsync(id);
         }
 
-        public async Task<Playlist> AddPlaylistAsync(Playlist playlist)
+        public async Task<Playlist> AddPlaylistAsync(AddPlaylistDto addPlaylistDto)
         {
-            playlist.Id = Guid.NewGuid();
-            playlist.CreatedAt = DateTime.UtcNow;
-            playlist.UpdatedAt = DateTime.UtcNow;
+            var playlist = new Playlist
+            {
+                Id = Guid.NewGuid(),
+                UserId = addPlaylistDto.UserId,
+                Title = addPlaylistDto.Title,
+                Description = addPlaylistDto.Description,
+                CreatedAt = DateTime.UtcNow,
+                UpdatedAt = DateTime.UtcNow,
+                IsPublic = addPlaylistDto.IsPublic
+            };
 
             await _context.Playlist.AddAsync(playlist);
             await _context.SaveChangesAsync();

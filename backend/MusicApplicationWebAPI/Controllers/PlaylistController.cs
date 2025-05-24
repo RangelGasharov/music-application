@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
+using MusicApplicationWebAPI.Dtos.MusicAlbum;
 using MusicApplicationWebAPI.Models.Entities;
 using MusicApplicationWebAPI.Repository;
 
@@ -33,10 +34,18 @@ public class PlaylistController : ControllerBase
     }
 
     [HttpPost]
-    public async Task<IActionResult> AddPlaylist([FromBody] Playlist playlist)
+    public async Task<IActionResult> AddPlaylist(AddPlaylistDto addPlaylistDto)
     {
-        var createdPlaylist = await _playlistRepository.AddPlaylistAsync(playlist);
-        return CreatedAtAction(nameof(GetPlaylistById), new { id = createdPlaylist.Id }, createdPlaylist);
+        var playlistDto = new AddPlaylistDto()
+        {
+            UserId = addPlaylistDto.UserId,
+            Title = addPlaylistDto.Title,
+            Description = addPlaylistDto.Description,
+            IsPublic = addPlaylistDto.IsPublic
+        };
+
+        var playlist = await _playlistRepository.AddPlaylistAsync(playlistDto);
+        return Ok(playlist);
     }
 
     [HttpPut("{id:guid}")]
