@@ -13,9 +13,9 @@ import styles from "./SearchpageContent.module.css";
 import { Cancel } from '@mui/icons-material';
 
 interface SearchResult {
-    music_album: MusicAlbum,
-    music_artist: MusicArtist,
-    music_track: MusicTrack,
+    music_album: MusicAlbum;
+    music_artist: MusicArtist;
+    music_track: MusicTrack;
     title?: string;
     name?: string;
     type: string;
@@ -28,16 +28,27 @@ export default function SearchPageContent() {
 
     const [results, setResults] = useState<SearchResult[]>([]);
     const [loading, setLoading] = useState(true);
+    const [hasError, setHasError] = useState(false);
 
     useEffect(() => {
         async function fetchResults() {
             if (!term) return;
+
+            setLoading(true);
+            setHasError(false);
+
             try {
                 const res = await fetch(`/api/search?term=${encodeURIComponent(term)}`);
+                if (!res.ok) {
+                    throw new Error(`Fetch failed with status ${res.status}`);
+                }
+
                 const data = await res.json();
                 setResults(data);
             } catch (error) {
                 console.error('Failed to fetch search results:', error);
+                setHasError(true);
+                setResults([]);
             } finally {
                 setLoading(false);
             }
@@ -62,17 +73,19 @@ export default function SearchPageContent() {
     const musicArtists: MusicArtist[] = results.filter(item => item.type === 'Music Artist').map(item => item.music_artist);
     const musicTracks: MusicTrack[] = results.filter(item => item.type === 'Music Track').map(item => item.music_track);
 
+    const noResults = results.length === 0;
+
     return (
         <div className={styles["main-container"]}>
             <h1>Search results for &quot;{term}&quot;</h1>
 
-            {results.length === 0 && (
+            {(noResults || hasError) && (
                 <div className={styles["no-results-container"]}>
                     <div className={styles["no-results-icon-container"]}>
                         <Cancel sx={{ fontSize: "5rem" }} />
                     </div>
                     <div className={styles["no-results-text"]}>
-                        No results found.
+                        {hasError ? 'An error occurred while fetching results.' : 'No results found.'}
                     </div>
                 </div>
             )}
