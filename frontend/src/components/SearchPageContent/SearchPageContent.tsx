@@ -77,7 +77,7 @@ export default function SearchPageContent() {
 
     return (
         <div className={styles["main-container"]}>
-            <h1>Search results for &quot;{term}&quot;</h1>
+            <h1>Top results for &quot;{term}&quot;</h1>
 
             {(noResults || hasError) && (
                 <div className={styles["no-results-container"]}>

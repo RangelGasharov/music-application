@@ -5,6 +5,11 @@
     cursor: pointer;
 }
 
+.main-container:hover {
+    transition: 200ms ease-in-out;
+    transform: scale(1.02);
+}
+
 .music-artist-info {
     padding: 1rem;
     font-size: 0.8rem;
