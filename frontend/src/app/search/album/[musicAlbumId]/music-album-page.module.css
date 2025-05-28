@@ -33,3 +33,30 @@
     display: grid;
     gap: .1rem;
 }
+
+.info-containers-wrapper {
+    display: grid;
+    gap: .5rem;
+}
+
+.info-container {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    align-items: center;
+}
+
+.info-container-title-icon-box {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.info-container-title {
+    font-size: 1.1rem;
+    font-weight: bold;
+}
+
+.info-container-icon {
+    display: flex;
+    justify-content: center;
+}

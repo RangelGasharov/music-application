@@ -4,6 +4,10 @@ import { notFound } from 'next/navigation';
 import styles from "./music-album-page.module.css";
 import { MusicAlbum } from '@/types/MusicAlbum';
 import Image from 'next/image';
+import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
+import AccessTimeIcon from '@mui/icons-material/AccessTime';
+import MusicNoteIcon from '@mui/icons-material/MusicNote';
+import { getDurationInSeconds } from '@/utils/getDurationInSeconds';
 
 type Params = Promise<{ musicAlbumId: string }>
 
@@ -47,6 +51,22 @@ export default async function MusicAlbumPage({ params }: { params: Params }) {
             getMusicTracksByAlbumId(musicAlbumId)
         ]);
 
+        const musicAlbumDate: Date = new Date(musicAlbum?.release_date);
+        const musicAlbumDateFormatted: string = new Intl.DateTimeFormat(navigator.language, {
+            year: 'numeric', month: 'long', day: 'numeric'
+        }).format(musicAlbumDate);
+
+        const totalStreams: number = musicTracks.reduce((acc, currentMusicTrack: MusicTrack) => acc + 0, 0);
+
+        function getTotalMinutes(musicTracks: MusicTrack[]): number {
+            const totalSeconds = musicTracks
+                .map(musicTrack => getDurationInSeconds(musicTrack.duration))
+                .reduce((sum, seconds) => sum + seconds, 0);
+            return Math.floor(totalSeconds / 60);
+        }
+
+        const totalAlbumLength = getTotalMinutes(musicTracks);
+
         return (
             <div className={styles["main-container"]}>
                 <div className={styles['music-album-information-container']}>
@@ -56,6 +76,35 @@ export default async function MusicAlbumPage({ params }: { params: Params }) {
                         </div>
                         <div>
                             {musicAlbum?.description}
+                        </div>
+                        <div className={styles["info-containers-wrapper"]}>
+                            <div className={styles["info-container"]}>
+                                <div className={styles["info-container-title-icon-box"]}>
+                                    <div className={styles["info-container-title"]}>Release date</div>
+                                    <div className={styles["info-container-icon"]}><CalendarMonthIcon /></div>
+                                </div>
+                                <div className={styles["info-container-value"]}>
+                                    {musicAlbumDateFormatted}
+                                </div>
+                            </div>
+                            <div className={styles["info-container"]}>
+                                <div className={styles["info-container-title-icon-box"]}>
+                                    <div className={styles["info-container-title"]}>Total length</div>
+                                    <div className={styles["info-container-icon"]}><AccessTimeIcon /></div>
+                                </div>
+                                <div className={styles["info-container-value"]}>
+                                    {totalAlbumLength}
+                                </div>
+                            </div>
+                            <div className={styles["info-container"]}>
+                                <div className={styles["info-container-title-icon-box"]}>
+                                    <div className={styles["info-container-title"]}>Total streams</div>
+                                    <div className={styles["info-container-icon"]}><MusicNoteIcon /></div>
+                                </div>
+                                <div className={styles["info-container-value"]}>
+                                    {totalStreams}
+                                </div>
+                            </div>
                         </div>
                     </div>
                     <div>
