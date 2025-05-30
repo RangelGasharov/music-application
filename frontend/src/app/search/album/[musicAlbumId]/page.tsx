@@ -3,13 +3,14 @@ import { MusicTrack } from '@/types/MusicTrack';
 import { notFound } from 'next/navigation';
 import styles from "./music-album-page.module.css";
 import { MusicAlbum } from '@/types/MusicAlbum';
-import Image from 'next/image';
 import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
 import AccessTimeIcon from '@mui/icons-material/AccessTime';
 import MusicNoteIcon from '@mui/icons-material/MusicNote';
+import PlayArrowIcon from '@mui/icons-material/PlayArrow';
 import { getDurationInSeconds } from '@/utils/getDurationInSeconds';
 import { MusicArtistShort } from '@/types/MusicArtist';
 import Link from 'next/link';
+import MusicAlbumCoverDialog from '@/components/MusicAlbumCoverDialog/MusicAlbumCoverDialog';
 
 type Params = Promise<{ musicAlbumId: string }>
 
@@ -106,6 +107,15 @@ export default async function MusicAlbumPage({ params }: { params: Params }) {
                             <div className={styles["info-container"]}>
                                 <div className={styles["info-container-title-icon-box"]}>
                                     <div className={styles["info-container-icon"]}><MusicNoteIcon /></div>
+                                    <div className={styles["info-container-title"]}>Tracks</div>
+                                </div>
+                                <div className={styles["info-container-value"]}>
+                                    {musicTracks.length}
+                                </div>
+                            </div>
+                            <div className={styles["info-container"]}>
+                                <div className={styles["info-container-title-icon-box"]}>
+                                    <div className={styles["info-container-icon"]}><PlayArrowIcon /></div>
                                     <div className={styles["info-container-title"]}>Streams</div>
                                 </div>
                                 <div className={styles["info-container-value"]}>
@@ -115,14 +125,7 @@ export default async function MusicAlbumPage({ params }: { params: Params }) {
                         </div>
                     </div>
                     <div>
-                        <Image
-                            src={musicAlbum.cover_url}
-                            alt={musicAlbum.title}
-                            width={300}
-                            height={300}
-                            className={styles["image"]}
-                            priority
-                        />
+                        <MusicAlbumCoverDialog musicAlbum={musicAlbum} />
                     </div>
                 </div>
 

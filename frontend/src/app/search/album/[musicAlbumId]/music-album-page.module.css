@@ -28,7 +28,7 @@
 }
 
 .music-artist-name {
-    font-size: 1rem;
+    font-size: .9rem;
 }
 
 .music-artist-name:hover,
@@ -74,14 +74,14 @@
 }
 
 .info-container-title {
-    font-size: 0.9rem;
     display: flex;
+    font-weight: bold;
     justify-content: center;
 }
 
 .info-container-value {
-    font-size: 1.1rem;
-    font-weight: bold;
+    font-size: 0.9rem;
+    font-weight: lighter;
     display: flex;
     justify-content: center;
 }
