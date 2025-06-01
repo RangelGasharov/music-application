@@ -59,7 +59,7 @@ export default async function MusicAlbumPage({ params }: { params: Params }) {
             year: 'numeric', month: 'short', day: 'numeric'
         }).format(musicAlbumDate);
 
-        const totalStreams: number = musicTracks.reduce((acc, currentMusicTrack: MusicTrack) => acc + 0, 0);
+        const totalStreams: number = musicTracks.reduce((acc/*, currentMusicTrack: MusicTrack*/) => acc, 0);
 
         function getTotalMinutes(musicTracks: MusicTrack[]): number {
             const totalSeconds = musicTracks

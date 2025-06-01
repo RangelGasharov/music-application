@@ -4,6 +4,8 @@ import { getServerSession } from 'next-auth'
 import { redirect } from 'next/navigation'
 import React from 'react'
 import styles from "./login-page.module.css"
+import ThemeToggle from '@/components/ThemeToggle/ThemeToggle'
+import { MusicNote } from '@mui/icons-material'
 
 export default async function LoginPage() {
     const session = await getServerSession(authOptions);
@@ -12,6 +14,13 @@ export default async function LoginPage() {
     }
     return (
         <div className={styles["main-container"]}>
+            <div className={styles["login-page-header"]}>
+                <div className={styles["logo-container"]}>
+                    <div>music application</div>
+                    <MusicNote />
+                </div>
+                <ThemeToggle />
+            </div>
             <h1 className={styles["page-title"]}>Welcome to music application!</h1>
             <div className={styles["authentication-options-container"]}>
                 <div className={styles["login-container"]}>

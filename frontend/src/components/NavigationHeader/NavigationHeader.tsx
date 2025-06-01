@@ -2,7 +2,6 @@
 
 import * as React from 'react';
 import AppBar from '@mui/material/AppBar';
-import Box from '@mui/material/Box';
 import Toolbar from '@mui/material/Toolbar';
 import NavigationDrawer from '../NavigationDrawer/NavigationDrawer';
 import { TextField, InputAdornment, List, ListItem, ListItemText, Paper, ListItemButton, Typography } from '@mui/material';

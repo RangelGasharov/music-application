@@ -1,3 +1,15 @@
+.login-page-header {
+    display: flex;
+    justify-content: space-between;
+}
+
+.logo-container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+}
+
 .main-container {
     display: grid;
     padding: 2rem;
