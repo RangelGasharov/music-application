@@ -7,6 +7,7 @@ import React from 'react'
 import styles from "./music-artist-page.module.css"
 import MusicAlbumCard from '@/components/MusicAlbumContainer/MusicAlbumCard/MusicAlbumCard';
 import Image from 'next/image';
+import { DEFAUL_MUSIC_ARTIST_IMAGE_SOURCE } from '@/constants/constants';
 
 type Params = Promise<{ musicArtistId: string }>
 
@@ -72,7 +73,7 @@ export default async function MusicArtistPage({ params }: { params: Params }) {
                 <div className={styles["artist-header-container"]}>
                     <Image
                         fill
-                        src={musicArtist?.primary_photo?.file_path}
+                        src={musicArtist?.primary_photo?.file_path || DEFAUL_MUSIC_ARTIST_IMAGE_SOURCE}
                         alt={`Photo of ${musicArtist.name}`}
                         className={styles["artist-primary-image"]}
                     />

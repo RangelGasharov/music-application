@@ -1,12 +1,12 @@
 .main-container {
     display: grid;
     gap: 2rem;
+    padding: 1rem;
 }
 
 .music-album-information-container {
     display: flex;
     justify-content: space-between;
-    padding: 1rem;
     gap: 5%;
 }
 

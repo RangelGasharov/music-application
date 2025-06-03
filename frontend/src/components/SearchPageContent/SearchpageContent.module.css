@@ -1,5 +1,6 @@
 .main-container {
     display: grid;
+    padding: 1rem;
     gap: 2rem;
 }
 

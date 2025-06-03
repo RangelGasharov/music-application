@@ -3,6 +3,7 @@ import styles from "./MusicArtistCard.module.css";
 import { MusicArtist } from '@/types/MusicArtist';
 import Link from 'next/link';
 import Image from 'next/image';
+import { DEFAUL_MUSIC_ARTIST_IMAGE_SOURCE } from '@/constants/constants';
 
 type MusicArtistCardType = {
     musicArtist: MusicArtist
@@ -14,7 +15,7 @@ export default function MusicArtistCard({ musicArtist }: MusicArtistCardType) {
             <div>
                 <Image
                     quality={50}
-                    src={musicArtist?.primary_photo?.file_path}
+                    src={musicArtist?.primary_photo?.file_path || DEFAUL_MUSIC_ARTIST_IMAGE_SOURCE}
                     alt={musicArtist.name}
                     width={200}
                     height={200}
