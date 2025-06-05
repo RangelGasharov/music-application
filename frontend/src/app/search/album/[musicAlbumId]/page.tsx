@@ -10,7 +10,7 @@ import PlayArrowIcon from '@mui/icons-material/PlayArrow';
 import { getDurationInSeconds } from '@/utils/getDurationInSeconds';
 import { MusicArtistShort } from '@/types/MusicArtist';
 import Link from 'next/link';
-import MusicAlbumCoverDialog from '@/components/MusicAlbumCoverDialog/MusicAlbumCoverDialog';
+import MusicAlbumCoverDialog from '@/components/MusicCoverDialog/MusicCoverDialog';
 
 type Params = Promise<{ musicAlbumId: string }>
 
@@ -125,7 +125,7 @@ export default async function MusicAlbumPage({ params }: { params: Params }) {
                         </div>
                     </div>
                     <div>
-                        <MusicAlbumCoverDialog musicAlbum={musicAlbum} />
+                        <MusicAlbumCoverDialog coverSource={musicAlbum.cover_url} title={musicAlbum.title} />
                     </div>
                 </div>
 

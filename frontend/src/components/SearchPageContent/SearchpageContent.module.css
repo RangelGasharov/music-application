@@ -25,6 +25,12 @@
     font-size: 2rem;
 }
 
+.title-container {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+}
+
 .music-artists-container {
     display: grid;
     gap: 1rem;

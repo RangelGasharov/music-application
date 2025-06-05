@@ -1,6 +1,7 @@
 .main-container {
     display: grid;
-    gap: 1rem;
+    gap: 2rem;
+    padding: 1rem;
 }
 
 .info-containers-wrapper {

@@ -3,13 +3,14 @@ import { MusicAlbum } from '@/types/MusicAlbum'
 import { Dialog } from '@mui/material'
 import Image from 'next/image'
 import React, { useState } from 'react'
-import styles from "./MusicAlbumCoverDialog.module.css"
+import styles from "./MusicCoverDialog.module.css"
 
-type MusicAlbumCoverDialogType = {
-    musicAlbum: MusicAlbum
+type MusicCoverDialogType = {
+    coverSource: string;
+    title: string;
 }
 
-export default function MusicAlbumCoverDialog({ musicAlbum }: MusicAlbumCoverDialogType) {
+export default function MusicCoverDialog({ coverSource, title }: MusicCoverDialogType) {
     const [open, setOpen] = useState(false);
     const handleClickOpen = () => {
         setOpen(true);
@@ -21,19 +22,19 @@ export default function MusicAlbumCoverDialog({ musicAlbum }: MusicAlbumCoverDia
     return (
         <div>
             <Image
-                src={musicAlbum.cover_url}
-                alt={musicAlbum.title}
+                src={coverSource}
+                alt={title}
                 width={300}
                 height={300}
                 priority
                 onClick={handleClickOpen}
-                className={styles["image-album-cover"]}
+                className={styles["image-cover"]}
             />
             <Dialog open={open} onClose={handleClose}>
                 <div className={styles["image-wrapper"]}>
                     <Image
-                        src={musicAlbum.cover_url}
-                        alt={musicAlbum.title}
+                        src={coverSource}
+                        alt={title}
                         fill
                         sizes="(max-width: 768px) 80vw, (max-width: 1200px) 60vw, 40vw"
                         priority

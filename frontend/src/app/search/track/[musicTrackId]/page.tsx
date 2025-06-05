@@ -3,9 +3,8 @@ import React from 'react'
 import styles from "./music-track-page.module.css"
 import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
 import AccessTimeIcon from '@mui/icons-material/AccessTime';
-import MusicNoteIcon from '@mui/icons-material/MusicNote';
 import PlayArrowIcon from '@mui/icons-material/PlayArrow';
-import { getDurationInSeconds } from '@/utils/getDurationInSeconds';
+import { getDurationInSeconds } from '@/utils/getDurationInSeconds'; import MusicCoverDialog from '@/components/MusicCoverDialog/MusicCoverDialog';
 
 type Params = Promise<{ musicTrackId: string }>
 
@@ -42,6 +41,7 @@ export default async function MusicTrackPage({ params }: { params: Params }) {
     return (
         <div className={styles["main-container"]}>
             <h1>{musicTrack.title}</h1>
+            <MusicCoverDialog coverSource={musicTrack.cover_url} title={musicTrack.title} />
             <div className={styles["info-containers-wrapper"]}>
                 <div className={styles["info-container"]}>
                     <div className={styles["info-container-title-icon-box"]}>
