@@ -12,6 +12,8 @@ import MusicArtistContainer from '../MusicArtistCard/MusicArtistContainer';
 import styles from "./SearchpageContent.module.css";
 import { Cancel } from '@mui/icons-material';
 import AlbumIcon from '@mui/icons-material/Album';
+import MusicNoteIcon from '@mui/icons-material/MusicNote';
+import PersonIcon from '@mui/icons-material/Person';
 
 interface SearchResult {
     music_album: MusicAlbum;
@@ -93,14 +95,20 @@ export default function SearchPageContent() {
 
             {musicArtists.length > 0 && (
                 <div className={styles["music-artists-container"]}>
-                    <h2>Artists</h2>
+                    <div className={styles["title-container"]}>
+                        <h2>Artists</h2>
+                        <PersonIcon />
+                    </div>
                     <MusicArtistContainer musicArtists={musicArtists} />
                 </div>
             )}
 
             {musicTracks.length > 0 && (
                 <div className={styles["music-tracks-container"]}>
-                    <h2>Tracks</h2>
+                    <div className={styles["title-container"]}>
+                        <h2>Tracks</h2>
+                        <MusicNoteIcon />
+                    </div>
                     <MusicTrackContainer musicTracks={musicTracks} />
                 </div>
             )}

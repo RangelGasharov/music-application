@@ -4,6 +4,11 @@
     padding: 1rem;
 }
 
+.music-album-cover-about-container {
+    display: flex;
+    gap: 2rem;
+}
+
 .info-containers-wrapper {
     display: flex;
     justify-content: space-around;

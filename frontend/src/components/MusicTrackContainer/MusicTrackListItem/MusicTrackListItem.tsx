@@ -4,6 +4,7 @@ import styles from "./MusicTrackListItem.module.css";
 import React from 'react'
 import { MusicArtistShort } from '@/types/MusicArtist';
 import Image from 'next/image';
+import Link from 'next/link';
 
 type MusicTrackListItem = {
     musicTrack: MusicTrack;
@@ -24,7 +25,11 @@ export default function MusicTrackListItem({ musicTrack, order }: MusicTrackList
                     priority
                 />
             </div>
-            <div className={styles["title-box"]}>{musicTrack.title}</div>
+            <div className={styles["title-box"]}>
+                <Link href={`/search/track/${musicTrack.id}`}>
+                    {musicTrack.title}
+                </Link>
+            </div>
             <div className={styles["music-artist-container"]}>
                 {musicTrack.music_artists?.map((musicArtist: MusicArtistShort) => {
                     return <div key={musicArtist.id}>{musicArtist.name}</div>

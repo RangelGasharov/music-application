@@ -41,7 +41,16 @@ export default async function MusicTrackPage({ params }: { params: Params }) {
     return (
         <div className={styles["main-container"]}>
             <h1>{musicTrack.title}</h1>
-            <MusicCoverDialog coverSource={musicTrack.cover_url} title={musicTrack.title} />
+            <div className={styles["music-album-cover-about-container"]}>
+                <MusicCoverDialog coverSource={musicTrack.cover_url} title={musicTrack.title} /><div>
+                    <div>
+                        <h3>Music album</h3>
+                    </div>
+                    <div>
+                        <h3>Genres</h3>
+                    </div>
+                </div>
+            </div>
             <div className={styles["info-containers-wrapper"]}>
                 <div className={styles["info-container"]}>
                     <div className={styles["info-container-title-icon-box"]}>
