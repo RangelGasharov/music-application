@@ -6,6 +6,7 @@ using Microsoft.EntityFrameworkCore;
 using MusicApplicationWebAPI.Data;
 using MusicApplicationWebAPI.Dtos.MusicAlbum;
 using MusicApplicationWebAPI.Dtos.MusicArtist;
+using MusicApplicationWebAPI.Dtos.MusicGenre;
 using MusicApplicationWebAPI.Dtos.MusicTrack;
 using MusicApplicationWebAPI.Interfaces;
 using MusicApplicationWebAPI.Models.Entities;
@@ -28,24 +29,43 @@ namespace MusicApplicationWebAPI.Repository
         {
             var musicTracks = await _context.MusicTrack
             .Include(music_track => music_track.MusicArtistTrack)
-            .ThenInclude(music_artist_track => music_artist_track.MusicArtist)
+                .ThenInclude(music_artist_track => music_artist_track.MusicArtist)
+            .Include(music_track => music_track.MusicGenreTrack)
+                .ThenInclude(mgt => mgt.MusicGenre)
+            .Include(music_track => music_track.MusicTrackAlbums)
+                .ThenInclude(mta => mta.MusicAlbum)
             .ToListAsync();
 
-            return [.. musicTracks.Select(music_track => new MusicTrackDto
+            return [.. musicTracks.Select(musicTrack => new MusicTrackDto
             {
-                Id = music_track.Id,
-                Title = music_track.Title,
-                CoverURL = music_track.CoverURL,
-                UploadedAt = music_track.UploadedAt,
-                ReleaseDate = music_track.ReleaseDate,
-                FilePath = music_track.FilePath,
-                IsExplicit = music_track.IsExplicit,
-                Duration = music_track.Duration,
-                MusicArtists = [.. music_track.MusicArtistTrack
+                Id = musicTrack.Id,
+                Title = musicTrack.Title,
+                CoverURL = musicTrack.CoverURL,
+                UploadedAt = musicTrack.UploadedAt,
+                ReleaseDate = musicTrack.ReleaseDate,
+                FilePath = musicTrack.FilePath,
+                IsExplicit = musicTrack.IsExplicit,
+                Duration = musicTrack.Duration,
+                MusicArtists = [.. musicTrack.MusicArtistTrack
                     .Select(music_artist_track => new MusicArtistShortFormDto
                     {
                         Id = music_artist_track.MusicArtist.Id,
                         Name = music_artist_track.MusicArtist.Name
+                    })],
+                MusicGenres = [.. musicTrack.MusicGenreTrack
+                    .Select(mgt => new MusicGenreDto
+                    {
+                        Id = mgt.MusicGenre.Id,
+                        Name = mgt.MusicGenre.Name
+                    })],
+                MusicAlbums = [.. musicTrack.MusicTrackAlbums
+                        .Select(mta => new MusicAlbumShortFormDto
+                        {
+                            Id = mta.MusicAlbum.Id,
+                            Title = mta.MusicAlbum.Title,
+                            CoverURL = mta.MusicAlbum.CoverURL,
+                            UploadedAt = mta.MusicAlbum.UploadedAt,
+                            ReleaseDate = mta.MusicAlbum.ReleaseDate
                     })]
             })];
         }
@@ -54,7 +74,11 @@ namespace MusicApplicationWebAPI.Repository
         {
             var musicTrack = await _context.MusicTrack
             .Include(music_track => music_track.MusicArtistTrack)
-            .ThenInclude(music_artist_track => music_artist_track.MusicArtist)
+                .ThenInclude(music_artist_track => music_artist_track.MusicArtist)
+            .Include(music_track => music_track.MusicGenreTrack)
+                .ThenInclude(mgt => mgt.MusicGenre)
+            .Include(music_track => music_track.MusicTrackAlbums)
+                .ThenInclude(mta => mta.MusicAlbum)
             .FirstOrDefaultAsync(musicTrack => musicTrack.Id == id);
 
             if (musicTrack == null)
@@ -71,13 +95,27 @@ namespace MusicApplicationWebAPI.Repository
                 FilePath = musicTrack.FilePath,
                 IsExplicit = musicTrack.IsExplicit,
                 Duration = musicTrack.Duration,
-                MusicArtists = musicTrack.MusicArtistTrack
+                MusicArtists = [.. musicTrack.MusicArtistTrack
                        .Select(music_artist_track => new MusicArtistShortFormDto
                        {
                            Id = music_artist_track.MusicArtist.Id,
                            Name = music_artist_track.MusicArtist.Name
-                       })
-                       .ToList()
+                       })],
+                MusicGenres = [.. musicTrack.MusicGenreTrack
+                        .Select(mgt => new MusicGenreDto
+                        {
+                            Id = mgt.MusicGenre.Id,
+                            Name = mgt.MusicGenre.Name
+                        })],
+                MusicAlbums = [.. musicTrack.MusicTrackAlbums
+                        .Select(mta => new MusicAlbumShortFormDto
+                        {
+                            Id = mta.MusicAlbum.Id,
+                            Title = mta.MusicAlbum.Title,
+                            CoverURL = mta.MusicAlbum.CoverURL,
+                            UploadedAt = mta.MusicAlbum.UploadedAt,
+                            ReleaseDate = mta.MusicAlbum.ReleaseDate
+                        })]
             };
         }
 
@@ -89,24 +127,38 @@ namespace MusicApplicationWebAPI.Repository
                 .Where(mt => mt.MusicArtistTrack.Any(mat => mat.MusicArtistId == artistId))
                 .ToListAsync();
 
-            return musicTracks.Select(music_track => new MusicTrackDto
+            return [.. musicTracks.Select(musicTrack => new MusicTrackDto
             {
-                Id = music_track.Id,
-                Title = music_track.Title,
-                CoverURL = music_track.CoverURL,
-                UploadedAt = music_track.UploadedAt,
-                ReleaseDate = music_track.ReleaseDate,
-                FilePath = music_track.FilePath,
-                IsExplicit = music_track.IsExplicit,
-                Duration = music_track.Duration,
-                MusicArtists = music_track.MusicArtistTrack
+                Id = musicTrack.Id,
+                Title = musicTrack.Title,
+                CoverURL = musicTrack.CoverURL,
+                UploadedAt = musicTrack.UploadedAt,
+                ReleaseDate = musicTrack.ReleaseDate,
+                FilePath = musicTrack.FilePath,
+                IsExplicit = musicTrack.IsExplicit,
+                Duration = musicTrack.Duration,
+                MusicArtists = [.. musicTrack.MusicArtistTrack
                     .Select(music_artist_track => new MusicArtistShortFormDto
                     {
                         Id = music_artist_track.MusicArtist.Id,
                         Name = music_artist_track.MusicArtist.Name
-                    })
-                    .ToList()
-            }).ToList();
+                    })],
+                MusicGenres = [.. musicTrack.MusicGenreTrack
+                    .Select(mgt => new MusicGenreDto
+                    {
+                        Id = mgt.MusicGenre.Id,
+                        Name = mgt.MusicGenre.Name
+                    })],
+                MusicAlbums = [.. musicTrack.MusicTrackAlbums
+                        .Select(mta => new MusicAlbumShortFormDto
+                        {
+                            Id = mta.MusicAlbum.Id,
+                            Title = mta.MusicAlbum.Title,
+                            CoverURL = mta.MusicAlbum.CoverURL,
+                            UploadedAt = mta.MusicAlbum.UploadedAt,
+                            ReleaseDate = mta.MusicAlbum.ReleaseDate
+                    })]
+            })];
         }
 
         public async Task<List<MusicTrackDto>> GetMusicTracksByMusicAlbumId(Guid albumId)
