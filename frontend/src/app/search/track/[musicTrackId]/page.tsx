@@ -5,6 +5,8 @@ import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
 import AccessTimeIcon from '@mui/icons-material/AccessTime';
 import PlayArrowIcon from '@mui/icons-material/PlayArrow';
 import { getDurationInSeconds } from '@/utils/getDurationInSeconds'; import MusicCoverDialog from '@/components/MusicCoverDialog/MusicCoverDialog';
+import { MusicGenreShort } from '@/types/MusicGenre';
+import { MusicAlbumShortDto } from '@/types/MusicAlbum';
 
 type Params = Promise<{ musicTrackId: string }>
 
@@ -42,12 +44,27 @@ export default async function MusicTrackPage({ params }: { params: Params }) {
         <div className={styles["main-container"]}>
             <h1>{musicTrack.title}</h1>
             <div className={styles["music-album-cover-about-container"]}>
-                <MusicCoverDialog coverSource={musicTrack.cover_url} title={musicTrack.title} /><div>
-                    <div>
-                        <h3>Music album</h3>
+                <MusicCoverDialog coverSource={musicTrack.cover_url} title={musicTrack.title} />
+                <div className={styles["music-track-about-container"]}>
+                    <div className={styles["music-albums-container"]}>
+                        <h3>Music album(s)</h3>
+                        <div>
+                            {musicTrack.music_albums.map((musicAlbum: MusicAlbumShortDto) => {
+                                return <div key={musicAlbum.id}>
+                                    {musicAlbum.title}
+                                </div>
+                            })}
+                        </div>
                     </div>
-                    <div>
-                        <h3>Genres</h3>
+                    <div className={styles["music-genres-container"]}>
+                        <h3>Genre(s)</h3>
+                        <div>
+                            {musicTrack.music_genres.map((musicGenre: MusicGenreShort) => {
+                                return <div key={musicGenre.id}>
+                                    {musicGenre.name}
+                                </div>
+                            })}
+                        </div>
                     </div>
                 </div>
             </div>

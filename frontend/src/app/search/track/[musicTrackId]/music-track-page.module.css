@@ -9,6 +9,19 @@
     gap: 2rem;
 }
 
+.music-track-about-container {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+}
+
+.music-albums-container,
+.music-genres-container {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
 .info-containers-wrapper {
     display: flex;
     justify-content: space-around;

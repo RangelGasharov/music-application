@@ -9,3 +9,11 @@ export type MusicAlbum = {
     music_artists: MusicArtistShort[];
     description?: string;
 }
+
+export type MusicAlbumShortDto = {
+    id: number;
+    title: string;
+    cover_url: string;
+    uploaded_at: string;
+    release_date: string;
+}

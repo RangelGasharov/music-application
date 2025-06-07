@@ -1,4 +1,6 @@
+import { MusicAlbumShortDto } from "./MusicAlbum";
 import { MusicArtistShort } from "./MusicArtist";
+import { MusicGenreShort } from "./MusicGenre";
 
 export type MusicTrack = {
     id: number;
@@ -9,7 +11,9 @@ export type MusicTrack = {
     uploaded_at: string;
     cover_url: string;
     duration: string;
-    music_artists: MusicArtistShort[]
+    music_artists: MusicArtistShort[];
+    music_genres: MusicGenreShort[];
+    music_albums: MusicAlbumShortDto[];
 }
 
 export type MusicTrackPost = {
