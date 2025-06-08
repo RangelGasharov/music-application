@@ -19,14 +19,14 @@ public class PlaylistController : ControllerBase
     [HttpGet]
     public async Task<IActionResult> GetAllPlaylists()
     {
-        var playlists = await _playlistRepository.GetAllPlaylistsAsync();
+        var playlists = await _playlistRepository.GetAllPlaylists();
         return Ok(playlists);
     }
 
     [HttpGet("{id:guid}")]
     public async Task<IActionResult> GetPlaylistById([FromRoute] Guid id)
     {
-        var playlist = await _playlistRepository.GetPlaylistByIdAsync(id);
+        var playlist = await _playlistRepository.GetPlaylistById(id);
         if (playlist == null)
             return NotFound();
 
@@ -44,14 +44,14 @@ public class PlaylistController : ControllerBase
             IsPublic = addPlaylistDto.IsPublic
         };
 
-        var playlist = await _playlistRepository.AddPlaylistAsync(playlistDto);
+        var playlist = await _playlistRepository.AddPlaylist(playlistDto);
         return Ok(playlist);
     }
 
     [HttpPut("{id:guid}")]
     public async Task<IActionResult> UpdatePlaylist([FromRoute] Guid id, [FromBody] Playlist updatedPlaylist)
     {
-        var playlist = await _playlistRepository.UpdatePlaylistAsync(id, updatedPlaylist);
+        var playlist = await _playlistRepository.UpdatePlaylist(id, updatedPlaylist);
         if (playlist == null)
             return NotFound();
 
@@ -61,7 +61,7 @@ public class PlaylistController : ControllerBase
     [HttpDelete("{id:guid}")]
     public async Task<IActionResult> DeletePlaylist([FromRoute] Guid id)
     {
-        var deletedPlaylist = await _playlistRepository.DeletePlaylistAsync(id);
+        var deletedPlaylist = await _playlistRepository.DeletePlaylist(id);
         if (deletedPlaylist == null)
             return NotFound();
 

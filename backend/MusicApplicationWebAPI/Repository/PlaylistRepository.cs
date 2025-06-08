@@ -5,11 +5,12 @@ using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using MusicApplicationWebAPI.Data;
 using MusicApplicationWebAPI.Dtos.MusicAlbum;
+using MusicApplicationWebAPI.Interfaces;
 using MusicApplicationWebAPI.Models.Entities;
 
 namespace MusicApplicationWebAPI.Repository
 {
-    public class PlaylistRepository
+    public class PlaylistRepository : IPlaylistRepository
     {
         private readonly AppDbContext _context;
 
@@ -18,17 +19,17 @@ namespace MusicApplicationWebAPI.Repository
             _context = context;
         }
 
-        public async Task<List<Playlist>> GetAllPlaylistsAsync()
+        public async Task<List<Playlist>> GetAllPlaylists()
         {
             return await _context.Playlist.ToListAsync();
         }
 
-        public async Task<Playlist?> GetPlaylistByIdAsync(Guid id)
+        public async Task<Playlist?> GetPlaylistById(Guid id)
         {
             return await _context.Playlist.FindAsync(id);
         }
 
-        public async Task<Playlist> AddPlaylistAsync(AddPlaylistDto addPlaylistDto)
+        public async Task<Playlist> AddPlaylist(AddPlaylistDto addPlaylistDto)
         {
             var playlist = new Playlist
             {
@@ -46,7 +47,7 @@ namespace MusicApplicationWebAPI.Repository
             return playlist;
         }
 
-        public async Task<Playlist?> UpdatePlaylistAsync(Guid id, Playlist updatedPlaylist)
+        public async Task<Playlist?> UpdatePlaylist(Guid id, Playlist updatedPlaylist)
         {
             var existingPlaylist = await _context.Playlist.FindAsync(id);
             if (existingPlaylist == null)
@@ -63,7 +64,7 @@ namespace MusicApplicationWebAPI.Repository
             await _context.SaveChangesAsync();
             return existingPlaylist;
         }
-        public async Task<Playlist?> DeletePlaylistAsync(Guid id)
+        public async Task<Playlist?> DeletePlaylist(Guid id)
         {
             var playlist = await _context.Playlist.FindAsync(id);
             if (playlist == null)
@@ -75,5 +76,65 @@ namespace MusicApplicationWebAPI.Repository
             await _context.SaveChangesAsync();
             return playlist;
         }
+
+        public async Task<Playlist> AddPlaylist(AddMusicAlbumDto addMusicAlbumDto)
+        {
+            throw new NotImplementedException();
+        }
+
+        public async Task<Playlist?> UpdatePlaylist(Guid id, UpdateMusicAlbumDto musicAlbumDto)
+        {
+            throw new NotImplementedException();
+        }
+
+        public async Task<Playlist> AddPlaylistWithTracks(AddPlaylistWithMusicTracksDto dto)
+        {
+            var playlist = new Playlist
+            {
+                Id = Guid.NewGuid(),
+                Title = dto.Title,
+                Description = dto.Description,
+                UserId = dto.UserId,
+                CreatedAt = dto.CreatedAt,
+                UpdatedAt = dto.UpdatedAt,
+                IsPublic = dto.IsPublic,
+                CoverURL = string.Empty
+            };
+
+            _context.Playlist.Add(playlist);
+
+            var existingPositions = new HashSet<int>();
+
+            foreach (var musicTrackDto in dto.MusicTracks)
+            {
+                if (!existingPositions.Add(musicTrackDto.Position))
+                {
+                    throw new InvalidOperationException($"Duplicate position in playlist: {musicTrackDto.Position}");
+                }
+
+                var musicTrack = await _context.MusicTrack.FindAsync(musicTrackDto.TrackId);
+                if (musicTrack == null)
+                {
+                    throw new KeyNotFoundException($"Track with ID {musicTrackDto.TrackId} could not be found.");
+                }
+
+                var musicTrackPlaylist = new MusicTrackPlaylist
+                {
+                    Id = Guid.NewGuid(),
+                    PlayListId = playlist.Id,
+                    TrackId = musicTrack.Id,
+                    Playlist = playlist,
+                    MusicTrack = musicTrack,
+                    Position = musicTrackDto.Position,
+                    AddedAt = dto.CreatedAt
+                };
+
+                _context.MusicTrackPlaylist.Add(musicTrackPlaylist);
+            }
+
+            await _context.SaveChangesAsync();
+            return playlist;
+        }
+
     }
 }
