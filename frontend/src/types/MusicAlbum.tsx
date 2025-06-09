@@ -11,7 +11,7 @@ export type MusicAlbum = {
 }
 
 export type MusicAlbumShortDto = {
-    id: number;
+    id: string;
     title: string;
     cover_url: string;
     uploaded_at: string;

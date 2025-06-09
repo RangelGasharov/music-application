@@ -3,7 +3,7 @@ import { MusicArtistShort } from "./MusicArtist";
 import { MusicGenreShort } from "./MusicGenre";
 
 export type MusicTrack = {
-    id: number;
+    id: string;
     title: string;
     release_date: string;
     file_path: string;
@@ -26,7 +26,7 @@ export type MusicTrackPost = {
 }
 
 export type MusicTrackPut = {
-    id: number;
+    id: string;
     title: string;
     release_date: string;
     is_explicit: boolean;

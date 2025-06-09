@@ -1,10 +1,10 @@
 export type MusicGenre = {
-    id: number;
+    id: string;
     name: string;
     desciption: string;
 }
 
 export type MusicGenreShort = {
-    id: number;
+    id: string;
     name: string;
 }
