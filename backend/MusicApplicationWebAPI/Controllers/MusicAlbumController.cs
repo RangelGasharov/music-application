@@ -114,7 +114,7 @@ public class MusicAlbumController : ControllerBase
     {
         if (addMusicAlbumWithMusicTracksDto == null)
         {
-            return BadRequest("Album-Daten sind ungültig.");
+            return BadRequest("Album data is invalid.");
         }
 
         var musicAlbum = await _musicAlbumRepository.AddMusicAlbumWithTracks(addMusicAlbumWithMusicTracksDto);

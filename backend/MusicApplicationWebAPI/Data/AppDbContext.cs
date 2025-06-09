@@ -33,5 +33,21 @@ public class AppDbContext : DbContext
             .HasOne(artist_album => artist_album.MusicAlbum)
             .WithMany(album => album.MusicArtistAlbums)
             .HasForeignKey(artist_album => artist_album.MusicAlbumId);
+
+        modelBuilder.Entity<MusicTrackPlaylist>()
+            .HasKey(mtp => mtp.Id);
+        modelBuilder.Entity<MusicTrackPlaylist>()
+            .HasOne(mtp => mtp.MusicTrack)
+            .WithMany(mt => mt.MusicTrackPlaylists)
+            .HasForeignKey(mtp => mtp.TrackId);
+
+        modelBuilder.Entity<MusicTrackPlaylist>()
+            .Property(mtp => mtp.PlayListId)
+            .HasColumnName("playlist_id");
+
+        modelBuilder.Entity<MusicTrackPlaylist>()
+            .HasOne(mtp => mtp.Playlist)
+            .WithMany(p => p.MusicTrackPlaylists)
+            .HasForeignKey(mtp => mtp.PlayListId);
     }
 }

@@ -1,3 +1,5 @@
+using System.Security.Claims;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using MusicApplicationWebAPI.Dtos.MusicAlbum;
 using MusicApplicationWebAPI.Models.Entities;
@@ -66,5 +68,30 @@ public class PlaylistController : ControllerBase
             return NotFound();
 
         return NoContent();
+    }
+
+    [HttpPost("with-tracks")]
+    [Authorize]
+    public async Task<IActionResult> AddPlaylistWithTracks([FromForm] AddPlaylistWithMusicTracksDto addPlaylistWithMusicTracksDto)
+    {
+        if (addPlaylistWithMusicTracksDto == null)
+        {
+            return BadRequest("Playlist data is invalid.");
+        }
+
+        var authHeader = Request.Headers["Authorization"].ToString();
+        Console.WriteLine($"Authorization header: {authHeader}");
+
+        var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+        if (string.IsNullOrEmpty(userIdClaim) || !Guid.TryParse(userIdClaim, out var userId))
+        {
+            return Unauthorized("Invalid user token.");
+        }
+
+        addPlaylistWithMusicTracksDto.UserId = userId;
+
+        var playlist = await _playlistRepository.AddPlaylistWithTracks(addPlaylistWithMusicTracksDto);
+        return CreatedAtAction(nameof(GetPlaylistById), new { id = playlist.Id }, playlist);
     }
 }

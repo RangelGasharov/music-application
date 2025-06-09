@@ -13,5 +13,6 @@ namespace MusicApplicationWebAPI.Models.Entities
         public ICollection<MusicArtistTrack> MusicArtistTrack { get; set; } = [];
         public ICollection<MusicTrackAlbum> MusicTrackAlbums { get; set; } = [];
         public ICollection<MusicGenreTrack> MusicGenreTrack { get; set; } = [];
+        public ICollection<MusicTrackPlaylist> MusicTrackPlaylists { get; set; } = [];
     }
 }

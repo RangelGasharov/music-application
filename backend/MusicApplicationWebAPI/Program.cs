@@ -1,4 +1,5 @@
 using System.Text.Json;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Minio;
 using MusicApplicationWebAPI.Data;
@@ -53,6 +54,33 @@ builder.Services.AddScoped<PlaylistRepository>();
 
 builder.Services.AddSingleton<MinioFileService>();
 
+builder.Services.AddAuthentication("Bearer")
+    .AddJwtBearer("Bearer", options =>
+    {
+        var jwtAuthority = Environment.GetEnvironmentVariable("JWT_AUTHORITY");
+        var jwtAudience = Environment.GetEnvironmentVariable("JWT_AUDIENCE");
+
+        options.Authority = jwtAuthority;
+        options.Audience = jwtAudience;
+        options.RequireHttpsMetadata = false;
+
+        options.Events = new JwtBearerEvents
+        {
+            OnAuthenticationFailed = context =>
+            {
+                Console.WriteLine("Authentication failed: " + context.Exception.Message);
+                return Task.CompletedTask;
+            },
+            OnTokenValidated = context =>
+            {
+                Console.WriteLine("Token validated for: " + context.Principal.Identity.Name);
+                return Task.CompletedTask;
+            }
+        };
+    });
+
+builder.Services.AddAuthorization();
+
 var app = builder.Build();
 
 {
@@ -66,6 +94,7 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();
 

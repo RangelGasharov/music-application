@@ -10,5 +10,6 @@ namespace MusicApplicationWebAPI.Models.Entities
         public required DateTime UpdatedAt { get; set; }
         public string? CoverURL { get; set; }
         public required bool IsPublic { get; set; }
+        public ICollection<MusicTrackPlaylist> MusicTrackPlaylists { get; set; } = [];
     }
 }

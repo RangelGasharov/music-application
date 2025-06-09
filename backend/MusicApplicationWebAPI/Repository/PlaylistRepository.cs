@@ -135,6 +135,5 @@ namespace MusicApplicationWebAPI.Repository
             await _context.SaveChangesAsync();
             return playlist;
         }
-
     }
 }
