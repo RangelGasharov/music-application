@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using MusicApplicationWebAPI.Data;
 using MusicApplicationWebAPI.Dtos.MusicAlbum;
@@ -87,6 +88,14 @@ namespace MusicApplicationWebAPI.Repository
             throw new NotImplementedException();
         }
 
+        public async Task<List<Playlist>> GetPlaylistsByUserId(Guid userId)
+        {
+            return await _context.Playlist
+                .Where(p => p.UserId == userId)
+                .Include(p => p.MusicTrackPlaylists)
+                    .ThenInclude(mtp => mtp.MusicTrack)
+                .ToListAsync();
+        }
         public async Task<Playlist> AddPlaylistWithTracks(AddPlaylistWithMusicTracksDto dto)
         {
             var playlist = new Playlist

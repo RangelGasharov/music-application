@@ -70,6 +70,20 @@ public class PlaylistController : ControllerBase
         return NoContent();
     }
 
+    [HttpGet("user-id/{id:guid}")]
+    public async Task<ActionResult> GetPlaylistsByUserId([FromRoute] Guid id)
+    {
+        var playlists = await _playlistRepository.GetPlaylistsByUserId(id);
+
+        if (playlists is null)
+        {
+            return NotFound();
+        }
+
+        return Ok(playlists);
+    }
+
+
     [HttpPost("with-tracks")]
     [Authorize]
     public async Task<IActionResult> AddPlaylistWithTracks([FromForm] AddPlaylistWithMusicTracksDto addPlaylistWithMusicTracksDto)
