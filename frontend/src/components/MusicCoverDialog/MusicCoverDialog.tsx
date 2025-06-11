@@ -1,5 +1,4 @@
 "use client"
-import { MusicAlbum } from '@/types/MusicAlbum'
 import { Dialog } from '@mui/material'
 import Image from 'next/image'
 import React, { useState } from 'react'

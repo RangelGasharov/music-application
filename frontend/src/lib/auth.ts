@@ -2,6 +2,7 @@ import KeycloakProvider from "next-auth/providers/keycloak";
 import { AuthOptions, TokenSet } from "next-auth";
 import { JWT } from "next-auth/jwt";
 import { requestRefreshOfAccessToken } from "@/lib/refresh";
+import { jwtDecode } from "jwt-decode";
 
 export const authOptions: AuthOptions = {
     providers: [
@@ -17,10 +18,12 @@ export const authOptions: AuthOptions = {
     callbacks: {
         async jwt({ token, account }) {
             if (account) {
+                const decoded = jwtDecode<{ sub: string }>(account.id_token!);
                 token.idToken = account.id_token;
                 token.accessToken = account.access_token;
                 token.refreshToken = account.refresh_token;
                 token.expiresAt = account.expires_at;
+                token.sub = decoded.sub;
             }
             if (Date.now() < (token.expiresAt! * 1000 - 60 * 1000)) {
                 return token
@@ -50,6 +53,7 @@ export const authOptions: AuthOptions = {
             session.idToken = token.idToken;
             session.refreshToken = token.refreshToken;
             session.expiresAt = token.expiresAt;
+            session.userId = token.sub ?? "";
             return session;
         },
     },

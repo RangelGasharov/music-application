@@ -3,11 +3,8 @@ import { authOptions } from '@/lib/auth';
 import { getServerSession } from 'next-auth';
 import React from 'react'
 
-type Props = {}
-
-export default async function PlaylistsPage({ }: Props) {
+export default async function PlaylistsPage() {
     const session = await getServerSession(authOptions);
-    console.log(session?.accessToken);
 
     return (
         <div>

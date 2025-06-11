@@ -2,32 +2,32 @@ import styles from "./page.module.css";
 import PlayerBox from "../components/PlayerBox/PlayerBox";
 import { MusicTrack } from "@/types/MusicTrack";
 
-const getMusicTracks = async (): Promise<MusicTrack[]> => {
-  try {
-    const API_URL = process.env.WEB_API_URL;
-    const targetUrl = `${API_URL}/music-track`;
-    const response = await fetch(targetUrl, {
-      method: "GET",
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    });
+export default async function Home() {
+  const getMusicTracks = async (): Promise<MusicTrack[]> => {
+    try {
+      const API_URL = process.env.WEB_API_URL;
+      const targetUrl = `${API_URL}/music-track`;
+      const response = await fetch(targetUrl, {
+        method: "GET",
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
 
-    if (!response.ok) {
-      const errorText = await response.text();
-      console.warn(`Failed to fetch music tracks: ${errorText}`);
+      if (!response.ok) {
+        const errorText = await response.text();
+        console.warn(`Failed to fetch music tracks: ${errorText}`);
+        return [];
+      }
+
+      const data = await response.json();
+      return data;
+    } catch (error) {
+      console.error('Error fetching music tracks:', error);
       return [];
     }
+  };
 
-    const data = await response.json();
-    return data;
-  } catch (error) {
-    console.error('Error fetching music tracks:', error);
-    return [];
-  }
-};
-
-export default async function Home() {
   const musicTracks: MusicTrack[] = await getMusicTracks();
 
   return (
