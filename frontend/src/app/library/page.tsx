@@ -1,3 +1,4 @@
+import PlaylistCard from '@/components/PlaylistCard/PlaylistCard';
 import { authOptions } from '@/lib/auth';
 import { Playlist } from '@/types/Playlist';
 import { getServerSession } from 'next-auth';
@@ -5,8 +6,6 @@ import React from 'react'
 
 const getPlaylistsByUserId = async (userId: string) => {
     try {
-        console.log(userId);
-
         const API_URL = process.env.WEB_API_URL;
         const targetUrl = `${API_URL}/playlist/user-id/${userId}`;
         const response = await fetch(targetUrl, {
@@ -38,10 +37,7 @@ export default async function LibraryPage() {
         <div>
             <h1>Library</h1>
             <div>{playlists?.map((playlist: Playlist) => {
-                return <div key={playlist.id}>
-                    <h3>{playlist.title}</h3>
-                    <div>{playlist.description}</div>
-                </div>
+                return <PlaylistCard key={playlist.id} playlist={playlist} />
             })}</div>
         </div>
     )

@@ -1,0 +1,27 @@
+.main-container {
+    border-radius: .4rem;
+    background-color: var(--cards-background-color);
+    width: fit-content;
+}
+
+.main-container:hover {
+    cursor: pointer;
+    transform: scale(1.02);
+    transition: 200ms ease-in-out;
+}
+
+.main-container {
+    transition: all ease-in-out 300ms;
+}
+
+.image {
+    border-radius: .4rem .4rem 0 0;
+    overflow: hidden;
+}
+
+.title-container {
+    width: 100%;
+    padding: .5rem;
+    font-size: 1.1rem;
+    font-weight: bold;
+}
