@@ -14,6 +14,7 @@ namespace MusicApplicationWebAPI.Interfaces
         Task<MusicTrackDto?> GetMusicTrackById(Guid id);
         Task<List<MusicTrackDto>> GetMusicTracksByMusicArtistId(Guid id);
         Task<List<MusicTrackDto>> GetMusicTracksByMusicAlbumId(Guid id);
+        Task<List<MusicTrackDto>> GetMusicTracksPlaylistId(Guid playlistId);
         Task<MusicTrack> AddMusicTrack(AddMusicTrackDto addMusicTrackDto);
         Task<MusicTrack?> UpdateMusicTrack(Guid id, UpdateMusicTrackDto updateMusicTrackDto);
         Task<MusicTrack?> DeleteMusicTrack(Guid id);

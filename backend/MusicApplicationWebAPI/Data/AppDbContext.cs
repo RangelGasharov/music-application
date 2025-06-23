@@ -38,7 +38,7 @@ public class AppDbContext : DbContext
             .HasKey(mtp => mtp.Id);
         modelBuilder.Entity<MusicTrackPlaylist>()
             .HasOne(mtp => mtp.MusicTrack)
-            .WithMany(mt => mt.MusicTrackPlaylists)
+            .WithMany(mt => mt.MusicTrackPlaylist)
             .HasForeignKey(mtp => mtp.TrackId);
 
         modelBuilder.Entity<MusicTrackPlaylist>()

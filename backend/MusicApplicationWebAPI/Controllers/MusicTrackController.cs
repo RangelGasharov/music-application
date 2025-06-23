@@ -1,16 +1,10 @@
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
 using MusicApplicationWebAPI.Dtos.MusicAlbum;
 using MusicApplicationWebAPI.Interfaces;
-using MusicApplicationWebAPI.Models.Entities;
 using MusicApplicationWebAPI.Services;
 
 namespace MusicApplicationWebAPI.Controllers;
+
 [ApiController]
 [Route("music-track")]
 
@@ -42,15 +36,22 @@ public class MusicTrackController : ControllerBase
     [HttpGet("music-artist/{id:guid}")]
     public async Task<IActionResult> GetMusicTrackByMusicArtistId(Guid id)
     {
-        var musicTrack = await _musicTrackRepository.GetMusicTracksByMusicArtistId(id);
-        return Ok(musicTrack);
+        var musicTracks = await _musicTrackRepository.GetMusicTracksByMusicArtistId(id);
+        return Ok(musicTracks);
     }
 
     [HttpGet("music-album/{id:guid}")]
     public async Task<IActionResult> GetMusicTrackByMusicAlbumId(Guid id)
     {
-        var musicTrack = await _musicTrackRepository.GetMusicTracksByMusicAlbumId(id);
-        return Ok(musicTrack);
+        var musicTracks = await _musicTrackRepository.GetMusicTracksByMusicAlbumId(id);
+        return Ok(musicTracks);
+    }
+
+    [HttpGet("playlist/{id:guid}")]
+    public async Task<IActionResult> GetMusicTracksByPlaylistId(Guid id)
+    {
+        var musicTracks = await _musicTrackRepository.GetMusicTracksPlaylistId(id);
+        return Ok(musicTracks);
     }
 
     [HttpPost]

@@ -112,7 +112,7 @@ public class SearchController : Controller
         var trackQuery = _context.MusicTrack
             .Include(t => t.MusicArtistTrack)
                 .ThenInclude(at => at.MusicArtist)
-            .Include(t => t.MusicTrackAlbums)
+            .Include(t => t.MusicTrackAlbum)
                 .ThenInclude(ta => ta.MusicAlbum)
             .Where(t =>
                 allPatterns.Any(pattern => EF.Functions.Like(t.Title.ToLower(), pattern)) ||
@@ -140,7 +140,7 @@ public class SearchController : Controller
                     Id = at.MusicArtist.Id,
                     Name = at.MusicArtist.Name
                 }).ToList(),
-                MusicAlbums = t.MusicTrackAlbums
+                MusicAlbums = t.MusicTrackAlbum
                 .Where(ta => ta.MusicAlbum != null)
                 .Select(ta => new MusicAlbumShortFormDto
                 {

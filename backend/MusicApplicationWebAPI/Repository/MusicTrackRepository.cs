@@ -1,7 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using MusicApplicationWebAPI.Data;
 using MusicApplicationWebAPI.Dtos.MusicAlbum;
@@ -11,7 +7,6 @@ using MusicApplicationWebAPI.Dtos.MusicTrack;
 using MusicApplicationWebAPI.Interfaces;
 using MusicApplicationWebAPI.Models.Entities;
 using MusicApplicationWebAPI.Services;
-using NAudio.Wave;
 
 namespace MusicApplicationWebAPI.Repository
 {
@@ -32,7 +27,7 @@ namespace MusicApplicationWebAPI.Repository
                 .ThenInclude(music_artist_track => music_artist_track.MusicArtist)
             .Include(music_track => music_track.MusicGenreTrack)
                 .ThenInclude(mgt => mgt.MusicGenre)
-            .Include(music_track => music_track.MusicTrackAlbums)
+            .Include(music_track => music_track.MusicTrackAlbum)
                 .ThenInclude(mta => mta.MusicAlbum)
             .ToListAsync();
 
@@ -58,7 +53,7 @@ namespace MusicApplicationWebAPI.Repository
                         Id = mgt.MusicGenre.Id,
                         Name = mgt.MusicGenre.Name
                     })],
-                MusicAlbums = [.. musicTrack.MusicTrackAlbums
+                MusicAlbums = [.. musicTrack.MusicTrackAlbum
                         .Select(mta => new MusicAlbumShortFormDto
                         {
                             Id = mta.MusicAlbum.Id,
@@ -77,7 +72,7 @@ namespace MusicApplicationWebAPI.Repository
                 .ThenInclude(music_artist_track => music_artist_track.MusicArtist)
             .Include(music_track => music_track.MusicGenreTrack)
                 .ThenInclude(mgt => mgt.MusicGenre)
-            .Include(music_track => music_track.MusicTrackAlbums)
+            .Include(music_track => music_track.MusicTrackAlbum)
                 .ThenInclude(mta => mta.MusicAlbum)
             .FirstOrDefaultAsync(musicTrack => musicTrack.Id == id);
 
@@ -107,7 +102,7 @@ namespace MusicApplicationWebAPI.Repository
                             Id = mgt.MusicGenre.Id,
                             Name = mgt.MusicGenre.Name
                         })],
-                MusicAlbums = [.. musicTrack.MusicTrackAlbums
+                MusicAlbums = [.. musicTrack.MusicTrackAlbum
                         .Select(mta => new MusicAlbumShortFormDto
                         {
                             Id = mta.MusicAlbum.Id,
@@ -149,7 +144,7 @@ namespace MusicApplicationWebAPI.Repository
                         Id = mgt.MusicGenre.Id,
                         Name = mgt.MusicGenre.Name
                     })],
-                MusicAlbums = [.. musicTrack.MusicTrackAlbums
+                MusicAlbums = [.. musicTrack.MusicTrackAlbum
                         .Select(mta => new MusicAlbumShortFormDto
                         {
                             Id = mta.MusicAlbum.Id,
@@ -166,10 +161,10 @@ namespace MusicApplicationWebAPI.Repository
             var musicTracks = await _context.MusicTrack
                 .Include(mt => mt.MusicArtistTrack)
                     .ThenInclude(mat => mat.MusicArtist)
-                .Include(mt => mt.MusicTrackAlbums)
+                .Include(mt => mt.MusicTrackAlbum)
                     .ThenInclude(mta => mta.MusicAlbum)
-                .Where(mt => mt.MusicTrackAlbums.Any(mta => mta.MusicAlbumId == albumId))
-                .OrderBy(mt => mt.MusicTrackAlbums
+                .Where(mt => mt.MusicTrackAlbum.Any(mta => mta.MusicAlbumId == albumId))
+                .OrderBy(mt => mt.MusicTrackAlbum
                     .FirstOrDefault(mta => mta.MusicAlbumId == albumId)!.Order)
                 .ToListAsync();
 
@@ -190,10 +185,51 @@ namespace MusicApplicationWebAPI.Repository
                         Name = music_artist_track.MusicArtist.Name
                     })
                     .ToList(),
-                MusicAlbums = music_track.MusicTrackAlbums
+                MusicAlbums = music_track.MusicTrackAlbum
                     .Select(mta => new MusicAlbumShortFormDto
                     {
                         Id = mta.MusicAlbum!.Id,
+                        Title = mta.MusicAlbum.Title,
+                        CoverURL = mta.MusicAlbum.CoverURL,
+                        UploadedAt = mta.MusicAlbum.UploadedAt,
+                        ReleaseDate = mta.MusicAlbum.ReleaseDate
+                    })
+                    .ToList()
+            }).ToList();
+        }
+
+        public async Task<List<MusicTrackDto>> GetMusicTracksPlaylistId(Guid playlistId)
+        {
+            var musicTracks = await _context.MusicTrack
+                .Include(mt => mt.MusicTrackPlaylist)
+                .Include(mt => mt.MusicArtistTrack)
+                    .ThenInclude(mat => mat.MusicArtist)
+                .Include(mt => mt.MusicTrackAlbum)
+                    .ThenInclude(mta => mta.MusicAlbum)
+                .Where(mt => mt.MusicTrackPlaylist.Any(mtp => mtp.PlayListId == playlistId))
+                .ToListAsync();
+
+            return musicTracks.Select(musicTrack => new MusicTrackDto
+            {
+                Id = musicTrack.Id,
+                Title = musicTrack.Title,
+                CoverURL = musicTrack.CoverURL,
+                UploadedAt = musicTrack.UploadedAt,
+                ReleaseDate = musicTrack.ReleaseDate,
+                FilePath = musicTrack.FilePath,
+                IsExplicit = musicTrack.IsExplicit,
+                Duration = musicTrack.Duration,
+                MusicArtists = musicTrack.MusicArtistTrack
+                    .Select(mat => new MusicArtistShortFormDto
+                    {
+                        Id = mat.MusicArtist.Id,
+                        Name = mat.MusicArtist.Name
+                    })
+                    .ToList(),
+                MusicAlbums = musicTrack.MusicTrackAlbum
+                    .Select(mta => new MusicAlbumShortFormDto
+                    {
+                        Id = mta.MusicAlbum.Id,
                         Title = mta.MusicAlbum.Title,
                         CoverURL = mta.MusicAlbum.CoverURL,
                         UploadedAt = mta.MusicAlbum.UploadedAt,
