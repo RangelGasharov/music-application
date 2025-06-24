@@ -19,6 +19,7 @@ namespace MusicApplicationWebAPI.Dtos.MusicTrack
         public required DateTime UploadedAt { get; set; }
         public required string CoverURL { get; set; }
         public required TimeSpan Duration { get; set; }
+        public int? Position { get; set; }
         public List<MusicArtistShortFormDto> MusicArtists { get; set; } = [];
         public List<MusicAlbumShortFormDto> MusicAlbums { get; set; } = [];
         public List<MusicGenreDto> MusicGenres { get; set; } = [];

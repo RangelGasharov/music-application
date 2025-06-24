@@ -233,7 +233,7 @@ namespace MusicApplicationWebAPI.Repository
                         Id = Guid.NewGuid(),
                         MusicAlbumId = musicAlbum.Id,
                         MusicTrackId = musicTrackId,
-                        Order = musicTrackDto.Order
+                        Position = musicTrackDto.Position
                     };
 
                     musicTracks.Add(musicTrack);
