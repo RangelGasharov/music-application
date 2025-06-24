@@ -14,7 +14,14 @@ export type MusicTrack = {
     music_artists: MusicArtistShort[];
     music_genres: MusicGenreShort[];
     music_albums: MusicAlbumShortDto[];
+    position?: number;
 }
+
+type Position = {
+    position: number;
+}
+
+export type MusicTrackWithPosition = MusicTrack & Position;
 
 export type MusicTrackPost = {
     title: string;
@@ -22,7 +29,7 @@ export type MusicTrackPost = {
     is_explicit: boolean;
     cover_image?: File;
     audio_file?: File;
-    order?: number;
+    position?: number;
 }
 
 export type MusicTrackPut = {

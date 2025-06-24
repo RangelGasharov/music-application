@@ -1,4 +1,5 @@
-import { MusicTrack } from '@/types/MusicTrack';
+import MusicTrackListItem from '@/components/MusicTrack/MusicTrackContainer/MusicTrackListItem/MusicTrackListItem';
+import { MusicTrack, MusicTrackWithPosition } from '@/types/MusicTrack';
 import { Playlist } from '@/types/Playlist';
 import React from 'react'
 
@@ -20,7 +21,7 @@ async function getPlaylistById(playlistId: string): Promise<Playlist> {
     }
 }
 
-async function getMusicTracksByPlaylistId(playlistId: string): Promise<MusicTrack[]> {
+async function getMusicTracksByPlaylistId(playlistId: string): Promise<MusicTrackWithPosition[]> {
     try {
         const res = await fetch(`${process.env.WEB_API_URL}/music-track/playlist/${playlistId}`);
 
@@ -39,13 +40,13 @@ async function getMusicTracksByPlaylistId(playlistId: string): Promise<MusicTrac
 export default async function PlaylistSingleViewPage({ params }: { params: Params }) {
     const { playlistId } = await params;
     const playlist = await getPlaylistById(playlistId);
-    const musicTracks = await getMusicTracksByPlaylistId(playlistId);
+    const musicTracks: MusicTrackWithPosition[] = await getMusicTracksByPlaylistId(playlistId);
     return (
         <div>
             <h1>{playlist.title}</h1>
             <div>
-                {musicTracks.map((musicTrack: MusicTrack) => {
-                    return <div key={musicTrack.id}>{musicTrack.title}</div>
+                {musicTracks.map((musicTrack: MusicTrackWithPosition) => {
+                    return <MusicTrackListItem order={musicTrack.position} musicTrack={musicTrack} key={musicTrack.id} />
                 })}
             </div>
         </div>

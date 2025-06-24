@@ -8,7 +8,7 @@ import styles from "./MusicAlbumForm.module.css";
 import { useState } from 'react';
 import { MusicTrackPost } from '@/types/MusicTrack';
 import { buttonSx, errorButtonSx } from '@/themes/buttonStyles';
-import MusicTrackForm from '../MusicTrackForm/MusicTrackForm';
+import MusicTrackForm from '../MusicTrack/MusicTrackForm/MusicTrackForm';
 import { v4 as uuidv4 } from 'uuid';
 import dayjs from 'dayjs';
 
@@ -29,7 +29,7 @@ export default function MusicAlbumForm() {
     const removeMusicTrack = (tempId: string) => {
         setMusicTracks(prevMusicTracks => {
             const updatedMusicTracks = prevMusicTracks.filter(musicTrack => musicTrack.tempId !== tempId);
-            return updatedMusicTracks.map((musicTrack, index) => ({ ...musicTrack, order: index + 1 }));
+            return updatedMusicTracks.map((musicTrack, index) => ({ ...musicTrack, position: index + 1 }));
         });
     };
 
@@ -61,7 +61,7 @@ export default function MusicAlbumForm() {
             formData.append(`MusicTracks[${index}].Title`, track.title);
             formData.append(`MusicTracks[${index}].ReleaseDate`, track.release_date);
             formData.append(`MusicTracks[${index}].IsExplicit`, String(track.is_explicit));
-            formData.append(`MusicTracks[${index}].Order`, String(track.order ?? index + 1));
+            formData.append(`MusicTracks[${index}].Position`, String(track.position ?? index + 1));
 
             if (track.cover_image) {
                 formData.append(`MusicTracks[${index}].CoverImage`, track.cover_image);
@@ -125,7 +125,7 @@ export default function MusicAlbumForm() {
                     return (
                         <div key={musicTrack.tempId} className={styles["music-track-container"]}>
                             <MusicTrackForm
-                                order={index + 1}
+                                position={index + 1}
                                 musicTrack={musicTrack}
                                 onChange={(updatedTrack) => updateMusicTrack(musicTrack.tempId, updatedTrack)}
                             />

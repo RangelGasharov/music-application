@@ -7,7 +7,7 @@ import MusicAlbumContainer from '../MusicAlbumContainer/MusicAlbumContainer';
 import { MusicAlbum } from '@/types/MusicAlbum';
 import { MusicArtist } from '@/types/MusicArtist';
 import { MusicTrack } from '@/types/MusicTrack';
-import MusicTrackContainer from '../MusicTrackContainer/MusicTrackContainer';
+import MusicTrackContainer from '../MusicTrack/MusicTrackContainer/MusicTrackContainer';
 import MusicArtistContainer from '../MusicArtistCard/MusicArtistContainer';
 import styles from "./SearchpageContent.module.css";
 import { Cancel } from '@mui/icons-material';

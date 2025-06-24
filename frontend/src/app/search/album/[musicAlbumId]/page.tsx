@@ -1,4 +1,4 @@
-import MusicTrackListItem from '@/components/MusicTrackContainer/MusicTrackListItem/MusicTrackListItem';
+import MusicTrackListItem from '@/components/MusicTrack/MusicTrackContainer/MusicTrackListItem/MusicTrackListItem';
 import { MusicTrack } from '@/types/MusicTrack';
 import { notFound } from 'next/navigation';
 import styles from "./music-album-page.module.css";

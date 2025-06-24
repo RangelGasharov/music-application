@@ -11,15 +11,15 @@ import { MusicTrackPost } from '@/types/MusicTrack'
 import dayjs from 'dayjs'
 
 type MusicTrackFormType = {
-    order: number;
+    position: number;
     musicTrack: MusicTrackPost;
     onChange: (updatedFields: Partial<MusicTrackPost>) => void;
 }
 
-export default function MusicTrackForm({ order, musicTrack, onChange }: MusicTrackFormType) {
+export default function MusicTrackForm({ position, musicTrack, onChange }: MusicTrackFormType) {
     return (
         <div className={styles['main-container']}>
-            <h2>Track #{order}</h2>
+            <h2>Track #{position}</h2>
             <div className={styles['music-track-data-container']}>
                 <div className={styles['music-track-inputs']}>
                     <TextField

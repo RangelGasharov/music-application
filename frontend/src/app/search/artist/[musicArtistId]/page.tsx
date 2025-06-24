@@ -1,4 +1,4 @@
-import MusicTrackListItem from '@/components/MusicTrackContainer/MusicTrackListItem/MusicTrackListItem';
+import MusicTrackListItem from '@/components/MusicTrack/MusicTrackContainer/MusicTrackListItem/MusicTrackListItem';
 import { MusicArtist } from '@/types/MusicArtist';
 import { MusicTrack } from '@/types/MusicTrack';
 import { MusicAlbum } from '@/types/MusicAlbum';
