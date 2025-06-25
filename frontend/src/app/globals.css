@@ -14,6 +14,7 @@
   --text-shadow: #3f3f3f;
   --navigation-drawer-hover-color: rgb(241, 241, 241);
   --cards-background-color: rgb(242, 242, 242);
+  --cards-heading-background-color: rgb(230, 232, 232);
   --skeleton-loading-color: #e0e0e0;
 }
 
@@ -24,6 +25,7 @@
   --text-shadow: #a0a0a0;
   --navigation-drawer-hover-color: rgb(48, 48, 48);
   --cards-background-color: rgb(31, 32, 33);
+  --cards-heading-background-color: rgb(26, 27, 28);
   --skeleton-loading-color: #1a1a1a;
 }
 

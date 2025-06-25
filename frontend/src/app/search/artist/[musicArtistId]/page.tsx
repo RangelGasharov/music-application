@@ -1,4 +1,4 @@
-import MusicTrackListItem from '@/components/MusicTrack/MusicTrackContainer/MusicTrackListItem/MusicTrackListItem';
+import MusicTrackListItem from '@/components/MusicTrack/MusicTrackListItem/MusicTrackListItem';
 import { MusicArtist } from '@/types/MusicArtist';
 import { MusicTrack } from '@/types/MusicTrack';
 import { MusicAlbum } from '@/types/MusicAlbum';
@@ -7,7 +7,7 @@ import React from 'react'
 import styles from "./music-artist-page.module.css"
 import MusicAlbumCard from '@/components/MusicAlbumContainer/MusicAlbumCard/MusicAlbumCard';
 import Image from 'next/image';
-import { DEFAUL_MUSIC_ARTIST_IMAGE_SOURCE } from '@/constants/constants';
+import { DEFAULT_MUSIC_ARTIST_IMAGE_SOURCE } from '@/constants/constants';
 
 type Params = Promise<{ musicArtistId: string }>
 
@@ -73,7 +73,7 @@ export default async function MusicArtistPage({ params }: { params: Params }) {
                 <div className={styles["artist-header-container"]}>
                     <Image
                         fill
-                        src={musicArtist?.primary_photo?.file_path || DEFAUL_MUSIC_ARTIST_IMAGE_SOURCE}
+                        src={musicArtist?.primary_photo?.file_path || DEFAULT_MUSIC_ARTIST_IMAGE_SOURCE}
                         alt={`Photo of ${musicArtist.name}`}
                         className={styles["artist-primary-image"]}
                     />
@@ -84,7 +84,7 @@ export default async function MusicArtistPage({ params }: { params: Params }) {
                     {musicTracks.length === 0 ? (<p>No tracks found for this artist.</p>) : (
                         <div className={styles["music-tracks-container"]}>
                             {musicTracks.map((musicTrack: MusicTrack, index) => (
-                                <MusicTrackListItem order={index + 1} key={musicTrack.id} musicTrack={musicTrack} />
+                                <MusicTrackListItem position={index + 1} key={musicTrack.id} musicTrack={musicTrack} />
                             ))}
                         </div>
                     )}

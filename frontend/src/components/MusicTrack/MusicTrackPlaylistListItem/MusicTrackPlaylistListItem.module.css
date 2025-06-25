@@ -1,0 +1,40 @@
+.main-container {
+    display: grid;
+    align-items: center;
+    grid-template-columns: repeat(12, 1fr);
+}
+
+.position-box {
+    grid-column: span 1;
+    display: flex;
+    justify-content: center;
+}
+
+.music-track-cover-box {
+    grid-column: span 1;
+    display: flex;
+    justify-content: center;
+    padding: .1rem;
+}
+
+.image {
+    border-radius: .2rem;
+}
+
+.title-box {
+    grid-column: span 3;
+}
+
+.title-box:hover {
+    text-decoration: underline;
+}
+
+.music-artist-container {
+    grid-column: span 3;
+    display: flex;
+    justify-content: space-between;
+}
+
+.duration-box {
+    grid-column: span 3;
+}

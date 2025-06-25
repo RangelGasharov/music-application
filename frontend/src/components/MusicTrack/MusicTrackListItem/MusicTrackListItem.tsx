@@ -8,13 +8,13 @@ import Link from 'next/link';
 
 type MusicTrackListItem = {
     musicTrack: MusicTrack;
-    order: number;
+    position: number;
 }
 
-export default function MusicTrackListItem({ musicTrack, order }: MusicTrackListItem) {
+export default function MusicTrackListItem({ musicTrack, position }: MusicTrackListItem) {
     return (
         <div className={styles["main-container"]}>
-            <div className={styles["order-box"]}>{order}</div>
+            <div className={styles["position-box"]}>{position}</div>
             <div className={styles["music-track-cover-box"]}>
                 <Image
                     src={musicTrack.cover_url}
@@ -32,7 +32,11 @@ export default function MusicTrackListItem({ musicTrack, order }: MusicTrackList
             </div>
             <div className={styles["music-artist-container"]}>
                 {musicTrack.music_artists?.map((musicArtist: MusicArtistShort) => {
-                    return <div key={musicArtist.id}>{musicArtist.name}</div>
+                    return <div key={musicArtist.id}>
+                        <Link href={`/search/artist/${musicArtist.id}`} className={styles["title-box"]}>
+                            {musicArtist.name}
+                        </Link>
+                    </div>
                 })}
             </div>
             <div className={styles["streams-box"]}>0</div>

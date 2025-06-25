@@ -1,7 +1,8 @@
-import MusicTrackListItem from '@/components/MusicTrack/MusicTrackContainer/MusicTrackListItem/MusicTrackListItem';
-import { MusicTrack, MusicTrackWithPosition } from '@/types/MusicTrack';
+import { MusicTrackWithPosition } from '@/types/MusicTrack';
+import styles from "./playlist-single-page.module.css";
 import { Playlist } from '@/types/Playlist';
 import React from 'react'
+import MusicTrackPlaylistListItem from '@/components/MusicTrack/MusicTrackPlaylistListItem/MusicTrackPlaylistListItem';
 
 type Params = Promise<{ playlistId: string }>
 
@@ -42,11 +43,11 @@ export default async function PlaylistSingleViewPage({ params }: { params: Param
     const playlist = await getPlaylistById(playlistId);
     const musicTracks: MusicTrackWithPosition[] = await getMusicTracksByPlaylistId(playlistId);
     return (
-        <div>
+        <div className={styles["main-container"]}>
             <h1>{playlist.title}</h1>
             <div>
                 {musicTracks.map((musicTrack: MusicTrackWithPosition) => {
-                    return <MusicTrackListItem order={musicTrack.position} musicTrack={musicTrack} key={musicTrack.id} />
+                    return <MusicTrackPlaylistListItem position={musicTrack.position} musicTrack={musicTrack} key={musicTrack.id} />
                 })}
             </div>
         </div>
