@@ -3,19 +3,13 @@
     align-items: center;
     grid-template-columns: repeat(12, 1fr);
     gap: 1rem;
+    padding: 0.75rem 0;
 }
 
 .position-box {
     grid-column: span 1;
     display: flex;
     justify-content: center;
-}
-
-.music-track-cover-box {
-    grid-column: span 1;
-    display: flex;
-    justify-content: center;
-    padding: .1rem 0;
 }
 
 .image {
@@ -25,7 +19,7 @@
 }
 
 .title-box {
-    grid-column: span 3;
+    grid-column: span 4;
 }
 
 .title-box:hover {

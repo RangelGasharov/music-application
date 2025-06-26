@@ -1,4 +1,4 @@
-import MusicTrackListItem from '@/components/MusicTrack/MusicTrackListItem/MusicTrackListItem';
+import MusicTrackAlbumListItem from '@/components/MusicTrack/MusicTrackAlbumContainer/MusicTrackAlbumListItem/MusicTrackAlbumListItem';
 import { MusicArtist } from '@/types/MusicArtist';
 import { MusicTrack } from '@/types/MusicTrack';
 import { MusicAlbum } from '@/types/MusicAlbum';
@@ -84,7 +84,7 @@ export default async function MusicArtistPage({ params }: { params: Params }) {
                     {musicTracks.length === 0 ? (<p>No tracks found for this artist.</p>) : (
                         <div className={styles["music-tracks-container"]}>
                             {musicTracks.map((musicTrack: MusicTrack, index) => (
-                                <MusicTrackListItem position={index + 1} key={musicTrack.id} musicTrack={musicTrack} />
+                                <MusicTrackAlbumListItem position={index + 1} key={musicTrack.id} musicTrack={musicTrack} />
                             ))}
                         </div>
                     )}

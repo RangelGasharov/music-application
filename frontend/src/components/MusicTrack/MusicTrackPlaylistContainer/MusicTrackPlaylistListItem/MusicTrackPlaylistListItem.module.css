@@ -2,6 +2,7 @@
     display: grid;
     align-items: center;
     grid-template-columns: repeat(12, 1fr);
+    gap: 1rem;
 }
 
 .position-box {
@@ -22,7 +23,7 @@
 }
 
 .title-box {
-    grid-column: span 3;
+    grid-column: span 4;
 }
 
 .title-box:hover {
@@ -30,11 +31,11 @@
 }
 
 .music-artist-container {
-    grid-column: span 3;
+    grid-column: span 4;
     display: flex;
     justify-content: space-between;
 }
 
 .duration-box {
-    grid-column: span 3;
+    grid-column: span 2;
 }

@@ -1,9 +1,8 @@
 import { MusicTrack } from '@/types/MusicTrack'
 import { formatDuration } from '@/utils/formatDuration';
-import styles from "./MusicTrackListItem.module.css";
+import styles from "./MusicTrackAlbumListItem.module.css";
 import React from 'react'
 import { MusicArtistShort } from '@/types/MusicArtist';
-import Image from 'next/image';
 import Link from 'next/link';
 
 type MusicTrackListItem = {
@@ -11,20 +10,10 @@ type MusicTrackListItem = {
     position: number;
 }
 
-export default function MusicTrackListItem({ musicTrack, position }: MusicTrackListItem) {
+export default function MusicTrackAlbumListItem({ musicTrack, position }: MusicTrackListItem) {
     return (
         <div className={styles["main-container"]}>
             <div className={styles["position-box"]}>{position}</div>
-            <div className={styles["music-track-cover-box"]}>
-                <Image
-                    src={musicTrack.cover_url}
-                    alt={musicTrack.title}
-                    width={60}
-                    height={60}
-                    className={styles["image"]}
-                    priority
-                />
-            </div>
             <div className={styles["title-box"]}>
                 <Link href={`/search/track/${musicTrack.id}`}>
                     {musicTrack.title}

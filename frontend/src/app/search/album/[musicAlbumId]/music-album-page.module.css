@@ -42,50 +42,6 @@
     margin-bottom: 1rem;
 }
 
-.music-tracks-container-heading-box {
-    display: grid;
-    align-items: center;
-    grid-template-columns: repeat(12, 1fr);
-    padding: .5rem;
-    gap: 1rem;
-    background-color: var(--cards-heading-background-color);
-    border-top-left-radius: .5rem;
-    border-top-right-radius: .5rem;
-}
-
-.music-track-position-box {
-    grid-column: span 1;
-    display: flex;
-    justify-content: center;
-}
-
-.music-track-cover-box {
-    display: flex;
-    justify-content: center;
-    grid-column: span 1;
-}
-
-.music-track-title-box {
-    grid-column: span 3;
-}
-
-.music-artist-name-box {
-    grid-column: span 3;
-}
-
-.music-track-streams-box {
-    grid-column: span 2;
-}
-
-.music-tracks-container {
-    border-bottom-left-radius: .5rem;
-    border-bottom-right-radius: .5rem;
-    background-color: var(--cards-background-color);
-    padding: .5rem;
-    display: grid;
-    gap: .1rem;
-}
-
 .info-containers-wrapper {
     display: flex;
     justify-content: space-around;
