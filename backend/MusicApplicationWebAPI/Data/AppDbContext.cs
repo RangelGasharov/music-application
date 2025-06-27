@@ -17,6 +17,8 @@ public class AppDbContext : DbContext
     public DbSet<MusicTrack> MusicTrack { get; set; }
     public DbSet<MusicTrackAlbum> MusicTrackAlbum { get; set; }
     public DbSet<Playlist> Playlist { get; set; }
+    public DbSet<Queue> Queue { get; set; }
+    public DbSet<QueueItem> QueueItem { get; set; }
     public DbSet<MusicTrackPlaylist> MusicTrackPlaylist { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
