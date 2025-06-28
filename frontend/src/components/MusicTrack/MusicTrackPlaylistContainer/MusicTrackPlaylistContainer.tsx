@@ -6,7 +6,6 @@ import NumbersIcon from '@mui/icons-material/Numbers';
 import PeopleIcon from '@mui/icons-material/People';
 import AccessTimeIcon from '@mui/icons-material/AccessTime';
 import MusicNoteIcon from '@mui/icons-material/MusicNote';
-import PlayArrowIcon from '@mui/icons-material/PlayArrow';
 import ImageIcon from '@mui/icons-material/Image';
 
 type Props = {

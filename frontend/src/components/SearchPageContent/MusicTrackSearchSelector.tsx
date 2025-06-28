@@ -12,6 +12,11 @@ type MusicTrackSearchSelectorType = {
     session: Session | null;
 };
 
+type RawSearchResult = {
+    type: string;
+    music_track: MusicTrack;
+};
+
 export default function MusicTrackSearchSelector({ onTrackSelect, disabledTrackIds = [], session }: MusicTrackSearchSelectorType) {
     const [searchTerm, setSearchTerm] = useState("");
     const [results, setResults] = useState<MusicTrack[]>([]);
@@ -37,14 +42,15 @@ export default function MusicTrackSearchSelector({ onTrackSelect, disabledTrackI
                 });
                 if (!res.ok) throw new Error();
 
-                const data = await res.json();
+                const data: RawSearchResult[] = await res.json();
                 const musicTracks: MusicTrack[] = data
-                    .filter((item: any) => item.type === "Music Track")
-                    .map((item: any) => item.music_track);
+                    .filter((item) => item.type === "Music Track")
+                    .map((item) => item.music_track);
 
                 setResults(musicTracks);
-            } catch (e) {
+            } catch (error) {
                 setError(true);
+                console.error("An error has occured during the search process: ", error);
                 setResults([]);
             } finally {
                 setLoading(false);

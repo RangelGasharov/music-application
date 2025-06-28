@@ -1,8 +1,7 @@
 import { MusicTrackWithPosition } from '@/types/MusicTrack';
 import styles from "./playlist-single-page.module.css";
 import { Playlist } from '@/types/Playlist';
-import React from 'react'
-import MusicTrackPlaylistListItem from '@/components/MusicTrack/MusicTrackPlaylistContainer/MusicTrackPlaylistListItem/MusicTrackPlaylistListItem';
+import React from 'react';
 import MusicTrackPlaylistContainer from '@/components/MusicTrack/MusicTrackPlaylistContainer/MusicTrackPlaylistContainer';
 
 type Params = Promise<{ playlistId: string }>

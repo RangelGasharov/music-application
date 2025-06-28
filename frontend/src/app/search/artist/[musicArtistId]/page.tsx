@@ -1,4 +1,3 @@
-import MusicTrackAlbumListItem from '@/components/MusicTrack/MusicTrackAlbumContainer/MusicTrackAlbumListItem/MusicTrackAlbumListItem';
 import { MusicArtist } from '@/types/MusicArtist';
 import { MusicTrack } from '@/types/MusicTrack';
 import { MusicAlbum } from '@/types/MusicAlbum';
@@ -8,6 +7,7 @@ import styles from "./music-artist-page.module.css"
 import MusicAlbumCard from '@/components/MusicAlbumContainer/MusicAlbumCard/MusicAlbumCard';
 import Image from 'next/image';
 import { DEFAULT_MUSIC_ARTIST_IMAGE_SOURCE } from '@/constants/constants';
+import MusicTrackAlbumContainer from '@/components/MusicTrack/MusicTrackAlbumContainer/MusicTrackAlbumContainer';
 
 type Params = Promise<{ musicArtistId: string }>
 
@@ -82,11 +82,7 @@ export default async function MusicArtistPage({ params }: { params: Params }) {
                 <div className={styles["music-tracks-wrapper"]}>
                     <h2>Popular Tracks</h2>
                     {musicTracks.length === 0 ? (<p>No tracks found for this artist.</p>) : (
-                        <div className={styles["music-tracks-container"]}>
-                            {musicTracks.map((musicTrack: MusicTrack, index) => (
-                                <MusicTrackAlbumListItem position={index + 1} key={musicTrack.id} musicTrack={musicTrack} />
-                            ))}
-                        </div>
+                        <MusicTrackAlbumContainer musicTracks={musicTracks} />
                     )}
                 </div>
 
