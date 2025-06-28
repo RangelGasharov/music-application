@@ -4,7 +4,7 @@ namespace MusicApplicationWebAPI.Models.Entities
     {
         public Guid Id { get; set; } = Guid.NewGuid();
         public Guid QueueId { get; set; }
-        public int TrackId { get; set; }
+        public Guid TrackId { get; set; }
         public string Position { get; set; } = string.Empty;
         public DateTime AddedAt { get; set; } = DateTime.UtcNow;
 

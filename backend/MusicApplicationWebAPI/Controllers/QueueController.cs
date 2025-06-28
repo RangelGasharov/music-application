@@ -22,7 +22,7 @@ namespace MusicApplicationWebAPI.Controllers
 
         public class AddTrackRequest
         {
-            public int TrackId { get; set; }
+            public Guid TrackId { get; set; }
         }
 
         public class ReorderRequest
@@ -40,6 +40,23 @@ namespace MusicApplicationWebAPI.Controllers
                 return NotFound();
 
             return Ok(queue);
+        }
+
+        [HttpGet("queue-items/{id:guid}")]
+        public async Task<IActionResult> GetQueueItems(Guid id)
+        {
+            var queueItems = await _queueRepository.GetQueueItems(id);
+            if (queueItems == null)
+                return NotFound();
+
+            return Ok(queueItems);
+        }
+
+        [HttpGet("queue-items-with-tracks/{id:guid}")]
+        public async Task<IActionResult> GetQueueItemsWithTracks(Guid id)
+        {
+            var items = await _queueRepository.GetQueueItemsWithTracks(id);
+            return Ok(items);
         }
 
         [HttpGet("user-id/{userId:guid}")]
@@ -77,7 +94,7 @@ namespace MusicApplicationWebAPI.Controllers
         [HttpPost("{queueId:guid}/add")]
         public async Task<IActionResult> AddTrack(Guid queueId, [FromBody] AddTrackRequest request)
         {
-            if (request == null || request.TrackId <= 0)
+            if (request == null)
                 return BadRequest("Invalid request");
 
             var item = await _queueRepository.AddTrackToQueue(queueId, request.TrackId);

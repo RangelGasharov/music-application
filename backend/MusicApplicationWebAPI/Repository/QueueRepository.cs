@@ -1,6 +1,10 @@
 using LexoAlgorithm;
 using Microsoft.EntityFrameworkCore;
 using MusicApplicationWebAPI.Data;
+using MusicApplicationWebAPI.Dtos.MusicAlbum;
+using MusicApplicationWebAPI.Dtos.MusicArtist;
+using MusicApplicationWebAPI.Dtos.MusicGenre;
+using MusicApplicationWebAPI.Dtos.MusicTrack;
 using MusicApplicationWebAPI.Interfaces;
 using MusicApplicationWebAPI.Models.Entities;
 
@@ -54,6 +58,91 @@ namespace MusicApplicationWebAPI.Repository
                 .ToListAsync();
         }
 
+        public async Task<List<QueueItemWithMusicTrackDto>> GetQueueItemsWithTracks(Guid queueId)
+        {
+            var items = await _context.QueueItem
+                .Where(i => i.QueueId == queueId)
+                .OrderBy(i => i.Position)
+                .ToListAsync();
+
+            var trackIds = items.Select(i => i.TrackId).Distinct().ToList();
+
+            var tracks = await _context.MusicTrack
+                .Where(t => trackIds.Contains(t.Id))
+                .Include(t => t.MusicArtistTrack)
+                    .ThenInclude(mat => mat.MusicArtist)
+                .Include(t => t.MusicTrackAlbum)
+                    .ThenInclude(mta => mta.MusicAlbum)
+                .Include(t => t.MusicGenreTrack)
+                    .ThenInclude(mgt => mgt.MusicGenre)
+                .ToListAsync();
+
+            var trackDict = tracks.ToDictionary(t => t.Id);
+
+            var result = items.Select(item =>
+            {
+                if (!trackDict.TryGetValue(item.TrackId, out var track))
+                {
+                    return new QueueItemWithMusicTrackDto
+                    {
+                        Id = item.Id,
+                        QueueId = item.QueueId,
+                        TrackId = item.TrackId,
+                        Position = item.Position,
+                        AddedAt = item.AddedAt,
+                        Track = null
+                    };
+                }
+
+                var dto = new MusicTrackDto
+                {
+                    Id = track.Id,
+                    Title = track.Title,
+                    ReleaseDate = track.ReleaseDate,
+                    FilePath = track.FilePath,
+                    IsExplicit = track.IsExplicit,
+                    UploadedAt = track.UploadedAt,
+                    CoverURL = track.CoverURL,
+                    Duration = track.Duration,
+
+                    MusicArtists = track.MusicArtistTrack.Select(mat => new MusicArtistShortFormDto
+                    {
+                        Id = mat.MusicArtist.Id,
+                        Name = mat.MusicArtist.Name
+                    }).ToList(),
+
+                    MusicAlbums = track.MusicTrackAlbum.Select(mta => new MusicAlbumShortFormDto
+                    {
+                        Id = mta.MusicAlbum.Id,
+                        Title = mta.MusicAlbum.Title,
+                        CoverURL = mta.MusicAlbum.CoverURL,
+                        UploadedAt = mta.MusicAlbum.UploadedAt,
+                        ReleaseDate = mta.MusicAlbum.ReleaseDate
+                    }).ToList(),
+
+                    MusicGenres = track.MusicGenreTrack.Select(mgt => new MusicGenreDto
+                    {
+                        Id = mgt.MusicGenre.Id,
+                        Name = mgt.MusicGenre.Name
+                    }).ToList()
+                };
+
+                return new QueueItemWithMusicTrackDto
+                {
+                    Id = item.Id,
+                    QueueId = item.QueueId,
+                    TrackId = item.TrackId,
+                    Position = item.Position,
+                    AddedAt = item.AddedAt,
+                    Track = dto
+                };
+            }).ToList();
+
+            return result;
+        }
+
+
+
         public async Task<Queue> CreateQueue(Guid userId, string? name)
         {
             var queue = new Queue
@@ -69,7 +158,7 @@ namespace MusicApplicationWebAPI.Repository
             return queue;
         }
 
-        public async Task<QueueItem> AddTrackToQueue(Guid queueId, int trackId)
+        public async Task<QueueItem> AddTrackToQueue(Guid queueId, Guid trackId)
         {
             var lastItem = await _context.QueueItem
                 .Where(i => i.QueueId == queueId)

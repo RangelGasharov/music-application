@@ -224,7 +224,6 @@ namespace MusicApplicationWebAPI.Repository
                     FilePath = musicTrack.FilePath,
                     IsExplicit = musicTrack.IsExplicit,
                     Duration = musicTrack.Duration,
-                    Position = position,
                     MusicArtists = musicTrack.MusicArtistTrack
                         .Select(mat => new MusicArtistShortFormDto
                         {
