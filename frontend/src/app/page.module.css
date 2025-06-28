@@ -18,3 +18,19 @@
   background-color: var(--background-color);
   opacity: .6;
 }
+
+.empty-queue-container {
+  display: grid;
+  gap: 1rem;
+  justify-content: center;
+  font-size: 2rem;
+}
+
+.music-icon-container {
+  display: flex;
+  justify-content: center;
+}
+
+.music-icon {
+  font-size: 7rem !important;
+}

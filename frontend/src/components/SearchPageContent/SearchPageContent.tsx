@@ -15,6 +15,10 @@ import AlbumIcon from '@mui/icons-material/Album';
 import MusicNoteIcon from '@mui/icons-material/MusicNote';
 import PersonIcon from '@mui/icons-material/Person';
 
+type Props = {
+    queueId: string
+}
+
 interface SearchResult {
     music_album: MusicAlbum;
     music_artist: MusicArtist;
@@ -25,7 +29,7 @@ interface SearchResult {
     id: string;
 }
 
-export default function SearchPageContent() {
+export default function SearchPageContent({ queueId }: Props) {
     const searchParams = useSearchParams();
     const term = searchParams.get('term');
 
@@ -109,7 +113,7 @@ export default function SearchPageContent() {
                         <h2>Tracks</h2>
                         <MusicNoteIcon />
                     </div>
-                    <MusicTrackContainer musicTracks={musicTracks} />
+                    <MusicTrackContainer musicTracks={musicTracks} queueId={queueId} />
                 </div>
             )}
 

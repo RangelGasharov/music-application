@@ -1,41 +1,84 @@
 import styles from "./page.module.css";
 import PlayerBox from "../components/PlayerBox/PlayerBox";
 import { MusicTrack } from "@/types/MusicTrack";
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/lib/auth";
+import LibraryMusicIcon from '@mui/icons-material/LibraryMusic';
 
-export default async function Home() {
-  const getMusicTracks = async (): Promise<MusicTrack[]> => {
-    try {
-      const API_URL = process.env.WEB_API_URL;
-      const targetUrl = `${API_URL}/music-track`;
-      const response = await fetch(targetUrl, {
-        method: "GET",
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      });
+const getQueueByUserId = async (userId: string) => {
+  try {
+    const API_URL = process.env.WEB_API_URL;
+    const targetUrl = `${API_URL}/queue/user-id/${userId}`;
+    const response = await fetch(targetUrl, {
+      method: "GET",
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
 
-      if (!response.ok) {
-        const errorText = await response.text();
-        console.warn(`Failed to fetch music tracks: ${errorText}`);
-        return [];
-      }
-
-      const data = await response.json();
-      return data;
-    } catch (error) {
-      console.error('Error fetching music tracks:', error);
+    if (!response.ok) {
+      const errorText = await response.text();
+      console.warn(`Failed to fetch queue: ${errorText}`);
       return [];
     }
-  };
 
-  const musicTracks: MusicTrack[] = await getMusicTracks();
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.error('Error fetching the queue:', error);
+    return [];
+  }
+}
+
+const getQueueItemsWithMusicTracks = async (queueId: string) => {
+  try {
+    const API_URL = process.env.WEB_API_URL;
+    const targetUrl = `${API_URL}/queue/queue-items-with-tracks/${queueId}`;
+    const response = await fetch(targetUrl, {
+      method: "GET",
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+
+    if (!response.ok) {
+      const errorText = await response.text();
+      console.warn(`Failed to fetch queue items: ${errorText}`);
+      return [];
+    }
+
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.error('Error fetching the queue items:', error);
+    return [];
+  }
+}
+
+export default async function Home() {
+  const session = await getServerSession(authOptions);
+  const userId = session?.userId as string;
+  const queue = await getQueueByUserId(userId);
+  const queueItems: MusicTrack[] = await getQueueItemsWithMusicTracks(queue.id);
+  const musicTracks: MusicTrack[] = queueItems.map(item => ({
+    ...item.track,
+    position: item.position,
+  }));
+
+  console.log(musicTracks);
+
 
   return (
     <div className={styles["main-container"]}>
       {musicTracks.length > 0 ? (
         <PlayerBox musicTracks={musicTracks} />
       ) : (
-        <p>No tracks found. Please check back later.</p>
+        <div className={styles["empty-queue-container"]}>
+          <div className={styles["music-icon-container"]}>
+            <LibraryMusicIcon className={styles["music-icon"]} />
+          </div>
+          <p>Your queue seems to be empty. Add some tracks to it!</p>
+        </div>
       )}
     </div>
   );

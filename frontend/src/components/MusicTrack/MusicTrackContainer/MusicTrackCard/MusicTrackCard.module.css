@@ -1,4 +1,6 @@
 .main-container {
+    display: flex;
+    flex-direction: column;
     width: 100%;
     color: var(--text-color);
     background-color: var(--cards-background-color);
@@ -10,7 +12,14 @@
     transform: scale(1.02);
 }
 
+.music-track-footer {
+    flex: 1;
+    display: flex;
+    align-items: center;
+}
+
 .music-track-info {
+    flex: 1;
     padding: 1rem;
     font-size: 0.8rem;
 }

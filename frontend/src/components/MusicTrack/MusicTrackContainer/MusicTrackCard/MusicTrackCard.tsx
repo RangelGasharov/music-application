@@ -4,15 +4,18 @@ import styles from "./MusicTrackCard.module.css";
 import Image from 'next/image';
 import { MusicArtistShort } from '@/types/MusicArtist';
 import Link from 'next/link';
+import MusicTrackMoreButton from './MusicTrackMoreButton/MusicTrackMoreButton';
 
 type MusicTrackCardType = {
-    musicTrack: MusicTrack
+    musicTrack: MusicTrack;
+    queueId: string;
 }
 
-export default function MusicTrackCard({ musicTrack }: MusicTrackCardType) {
+export default function MusicTrackCard({ musicTrack, queueId }: MusicTrackCardType) {
     return (
-        <Link href={`/search/track/${musicTrack.id}`}>
-            <div className={styles["main-container"]}>
+
+        <div className={styles["main-container"]}>
+            <Link href={`/search/track/${musicTrack.id}`}>
                 <Image
                     quality={50}
                     src={musicTrack.cover_url}
@@ -22,7 +25,9 @@ export default function MusicTrackCard({ musicTrack }: MusicTrackCardType) {
                     className={styles["image"]}
                     priority
                 />
-                <div className={styles["music-track-info"]}>
+            </Link>
+            <div className={styles["music-track-footer"]}>
+                <Link href={`/search/track/${musicTrack.id}`} className={styles["music-track-info"]}>
                     <div className={styles["music-track-title"]}>{musicTrack.title}</div>
                     <div>
                         {musicTrack?.music_artists?.map((musicArtist: MusicArtistShort) => {
@@ -30,8 +35,12 @@ export default function MusicTrackCard({ musicTrack }: MusicTrackCardType) {
                         })}
                     </div>
                     <div>{new Date(musicTrack.release_date).getFullYear()}</div>
+                </Link>
+                <div className={styles["more-vertical-button-container"]}>
+                    <MusicTrackMoreButton queueId={queueId} musicTrack={musicTrack} />
                 </div>
             </div>
-        </Link>
+        </div>
+
     )
 }
