@@ -4,6 +4,7 @@ import { MusicTrack } from "@/types/MusicTrack";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import LibraryMusicIcon from '@mui/icons-material/LibraryMusic';
+import { QueueItemFull } from "@/types/QueueItem";
 
 const getQueueByUserId = async (userId: string) => {
   try {
@@ -59,14 +60,11 @@ export default async function Home() {
   const session = await getServerSession(authOptions);
   const userId = session?.userId as string;
   const queue = await getQueueByUserId(userId);
-  const queueItems: MusicTrack[] = await getQueueItemsWithMusicTracks(queue.id);
+  const queueItems: QueueItemFull[] = await getQueueItemsWithMusicTracks(queue.id);
   const musicTracks: MusicTrack[] = queueItems.map(item => ({
     ...item.track,
     position: item.position,
   }));
-
-  console.log(musicTracks);
-
 
   return (
     <div className={styles["main-container"]}>

@@ -24,7 +24,7 @@ export default function MusicTrackPlaylistContainer({ musicTracks }: Props) {
             </div>
             <div className={styles["music-tracks-container"]}>
                 {musicTracks.map((musicTrack: MusicTrackWithPosition) => {
-                    return <MusicTrackPlaylistListItem position={musicTrack.position} musicTrack={musicTrack} key={musicTrack.id} />
+                    return <MusicTrackPlaylistListItem position={musicTrack.position} musicTrack={musicTrack.track} key={musicTrack.track.id} />
                 })}
             </div>
         </div>

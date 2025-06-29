@@ -1,4 +1,4 @@
-import { MusicTrack } from '@/types/MusicTrack';
+import { MusicTrack, MusicTrackWithPosition } from '@/types/MusicTrack';
 import { notFound } from 'next/navigation';
 import styles from "./music-album-page.module.css";
 import { MusicAlbum } from '@/types/MusicAlbum';
@@ -30,7 +30,7 @@ async function getMusicAlbumById(musicAlbumId: string): Promise<MusicAlbum> {
     }
 }
 
-async function getMusicTracksByAlbumId(musicAlbumId: string): Promise<MusicTrack[]> {
+async function getMusicTracksByAlbumId(musicAlbumId: string): Promise<MusicTrackWithPosition[]> {
     try {
         const res = await fetch(`${process.env.WEB_API_URL}/music-track/music-album/${musicAlbumId}`);
 
@@ -38,7 +38,7 @@ async function getMusicTracksByAlbumId(musicAlbumId: string): Promise<MusicTrack
             throw new Error('Failed to fetch Music Tracks');
         }
 
-        const musicTracks: MusicTrack[] = await res.json();
+        const musicTracks: MusicTrackWithPosition[] = await res.json();
         return musicTracks;
     } catch (error) {
         console.error('Error fetching music tracks:', error);
@@ -51,7 +51,7 @@ export default async function MusicAlbumPage({ params }: { params: Params }) {
     try {
         const [musicAlbum, musicTracks] = await Promise.all([
             getMusicAlbumById(musicAlbumId),
-            getMusicTracksByAlbumId(musicAlbumId)
+            (await getMusicTracksByAlbumId(musicAlbumId)).map(musicTrackWithPosition => musicTrackWithPosition.track)
         ]);
 
         const musicAlbumDate: Date = new Date(musicAlbum?.release_date);
