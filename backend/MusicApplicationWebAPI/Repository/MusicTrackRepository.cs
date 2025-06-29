@@ -7,6 +7,7 @@ using MusicApplicationWebAPI.Dtos.MusicTrack;
 using MusicApplicationWebAPI.Interfaces;
 using MusicApplicationWebAPI.Models.Entities;
 using MusicApplicationWebAPI.Services;
+using Sprache;
 
 namespace MusicApplicationWebAPI.Repository
 {
@@ -156,7 +157,7 @@ namespace MusicApplicationWebAPI.Repository
             })];
         }
 
-        public async Task<List<MusicTrackDto>> GetMusicTracksByMusicAlbumId(Guid albumId)
+        public async Task<List<MusicTrackWithPositionDto>> GetMusicTracksByMusicAlbumId(Guid albumId)
         {
             var musicTracks = await _context.MusicTrack
                 .Include(mt => mt.MusicArtistTrack)
@@ -164,41 +165,56 @@ namespace MusicApplicationWebAPI.Repository
                 .Include(mt => mt.MusicTrackAlbum)
                     .ThenInclude(mta => mta.MusicAlbum)
                 .Where(mt => mt.MusicTrackAlbum.Any(mta => mta.MusicAlbumId == albumId))
-                .OrderBy(mt => mt.MusicTrackAlbum
-                    .FirstOrDefault(mta => mta.MusicAlbumId == albumId)!.Position)
                 .ToListAsync();
 
-            return musicTracks.Select(music_track => new MusicTrackDto
-            {
-                Id = music_track.Id,
-                Title = music_track.Title,
-                CoverURL = music_track.CoverURL,
-                UploadedAt = music_track.UploadedAt,
-                ReleaseDate = music_track.ReleaseDate,
-                FilePath = music_track.FilePath,
-                IsExplicit = music_track.IsExplicit,
-                Duration = music_track.Duration,
-                MusicArtists = music_track.MusicArtistTrack
-                    .Select(music_artist_track => new MusicArtistShortFormDto
+            var result = musicTracks
+                .Select(musicTrack =>
+                {
+                    var position = musicTrack.MusicTrackAlbum
+                        .FirstOrDefault(mta => mta.MusicAlbumId == albumId)?.Position ?? 0;
+
+                    var dto = new MusicTrackDto
                     {
-                        Id = music_artist_track.MusicArtist.Id,
-                        Name = music_artist_track.MusicArtist.Name
-                    })
-                    .ToList(),
-                MusicAlbums = music_track.MusicTrackAlbum
-                    .Select(mta => new MusicAlbumShortFormDto
+                        Id = musicTrack.Id,
+                        Title = musicTrack.Title,
+                        CoverURL = musicTrack.CoverURL,
+                        UploadedAt = musicTrack.UploadedAt,
+                        ReleaseDate = musicTrack.ReleaseDate,
+                        FilePath = musicTrack.FilePath,
+                        IsExplicit = musicTrack.IsExplicit,
+                        Duration = musicTrack.Duration,
+                        MusicArtists = musicTrack.MusicArtistTrack
+                            .Select(mat => new MusicArtistShortFormDto
+                            {
+                                Id = mat.MusicArtist.Id,
+                                Name = mat.MusicArtist.Name
+                            })
+                            .ToList(),
+                        MusicAlbums = musicTrack.MusicTrackAlbum
+                            .Select(mta => new MusicAlbumShortFormDto
+                            {
+                                Id = mta.MusicAlbum.Id,
+                                Title = mta.MusicAlbum.Title,
+                                CoverURL = mta.MusicAlbum.CoverURL,
+                                UploadedAt = mta.MusicAlbum.UploadedAt,
+                                ReleaseDate = mta.MusicAlbum.ReleaseDate
+                            })
+                            .ToList()
+                    };
+
+                    return new MusicTrackWithPositionDto
                     {
-                        Id = mta.MusicAlbum!.Id,
-                        Title = mta.MusicAlbum.Title,
-                        CoverURL = mta.MusicAlbum.CoverURL,
-                        UploadedAt = mta.MusicAlbum.UploadedAt,
-                        ReleaseDate = mta.MusicAlbum.ReleaseDate
-                    })
-                    .ToList()
-            }).ToList();
+                        Position = position,
+                        Track = dto
+                    };
+                })
+                .OrderBy(pt => (int)pt.Position)
+                .ToList();
+
+            return result;
         }
 
-        public async Task<List<MusicTrackDto>> GetMusicTracksPlaylistId(Guid playlistId)
+        public async Task<List<MusicTrackWithPositionDto>> GetMusicTracksPlaylistId(Guid playlistId)
         {
             var musicTracks = await _context.MusicTrack
                 .Include(mt => mt.MusicTrackPlaylist)
@@ -209,12 +225,12 @@ namespace MusicApplicationWebAPI.Repository
                 .Where(mt => mt.MusicTrackPlaylist.Any(mtp => mtp.PlayListId == playlistId))
                 .ToListAsync();
 
-            return [.. musicTracks.Select(musicTrack =>
+            var result = musicTracks.Select(musicTrack =>
             {
                 var position = musicTrack.MusicTrackPlaylist
                     .FirstOrDefault(mtp => mtp.PlayListId == playlistId)?.Position ?? 0;
 
-                return new MusicTrackDto
+                var trackDto = new MusicTrackDto
                 {
                     Id = musicTrack.Id,
                     Title = musicTrack.Title,
@@ -231,7 +247,7 @@ namespace MusicApplicationWebAPI.Repository
                             Name = mat.MusicArtist.Name
                         })
                         .ToList(),
-                    MusicAlbums = [.. musicTrack.MusicTrackAlbum
+                    MusicAlbums = musicTrack.MusicTrackAlbum
                         .Select(mta => new MusicAlbumShortFormDto
                         {
                             Id = mta.MusicAlbum.Id,
@@ -239,10 +255,20 @@ namespace MusicApplicationWebAPI.Repository
                             CoverURL = mta.MusicAlbum.CoverURL,
                             UploadedAt = mta.MusicAlbum.UploadedAt,
                             ReleaseDate = mta.MusicAlbum.ReleaseDate
-                        })]
+                        })
+                        .ToList()
+                };
+
+                return new MusicTrackWithPositionDto
+                {
+                    Position = position,
+                    Track = trackDto
                 };
             })
-            .OrderBy(dto => dto.Position)];
+            .OrderBy(pt => (int)pt.Position)
+            .ToList();
+
+            return result;
         }
 
         public async Task<MusicTrack> AddMusicTrack(AddMusicTrackDto addMusicTrackDto)
