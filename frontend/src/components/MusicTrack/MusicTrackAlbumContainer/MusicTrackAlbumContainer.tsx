@@ -1,4 +1,4 @@
-import { MusicTrack } from '@/types/MusicTrack'
+import { MusicTrack, MusicTrackFull } from '@/types/MusicTrack'
 import React from 'react'
 import styles from "./MusicTrackAlbumContainer.module.css";
 import NumbersIcon from '@mui/icons-material/Numbers';
@@ -9,10 +9,11 @@ import PlayArrowIcon from '@mui/icons-material/PlayArrow';
 import MusicTrackAlbumListItem from './MusicTrackAlbumListItem/MusicTrackAlbumListItem';
 
 type MusicTrackAlbumContainerType = {
-    musicTracks: MusicTrack[]
+    musicTracks: MusicTrackFull[];
+    queueId: string;
 }
 
-export default function MusicTrackAlbumContainer({ musicTracks }: MusicTrackAlbumContainerType) {
+export default function MusicTrackAlbumContainer({ musicTracks, queueId }: MusicTrackAlbumContainerType) {
     return (
         <div>
             <div className={styles["music-tracks-container-heading-box"]}>
@@ -23,8 +24,8 @@ export default function MusicTrackAlbumContainer({ musicTracks }: MusicTrackAlbu
                 <div className={styles["music-track-duration-box"]}><AccessTimeIcon /></div>
             </div>
             <div className={styles["music-tracks-container"]}>
-                {musicTracks.map((musicTrack: MusicTrack, index) => (
-                    <MusicTrackAlbumListItem position={index + 1} key={musicTrack.id} musicTrack={musicTrack} />
+                {musicTracks.map((musicTrack, index) => (
+                    <MusicTrackAlbumListItem position={index + 1} key={musicTrack.id} musicTrack={musicTrack} queueId={queueId} />
                 ))}
             </div>
         </div>

@@ -1,5 +1,5 @@
 import { MusicArtist } from '@/types/MusicArtist';
-import { MusicTrack } from '@/types/MusicTrack';
+import { MusicTrack, MusicTrackFull } from '@/types/MusicTrack';
 import { MusicAlbum } from '@/types/MusicAlbum';
 import { notFound } from 'next/navigation';
 import React from 'react'
@@ -8,6 +8,9 @@ import MusicAlbumCard from '@/components/MusicAlbumContainer/MusicAlbumCard/Musi
 import Image from 'next/image';
 import { DEFAULT_MUSIC_ARTIST_IMAGE_SOURCE } from '@/constants/constants';
 import MusicTrackAlbumContainer from '@/components/MusicTrack/MusicTrackAlbumContainer/MusicTrackAlbumContainer';
+import { getServerSession } from 'next-auth';
+import { authOptions } from '@/lib/auth';
+import { Queue } from '@/types/Queue';
 
 type Params = Promise<{ musicArtistId: string }>
 
@@ -27,7 +30,7 @@ async function getMusicArtistById(musicArtistId: string): Promise<MusicArtist> {
     }
 }
 
-async function getMusicTracksByArtistId(musicArtistId: string): Promise<MusicTrack[]> {
+async function getMusicTracksByArtistId(musicArtistId: string): Promise<MusicTrackFull[]> {
     try {
         const res = await fetch(`${process.env.WEB_API_URL}/music-track/music-artist/${musicArtistId}`);
 
@@ -35,7 +38,7 @@ async function getMusicTracksByArtistId(musicArtistId: string): Promise<MusicTra
             throw new Error('Failed to fetch Music Tracks');
         }
 
-        const musicTracks: MusicTrack[] = await res.json();
+        const musicTracks = await res.json();
         return musicTracks;
     } catch (error) {
         console.error('Error fetching music tracks:', error);
@@ -59,8 +62,33 @@ async function getMusicAlbumsByArtistId(musicArtistId: string): Promise<MusicAlb
     }
 }
 
+async function getQueueByUserId(userId: string | undefined): Promise<Queue> {
+    if (!userId) {
+        throw new Error('No user id was provided!');
+    }
+    try {
+        const res = await fetch(`${process.env.WEB_API_URL}/queue/user-id/${userId}`, {
+            cache: "no-store",
+        });
+
+        if (!res.ok) {
+            throw new Error('Failed to fetch queue');
+        }
+        const queue: Queue = await res.json();
+        return queue;
+    } catch (error) {
+        console.error("An error has occured while trying to fetch the queue: ", error);
+        throw error;
+    }
+}
+
 export default async function MusicArtistPage({ params }: { params: Params }) {
     const { musicArtistId } = await params;
+    const session = await getServerSession(authOptions);
+    const userId = session?.userId;
+    const queue: Queue = await getQueueByUserId(userId);
+    const queueId = queue.id;
+
     try {
         const [musicArtist, musicTracks, musicAlbums] = await Promise.all([
             getMusicArtistById(musicArtistId),
@@ -82,7 +110,7 @@ export default async function MusicArtistPage({ params }: { params: Params }) {
                 <div className={styles["music-tracks-wrapper"]}>
                     <h2>Popular Tracks</h2>
                     {musicTracks.length === 0 ? (<p>No tracks found for this artist.</p>) : (
-                        <MusicTrackAlbumContainer musicTracks={musicTracks} />
+                        <MusicTrackAlbumContainer musicTracks={musicTracks} queueId={queueId} />
                     )}
                 </div>
 
