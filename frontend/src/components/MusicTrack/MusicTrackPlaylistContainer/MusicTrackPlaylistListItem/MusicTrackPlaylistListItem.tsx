@@ -1,17 +1,19 @@
-import { MusicTrack } from '@/types/MusicTrack'
+import { MusicTrack, MusicTrackFull } from '@/types/MusicTrack'
 import { formatDuration } from '@/utils/formatDuration';
 import styles from "./MusicTrackPlaylistListItem.module.css";
 import React from 'react'
 import { MusicArtistShort } from '@/types/MusicArtist';
 import Image from 'next/image';
 import Link from 'next/link';
+import MusicTrackMoreButton from '../../MusicTrackContainer/MusicTrackCard/MusicTrackMoreButton/MusicTrackMoreButton';
 
 type MusicTrackListItem = {
-    musicTrack: MusicTrack;
+    musicTrack: MusicTrackFull;
     position: number;
+    queueId: string;
 }
 
-export default function MusicTrackPlaylistListItem({ musicTrack, position }: MusicTrackListItem) {
+export default function MusicTrackPlaylistListItem({ musicTrack, position, queueId }: MusicTrackListItem) {
     return (
         <div className={styles["main-container"]}>
             <div className={styles["position-box"]}>{position}</div>
@@ -40,6 +42,7 @@ export default function MusicTrackPlaylistListItem({ musicTrack, position }: Mus
                 })}
             </div>
             <div className={styles["duration-box"]}>{formatDuration(musicTrack.duration)}</div>
+            <div><MusicTrackMoreButton musicTrack={musicTrack} queueId={queueId} /></div>
         </div>
     )
 }

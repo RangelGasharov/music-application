@@ -9,10 +9,11 @@ import MusicNoteIcon from '@mui/icons-material/MusicNote';
 import ImageIcon from '@mui/icons-material/Image';
 
 type Props = {
-    musicTracks: MusicTrackWithPosition[]
+    musicTracks: MusicTrackWithPosition[];
+    queueId: string;
 }
 
-export default function MusicTrackPlaylistContainer({ musicTracks }: Props) {
+export default function MusicTrackPlaylistContainer({ musicTracks, queueId }: Props) {
     return (
         <div>
             <div className={styles["music-tracks-container-heading-box"]}>
@@ -24,7 +25,7 @@ export default function MusicTrackPlaylistContainer({ musicTracks }: Props) {
             </div>
             <div className={styles["music-tracks-container"]}>
                 {musicTracks.map((musicTrack: MusicTrackWithPosition) => {
-                    return <MusicTrackPlaylistListItem position={musicTrack.position} musicTrack={musicTrack.track} key={musicTrack.track.id} />
+                    return <MusicTrackPlaylistListItem position={musicTrack.position} musicTrack={musicTrack.track} key={musicTrack.track.id} queueId={queueId} />
                 })}
             </div>
         </div>
