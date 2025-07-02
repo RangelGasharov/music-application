@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
-import styles from "./layout-admin-page.module.css"
+import styles from "./root-layout.module.css"
 import Providers from "@/components/Providers/Providers";
 import NavigationHeader from "@/components/NavigationHeader/NavigationHeader";
 import { Suspense } from "react";

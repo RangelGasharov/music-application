@@ -1,0 +1,16 @@
+.main-container {
+    background-color: var(--cards-background-color);
+    padding: 2rem;
+}
+
+.image-container {}
+
+.music-track-title-container {
+    font-size: 1.2rem;
+    font-weight: bold;
+    letter-spacing: .15rem;
+}
+
+.music-artists-container {
+    font-size: .8rem;
+}

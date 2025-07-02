@@ -1,4 +1,4 @@
-import { MusicTrack } from '@/types/MusicTrack';
+import { MusicTrackFull } from '@/types/MusicTrack';
 import React from 'react';
 import styles from "./MusicTrackCard.module.css";
 import Image from 'next/image';
@@ -7,7 +7,7 @@ import Link from 'next/link';
 import MusicTrackMoreButton from './MusicTrackMoreButton/MusicTrackMoreButton';
 
 type MusicTrackCardType = {
-    musicTrack: MusicTrack;
+    musicTrack: MusicTrackFull;
     queueId: string;
 }
 
