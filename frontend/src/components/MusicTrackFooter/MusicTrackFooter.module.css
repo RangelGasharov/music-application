@@ -1,6 +1,6 @@
 .main-container {
     display: flex;
-    justify-content: center;
+    justify-content: space-between;
     align-items: center;
     padding: 1rem;
     background-color: var(--cards-background-color);
@@ -35,19 +35,20 @@
     color: #aaa;
 }
 
+.controls-container {
+    display: grid;
+    align-items: center;
+    gap: .5rem;
+}
+
 .control-buttons-container {
     display: flex;
     justify-content: center;
-}
-
-.music-footer-box {
-    min-width: 25%;
-    display: grid;
-    gap: 1rem;
 }
 
 .range-bar-container {
     color: var(--text-color);
     display: flex;
     justify-content: space-between;
+    gap: .5rem;
 }

@@ -115,29 +115,29 @@ export default function MusicTrackFooter() {
 
     return (
         <div className={styles["main-container"]}>
-            <div className={styles["music-footer-box"]} >
-                <div className={styles["music-track-container"]} >
-                    <div className={styles["image-container"]}>
-                        <Image
-                            src={musicTrack.cover_url || DEFAULT_MUSIC_ARTIST_IMAGE_SOURCE}
-                            alt={musicTrack.title}
-                            width={70}
-                            height={70}
-                            className={styles["image"]}
-                            priority
-                        />
+            <div className={styles["music-track-container"]} >
+                <div className={styles["image-container"]}>
+                    <Image
+                        src={musicTrack.cover_url || DEFAULT_MUSIC_ARTIST_IMAGE_SOURCE}
+                        alt={musicTrack.title}
+                        width={70}
+                        height={70}
+                        className={styles["image"]}
+                        priority
+                    />
+                </div>
+                <div className={styles["music-track-info-container"]}>
+                    <div className={styles["music-track-title-container"]}>{musicTrack.title}</div>
+                    <div className={styles["music-artists-container"]}>
+                        {musicTrack.music_artists.map((artist: MusicArtist) => artist.name).join(", ") || "Unkown artist"}
                     </div>
-                    <div className={styles["music-track-info-container"]}>
-                        <div className={styles["music-track-title-container"]}>{musicTrack.title}</div>
-                        <div className={styles["music-artists-container"]}>
-                            {musicTrack.music_artists.map((artist: MusicArtist) => artist.name).join(", ") || "Unkown artist"}
-                        </div>
-                        <div className={styles["control-buttons-container"]}>
-                            <FastRewindButton changeToPreviousTrack={goToPreviousTrack} />
-                            <PlayButton onClick={togglePlay} isPlaying={isPlaying} />
-                            <FastForwardButton changeToNextTrack={goToNextTrack} />
-                        </div>
-                    </div>
+                </div>
+            </div>
+            <div className={styles["controls-container"]}>
+                <div className={styles["control-buttons-container"]}>
+                    <FastRewindButton changeToPreviousTrack={goToPreviousTrack} />
+                    <PlayButton onClick={togglePlay} isPlaying={isPlaying} />
+                    <FastForwardButton changeToNextTrack={goToNextTrack} />
                 </div>
                 <div className={styles["range-bar-container"]}>
                     <div>{formatTime(currentTime)}</div>
@@ -152,6 +152,9 @@ export default function MusicTrackFooter() {
                     />
                     <div>{formatTime(duration)}</div>
                 </div>
+            </div>
+            <div className={styles["options-container"]}>
+
             </div>
         </div>
     );
