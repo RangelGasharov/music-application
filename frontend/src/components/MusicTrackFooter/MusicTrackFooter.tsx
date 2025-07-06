@@ -8,6 +8,7 @@ import { MusicArtist } from "@/types/MusicArtist";
 import PlayButton from "../PlayerBox/PlayerControls/PlayButton";
 import FastForwardButton from "../PlayerBox/PlayerControls/FastForwardButton";
 import FastRewindButton from "../PlayerBox/PlayerControls/FastRewindButton";
+import VolumeUpIcon from '@mui/icons-material/VolumeUp';
 
 export default function MusicTrackFooter() {
     const musicTrack = usePlayerStore((state) => state.musicTrack);
@@ -19,6 +20,7 @@ export default function MusicTrackFooter() {
     const [isPlaying, setIsPlaying] = useState(false);
     const [currentTime, setCurrentTime] = useState(0);
     const [duration, setDuration] = useState(0);
+    const [volume, setVolume] = useState(1);
 
     useEffect(() => {
         if (!audioRef.current || !musicTrack?.file_path) return;
@@ -67,6 +69,12 @@ export default function MusicTrackFooter() {
             saveProgress(Math.floor(audioRef.current!.currentTime));
         };
     }, [queueItem]);
+
+    useEffect(() => {
+        if (audioRef.current) {
+            audioRef.current.volume = volume;
+        }
+    }, [volume]);
 
     const togglePlay = () => {
         if (!audioRef.current) return;
@@ -154,7 +162,18 @@ export default function MusicTrackFooter() {
                 </div>
             </div>
             <div className={styles["options-container"]}>
-
+                <div className={styles["volume-container"]}>
+                    <VolumeUpIcon />
+                    <input
+                        type="range"
+                        min={0}
+                        max={1}
+                        step={0.01}
+                        value={volume}
+                        onChange={(e) => setVolume(parseFloat(e.target.value))}
+                        className={styles["volume-slider"]}
+                    />
+                </div>
             </div>
         </div>
     );

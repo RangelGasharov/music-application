@@ -1,6 +1,6 @@
 .main-container {
-    display: flex;
-    justify-content: space-between;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
     align-items: center;
     padding: 1rem;
     background-color: var(--cards-background-color);
@@ -31,14 +31,16 @@
 }
 
 .music-artists-container {
-    font-size: 12px;
+    font-size: .75rem;
     color: #aaa;
 }
 
 .controls-container {
     display: grid;
     align-items: center;
+    justify-content: center;
     gap: .5rem;
+    width: 100%;
 }
 
 .control-buttons-container {
@@ -51,4 +53,18 @@
     display: flex;
     justify-content: space-between;
     gap: .5rem;
+}
+
+.progress-bar {
+    accent-color: var(--text-color);
+}
+
+.volume-container {
+    display: flex;
+    align-items: center;
+    gap: .5rem;
+}
+
+.volume-slider {
+    accent-color: var(--text-color);
 }
