@@ -9,6 +9,7 @@ import PlayButton from "../PlayerBox/PlayerControls/PlayButton";
 import FastForwardButton from "../PlayerBox/PlayerControls/FastForwardButton";
 import FastRewindButton from "../PlayerBox/PlayerControls/FastRewindButton";
 import VolumeUpIcon from '@mui/icons-material/VolumeUp';
+import Link from "next/link";
 
 export default function MusicTrackFooter() {
     const musicTrack = usePlayerStore((state) => state.musicTrack);
@@ -135,9 +136,17 @@ export default function MusicTrackFooter() {
                     />
                 </div>
                 <div className={styles["music-track-info-container"]}>
-                    <div className={styles["music-track-title-container"]}>{musicTrack.title}</div>
+                    <div className={styles["music-track-title-container"]}>
+                        <Link href={`/search/track/${musicTrack.id}`}>{musicTrack.title}</Link></div>
                     <div className={styles["music-artists-container"]}>
-                        {musicTrack.music_artists.map((artist: MusicArtist) => artist.name).join(", ") || "Unkown artist"}
+                        {musicTrack.music_artists.length > 0 ? musicTrack.music_artists.map((artist: MusicArtist, index: number) => {
+                            return (
+                                <div key={artist.id}>
+                                    <Link key={artist.id} href={`/search/artist/${artist.id}`}>{artist.name}</Link>
+                                    {index < musicTrack.music_artists.length - 1 && ', '}
+                                </div>
+                            )
+                        }) : (<div>Unknown artist</div>)}
                     </div>
                 </div>
             </div>
