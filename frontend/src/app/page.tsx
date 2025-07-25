@@ -5,6 +5,7 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import LibraryMusicIcon from '@mui/icons-material/LibraryMusic';
 import { QueueItemFull } from "@/types/QueueItem";
+import PlayerInitializer from "@/components/PlayerBox/PlayerInitializer";
 
 const getQueueByUserId = async (userId: string) => {
   try {
@@ -69,7 +70,14 @@ export default async function Home() {
   return (
     <div className={styles["main-container"]}>
       {musicTracks.length > 0 ? (
-        <PlayerBox musicTracks={musicTracks} />
+        <>
+          <PlayerInitializer
+            userId={userId}
+            queue={queue}
+            queueItems={queueItems}
+          />
+          <PlayerBox />
+        </>
       ) : (
         <div className={styles["empty-queue-container"]}>
           <div className={styles["music-icon-container"]}>

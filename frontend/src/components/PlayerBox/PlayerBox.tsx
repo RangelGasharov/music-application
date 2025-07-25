@@ -2,43 +2,26 @@
 import PlayerControls from "./PlayerControls/PlayerControls"
 import PlayerImage from "./PlayerImage/PlayerImage"
 import styles from "./PlayerBox.module.css"
-import { MusicTrack } from "@/types/MusicTrack"
-import { useEffect, useState } from "react"
 import PlayerBackgroundImage from "./PlayerBackgroundImage/PlayerBackgroundImage"
 import PlayerMusicTrackInfo from "./PlayerMusicTrackInfo/PlayerMusicTrackInfo"
+import { usePlayerStore } from "@/store/usePlayerStore"
 
-type PlayerBoxType = {
-    musicTracks: MusicTrack[]
-}
+export default function PlayerBox() {
+    const musicTrack = usePlayerStore((state) => state.musicTrack);
+    const goToNextTrack = usePlayerStore((state) => state.goToNextTrack);
+    const goToPreviousTrack = usePlayerStore((state) => state.goToPreviousTrack);
 
-export default function PlayerBox({ musicTracks }: PlayerBoxType) {
-    const [availableTracks] = useState<MusicTrack[]>(musicTracks);
-    const [currentTrackNumber, setCurrentTrackNumber] = useState<number>(0);
-    const [currentTrack, setCurrenTrack] = useState<MusicTrack>(availableTracks[currentTrackNumber]);
-
-    useEffect(() => {
-        setCurrenTrack(availableTracks[currentTrackNumber]);
-    }, [currentTrackNumber])
-
-    const changeToNextTrack = () => {
-        if (availableTracks.length - 1 === currentTrackNumber) {
-            setCurrentTrackNumber(0);
-            return;
-        }
-        setCurrentTrackNumber(currentTrackNumber + 1);
-    };
-
-    const changeToPreviousTrack = () => {
-        if (currentTrackNumber === 0) return;
-        setCurrentTrackNumber(currentTrackNumber - 1);
-    };
+    if (!musicTrack || !musicTrack.file_path) {
+        console.warn("PlayerBox: No valid music track has been loaded!");
+        return null;
+    }
 
     return (
         <div className={styles["main-container"]}>
-            <PlayerBackgroundImage currentTrack={currentTrack} />
-            <PlayerImage currenTrack={currentTrack} />
-            <PlayerMusicTrackInfo currentTrack={currentTrack} />
-            <PlayerControls currentTrack={currentTrack} changeToPreviousTrack={changeToPreviousTrack} changeToNextTrack={changeToNextTrack} />
+            <PlayerBackgroundImage currentTrack={musicTrack} />
+            <PlayerImage currenTrack={musicTrack} />
+            <PlayerMusicTrackInfo currentTrack={musicTrack} />
+            <PlayerControls currentTrack={musicTrack} changeToPreviousTrack={goToPreviousTrack} changeToNextTrack={goToNextTrack} />
         </div>
     )
 }

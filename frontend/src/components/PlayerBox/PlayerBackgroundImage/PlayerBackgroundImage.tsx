@@ -12,7 +12,7 @@ export default function PlayerBackgroundImage({ currentTrack }: PlayerBackground
         <div>
             <div className={styles["background"]}> </div>
             <Image
-                src={`${currentTrack.cover_url}`}
+                src={`${currentTrack?.cover_url}`}
                 alt='music track cover'
                 fill
                 className={styles["track-image"]}

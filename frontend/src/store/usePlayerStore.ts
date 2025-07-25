@@ -1,23 +1,5 @@
 import { create } from "zustand";
-import { Queue } from "@/types/Queue";
-import { QueueItemFull } from "@/types/QueueItem";
-
-type PlayerState = {
-    userId: string | null;
-    queue: Queue | null;
-    queueItems: QueueItemFull[];
-    queueItem: QueueItemFull | null;
-    musicTrack: any | null;
-
-    setUserId: (id: string) => void;
-    setQueue: (queue: Queue) => void;
-    setQueueItem: (item: QueueItemFull) => void;
-    setQueueItems: (items: QueueItemFull[]) => void;
-    setQueueItemWithTrack: (item: QueueItemFull) => void;
-
-    goToNextTrack: () => void;
-    goToPreviousTrack: () => void;
-};
+import { PlayerState } from "@/types/PlayerState";
 
 export const usePlayerStore = create<PlayerState>((set, get) => ({
     userId: null,
@@ -25,6 +7,8 @@ export const usePlayerStore = create<PlayerState>((set, get) => ({
     queueItems: [],
     queueItem: null,
     musicTrack: null,
+    audioRef: null,
+    isInitialized: false,
 
     setUserId: (id) => set({ userId: id }),
     setQueue: (queue) => set({ queue }),
@@ -32,6 +16,8 @@ export const usePlayerStore = create<PlayerState>((set, get) => ({
     setQueueItems: (items) => set({ queueItems: items }),
     setQueueItemWithTrack: (item) =>
         set({ queueItem: item, musicTrack: item.track }),
+    setAudioRef: (ref) => set({ audioRef: ref }),
+    setInitialized: () => set({ isInitialized: true }),
 
     goToNextTrack: () => {
         const { queueItems, queueItem } = get();
@@ -41,7 +27,10 @@ export const usePlayerStore = create<PlayerState>((set, get) => ({
         const nextIndex = currentIndex + 1;
 
         if (nextIndex < queueItems.length) {
-            set({ queueItem: queueItems[nextIndex], musicTrack: queueItems[nextIndex].track });
+            set({
+                queueItem: queueItems[nextIndex],
+                musicTrack: queueItems[nextIndex].track,
+            });
         }
     },
 
@@ -53,7 +42,10 @@ export const usePlayerStore = create<PlayerState>((set, get) => ({
         const prevIndex = currentIndex - 1;
 
         if (prevIndex >= 0) {
-            set({ queueItem: queueItems[prevIndex], musicTrack: queueItems[prevIndex].track });
+            set({
+                queueItem: queueItems[prevIndex],
+                musicTrack: queueItems[prevIndex].track,
+            });
         }
     },
 }));

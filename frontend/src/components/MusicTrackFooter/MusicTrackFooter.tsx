@@ -1,44 +1,53 @@
-"use client";
-import React, { useEffect, useRef, useState } from "react";
-import styles from "./MusicTrackFooter.module.css";
-import Image from "next/image";
+"use client"
 import { usePlayerStore } from "@/store/usePlayerStore";
+import { useEffect, useState } from "react";
+import styles from "./MusicTrackFooter.module.css";
+import { usePlayerStoreWithSSR } from "@/store/usePlayerStoreWithSSR";
+import Image from "next/image";
 import { DEFAULT_MUSIC_ARTIST_IMAGE_SOURCE } from "@/constants/constants";
+import Link from "next/link";
 import { MusicArtist } from "@/types/MusicArtist";
+import FastRewindButton from "../PlayerBox/PlayerControls/FastRewindButton";
 import PlayButton from "../PlayerBox/PlayerControls/PlayButton";
 import FastForwardButton from "../PlayerBox/PlayerControls/FastForwardButton";
-import FastRewindButton from "../PlayerBox/PlayerControls/FastRewindButton";
-import VolumeUpIcon from '@mui/icons-material/VolumeUp';
-import Link from "next/link";
+import { VolumeUp } from "@mui/icons-material";
 
 export default function MusicTrackFooter() {
-    const musicTrack = usePlayerStore((state) => state.musicTrack);
-    const queueItem = usePlayerStore((state) => state.queueItem);
-    const goToNextTrack = usePlayerStore((state) => state.goToNextTrack);
-    const goToPreviousTrack = usePlayerStore((state) => state.goToPreviousTrack);
+    const {
+        queueItem,
+        goToNextTrack,
+        goToPreviousTrack,
+        audioRef: audio,
+        userId,
+        queue,
+    } = usePlayerStore((state) => ({
+        queueItem: state.queueItem,
+        goToNextTrack: state.goToNextTrack,
+        goToPreviousTrack: state.goToPreviousTrack,
+        audioRef: state.audioRef,
+        userId: state.userId,
+        queue: state.queue,
+    }));
 
-    const audioRef = useRef<HTMLAudioElement>(typeof Audio !== "undefined" ? new Audio() : null);
     const [isPlaying, setIsPlaying] = useState(false);
     const [currentTime, setCurrentTime] = useState(0);
     const [duration, setDuration] = useState(0);
     const [volume, setVolume] = useState(1);
+    const musicTrack = usePlayerStoreWithSSR((state) => state.musicTrack);
+
+    if (!musicTrack || !audio) {
+        return <div className={styles["main-container"]} />;
+    }
 
     useEffect(() => {
-        if (!audioRef.current || !musicTrack?.file_path) return;
-
-        audioRef.current.src = musicTrack.file_path;
-        audioRef.current.load();
-
-        audioRef.current.play().then(() => setIsPlaying(true)).catch(() => setIsPlaying(false));
-
-        setCurrentTime(0);
+        audio.pause();
+        audio.src = musicTrack.file_path;
+        audio.load();
+        audio.play().then(() => setIsPlaying(true)).catch(() => setIsPlaying(false));
         setDuration(0);
-    }, [musicTrack]);
+    }, [musicTrack, audio]);
 
     useEffect(() => {
-        const audio = audioRef.current;
-        if (!audio) return;
-
         const updateTime = () => setCurrentTime(audio.currentTime);
         const setAudioDuration = () => setDuration(audio.duration);
         const handleEnded = () => {
@@ -55,43 +64,61 @@ export default function MusicTrackFooter() {
             audio.removeEventListener("loadedmetadata", setAudioDuration);
             audio.removeEventListener("ended", handleEnded);
         };
-    }, [goToNextTrack]);
+    }, [audio, goToNextTrack]);
 
     useEffect(() => {
-        if (!audioRef.current || !queueItem) return;
+        if (!queueItem) return;
+
+        const saveProgress = async (progressInSeconds: number) => {
+            try {
+                const res = await fetch("/api/queue/progress", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({
+                        user_id: userId,
+                        queue_id: queue?.id,
+                        queue_item_id: queueItem.id,
+                        progress_in_seconds: progressInSeconds,
+                    }),
+                });
+                if (!res.ok) console.error("Error saving progress:", await res.text());
+            } catch (e) {
+                console.error("Exception saving progress:", e);
+            }
+        };
 
         const interval = setInterval(() => {
-            const sec = Math.floor(audioRef.current!.currentTime);
+            const sec = Math.floor(audio.currentTime);
             saveProgress(sec);
         }, 10000);
 
         return () => {
             clearInterval(interval);
-            saveProgress(Math.floor(audioRef.current!.currentTime));
+            saveProgress(Math.floor(audio.currentTime));
         };
-    }, [queueItem]);
+    }, [queueItem, userId, queue, audio]);
 
     useEffect(() => {
-        if (audioRef.current) {
-            audioRef.current.volume = volume;
+        if (audio) {
+            audio.volume = volume;
         }
-    }, [volume]);
+    }, [volume, audio]);
 
     const togglePlay = () => {
-        if (!audioRef.current) return;
+        if (!audio) return;
         if (isPlaying) {
-            audioRef.current.pause();
+            audio.pause();
             setIsPlaying(false);
         } else {
-            audioRef.current.play();
+            audio.play();
             setIsPlaying(true);
         }
     };
 
     const handleDrag = (event: React.ChangeEvent<HTMLInputElement>) => {
         const newTime = parseFloat(event.target.value);
-        if (audioRef.current) {
-            audioRef.current.currentTime = newTime;
+        if (audio) {
+            audio.currentTime = newTime;
             setCurrentTime(newTime);
         }
     };
@@ -101,26 +128,6 @@ export default function MusicTrackFooter() {
         const seconds = Math.floor(time % 60).toString().padStart(2, "0");
         return `${minutes}:${seconds}`;
     };
-
-    async function saveProgress(progressInSeconds: number) {
-        try {
-            const res = await fetch("/api/queue/progress", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({
-                    user_id: usePlayerStore.getState().userId,
-                    queue_id: usePlayerStore.getState().queue!.id,
-                    queue_item_id: usePlayerStore.getState().queueItem!.id,
-                    progress_in_seconds: progressInSeconds,
-                }),
-            });
-            if (!res.ok) console.error("Error saving progress:", await res.text());
-        } catch (e) {
-            console.error("Exception saving progress:", e);
-        }
-    }
-
-    if (!musicTrack) return null;
 
     return (
         <div className={styles["main-container"]}>
@@ -172,7 +179,7 @@ export default function MusicTrackFooter() {
             </div>
             <div className={styles["options-container"]}>
                 <div className={styles["volume-container"]}>
-                    <VolumeUpIcon />
+                    <VolumeUp />
                     <input
                         type="range"
                         min={0}
