@@ -3,8 +3,9 @@
     align-items: center;
     gap: 0.5rem;
     padding: 0 1rem;
+    accent-color: var(--text-color);
 }
 
 .volume-slider {
-    width: 100px;
+    width: 8rem;
 }

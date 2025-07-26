@@ -115,28 +115,36 @@ export const usePlayerStore = create<PlayerState>((set, get) => ({
 
         try {
             audio.pause();
-            set({ queueItem: item, musicTrack: item.track, currentTime: 0 });
+            set({ queueItem: item, musicTrack: item.track });
 
             audio.src = item.track.file_path;
             audio.load();
 
-            await new Promise(resolve => setTimeout(resolve, 50));
-            await audio.play();
-            get().setIsPlaying(true);
+            await new Promise((r) => setTimeout(r, 50));
+
+            const playPromise = audio.play();
+            if (playPromise !== undefined) {
+                await playPromise;
+                get().setIsPlaying(true);
+            }
         } catch (e) {
-            console.error("Error loading or playing track:", e);
+            console.warn("Audio play() failed:", e);
             get().setIsPlaying(false);
         }
     },
 
-    goToNextTrack: () => {
-        const { queueItems, queueItem, loadAndPlayTrack } = get();
+    goToNextTrack: async () => {
+        const { queueItems, queueItem, loadAndPlayTrack, isPlaying } = get();
         if (!queueItem || queueItems.length === 0) return;
 
         const currentIndex = queueItems.findIndex((item) => item.id === queueItem.id);
         const next = queueItems[currentIndex + 1];
         if (next) {
-            loadAndPlayTrack(next);
+            if (isPlaying) {
+                await loadAndPlayTrack(next);
+            } else {
+                set({ queueItem: next, musicTrack: next.track });
+            }
         }
     },
 

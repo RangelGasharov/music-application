@@ -13,9 +13,13 @@ export default function PlayerMusicTrackInfo({ currentTrack }: PlayerMusicTrackI
         <div className={styles["main-container"]}>
             <div className={styles["title-container"]}>{currentTrack.title}</div>
             <div className={styles["music-artists-container"]}>
-                {currentTrack.music_artists?.map((musicArtist: MusicArtistShort, index) => {
-                    return <Link href={`/search/artist/${musicArtist.id}`} key={index} className={styles["music-artist-box"]}>{musicArtist.name}</Link >
-                })}
+                {currentTrack.music_artists.length > 0 ? (
+                    currentTrack.music_artists?.map((musicArtist: MusicArtistShort, index) => {
+                        return <Link href={`/search/artist/${musicArtist.id}`} key={index} className={styles["music-artist-box"]}>{musicArtist.name}</Link >
+                    })
+                ) : (
+                    <div>Unknown artist</div>
+                )}
             </div>
         </div>
     )

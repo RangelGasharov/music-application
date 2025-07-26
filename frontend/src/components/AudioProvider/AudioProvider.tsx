@@ -37,23 +37,13 @@ export default function AudioProvider() {
             return;
         }
 
-        if (audio.src !== musicTrack.file_path) {
-            audio.src = musicTrack.file_path;
-            audio.load();
-            setCurrentTime(0);
-
-            audio.play()
-                .then(() => setIsPlaying(true))
-                .catch(() => setIsPlaying(false));
-        } else {
-            if (isPlaying) {
-                audio.play().catch(() => setIsPlaying(false));
-            } else {
-                audio.pause();
+        const onLoadedMetadata = () => {
+            if (!isNaN(audio.duration)) {
+                setDuration(audio.duration);
+                console.log("Duration set via loadedmetadata:", audio.duration);
             }
-        }
+        };
 
-        const onLoadedMetadata = () => setDuration(audio.duration);
         const onTimeUpdate = () => setCurrentTime(audio.currentTime);
         const onEnded = () => {
             setIsPlaying(false);
@@ -64,12 +54,40 @@ export default function AudioProvider() {
         audio.addEventListener("timeupdate", onTimeUpdate);
         audio.addEventListener("ended", onEnded);
 
+        const setDurationManuallyIfNeeded = () => {
+            if (!isNaN(audio.duration) && audio.duration > 0) {
+                setDuration(audio.duration);
+                console.log("Duration set manually:", audio.duration);
+            }
+        };
+        if (audio.src !== musicTrack.file_path) {
+            audio.src = musicTrack.file_path;
+            audio.load();
+            setCurrentTime(0);
+
+            audio.play()
+                .then(() => setIsPlaying(true))
+                .catch(() => setIsPlaying(false));
+        } else {
+            if (!audio.duration || isNaN(audio.duration) || audio.duration === Infinity) {
+                setTimeout(() => {
+                    setDurationManuallyIfNeeded();
+                }, 200);
+            }
+
+            if (isPlaying) {
+                audio.play().catch(() => setIsPlaying(false));
+            } else {
+                audio.pause();
+            }
+        }
+
         return () => {
             audio.removeEventListener("loadedmetadata", onLoadedMetadata);
             audio.removeEventListener("timeupdate", onTimeUpdate);
             audio.removeEventListener("ended", onEnded);
         };
-    }, [musicTrack, isPlaying, setCurrentTime, setDuration, setIsPlaying, goToNextTrack, volume]);
+    }, [musicTrack?.file_path, isPlaying, setCurrentTime, setDuration, setIsPlaying, goToNextTrack, volume,]);
 
     return null;
 }

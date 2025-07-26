@@ -24,7 +24,8 @@ export default function MusicTrackFooter() {
     const musicTrack = usePlayerStore((state) => state.musicTrack);
     const setCurrentTime = usePlayerStore((state) => state.setCurrentTime);
     const setIsPlaying = usePlayerStore((state) => state.setIsPlaying);
-    const [duration, setDuration] = useState(0);
+    const duration = usePlayerStore((state) => state.duration);
+    const setDuration = usePlayerStore((state) => state.setDuration);
 
     useEffect(() => {
         if (!audio) return;
@@ -156,7 +157,7 @@ export default function MusicTrackFooter() {
                     <input
                         type="range"
                         min={0}
-                        max={duration}
+                        max={duration || audio.duration || 0}
                         step={0.1}
                         value={currentTime}
                         onChange={handleDrag}
@@ -167,7 +168,7 @@ export default function MusicTrackFooter() {
             </div>
             <div className={styles["options-container"]}>
                 <div className={styles["volume-container"]}>
-                    <VolumeUp />
+                    <VolumeUp sx={{ color: "var(--text-color)" }} />
                     <input
                         type="range"
                         min={0}

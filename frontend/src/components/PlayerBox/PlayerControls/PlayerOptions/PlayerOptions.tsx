@@ -19,7 +19,7 @@ export default function PlayerOptions() {
 
     return (
         <div className={styles["volume-container"]}>
-            <VolumeUp />
+            <VolumeUp sx={{ color: "var(--text-color)" }} />
             <input
                 type="range"
                 min={0}
