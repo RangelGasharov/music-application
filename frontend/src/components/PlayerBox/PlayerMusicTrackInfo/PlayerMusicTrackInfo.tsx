@@ -1,11 +1,11 @@
-import { MusicTrack } from '@/types/MusicTrack'
+import { MusicTrackFull } from '@/types/MusicTrack'
 import React from 'react'
 import styles from "./PlayerMusicTrackInfo.module.css"
 import { MusicArtistShort } from '@/types/MusicArtist'
 import Link from 'next/link'
 
 type PlayerMusicTrackInfoType = {
-    currentTrack: MusicTrack
+    currentTrack: MusicTrackFull
 }
 
 export default function PlayerMusicTrackInfo({ currentTrack }: PlayerMusicTrackInfoType) {

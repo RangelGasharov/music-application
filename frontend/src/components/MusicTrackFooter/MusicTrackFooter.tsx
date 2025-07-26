@@ -1,73 +1,54 @@
-"use client"
+"use client";
 import { usePlayerStore } from "@/store/usePlayerStore";
 import { useEffect, useState } from "react";
 import styles from "./MusicTrackFooter.module.css";
-import { usePlayerStoreWithSSR } from "@/store/usePlayerStoreWithSSR";
 import Image from "next/image";
 import { DEFAULT_MUSIC_ARTIST_IMAGE_SOURCE } from "@/constants/constants";
 import Link from "next/link";
-import { MusicArtist } from "@/types/MusicArtist";
+import { MusicArtistShort } from "@/types/MusicArtist";
 import FastRewindButton from "../PlayerBox/PlayerControls/FastRewindButton";
 import PlayButton from "../PlayerBox/PlayerControls/PlayButton";
 import FastForwardButton from "../PlayerBox/PlayerControls/FastForwardButton";
 import { VolumeUp } from "@mui/icons-material";
 
 export default function MusicTrackFooter() {
-    const {
-        queueItem,
-        goToNextTrack,
-        goToPreviousTrack,
-        audioRef: audio,
-        userId,
-        queue,
-    } = usePlayerStore((state) => ({
-        queueItem: state.queueItem,
-        goToNextTrack: state.goToNextTrack,
-        goToPreviousTrack: state.goToPreviousTrack,
-        audioRef: state.audioRef,
-        userId: state.userId,
-        queue: state.queue,
-    }));
-
-    const [isPlaying, setIsPlaying] = useState(false);
-    const [currentTime, setCurrentTime] = useState(0);
+    const queueItem = usePlayerStore((state) => state.queueItem);
+    const goToNextTrack = usePlayerStore((state) => state.goToNextTrack);
+    const goToPreviousTrack = usePlayerStore((state) => state.goToPreviousTrack);
+    const audio = usePlayerStore((state) => state.audioRef);
+    const userId = usePlayerStore((state) => state.userId);
+    const queue = usePlayerStore((state) => state.queue);
+    const isPlaying = usePlayerStore((state) => state.isPlaying);
+    const currentTime = usePlayerStore((state) => state.currentTime);
+    const volume = usePlayerStore((state) => state.volume);
+    const musicTrack = usePlayerStore((state) => state.musicTrack);
+    const setCurrentTime = usePlayerStore((state) => state.setCurrentTime);
+    const setIsPlaying = usePlayerStore((state) => state.setIsPlaying);
     const [duration, setDuration] = useState(0);
-    const [volume, setVolume] = useState(1);
-    const musicTrack = usePlayerStoreWithSSR((state) => state.musicTrack);
-
-    if (!musicTrack || !audio) {
-        return <div className={styles["main-container"]} />;
-    }
 
     useEffect(() => {
-        audio.pause();
-        audio.src = musicTrack.file_path;
-        audio.load();
-        audio.play().then(() => setIsPlaying(true)).catch(() => setIsPlaying(false));
-        setDuration(0);
-    }, [musicTrack, audio]);
+        if (!audio) return;
 
-    useEffect(() => {
-        const updateTime = () => setCurrentTime(audio.currentTime);
-        const setAudioDuration = () => setDuration(audio.duration);
-        const handleEnded = () => {
+        const onLoadedMetadata = () => setDuration(audio.duration);
+        const onTimeUpdate = () => setCurrentTime(audio.currentTime);
+        const onEnded = () => {
             setIsPlaying(false);
             goToNextTrack();
         };
 
-        audio.addEventListener("timeupdate", updateTime);
-        audio.addEventListener("loadedmetadata", setAudioDuration);
-        audio.addEventListener("ended", handleEnded);
+        audio.addEventListener("loadedmetadata", onLoadedMetadata);
+        audio.addEventListener("timeupdate", onTimeUpdate);
+        audio.addEventListener("ended", onEnded);
 
         return () => {
-            audio.removeEventListener("timeupdate", updateTime);
-            audio.removeEventListener("loadedmetadata", setAudioDuration);
-            audio.removeEventListener("ended", handleEnded);
+            audio.removeEventListener("loadedmetadata", onLoadedMetadata);
+            audio.removeEventListener("timeupdate", onTimeUpdate);
+            audio.removeEventListener("ended", onEnded);
         };
-    }, [audio, goToNextTrack]);
+    }, [audio, goToNextTrack, setCurrentTime, setIsPlaying]);
 
     useEffect(() => {
-        if (!queueItem) return;
+        if (!queueItem || !audio) return;
 
         const saveProgress = async (progressInSeconds: number) => {
             try {
@@ -88,8 +69,7 @@ export default function MusicTrackFooter() {
         };
 
         const interval = setInterval(() => {
-            const sec = Math.floor(audio.currentTime);
-            saveProgress(sec);
+            saveProgress(Math.floor(audio.currentTime));
         }, 10000);
 
         return () => {
@@ -105,14 +85,7 @@ export default function MusicTrackFooter() {
     }, [volume, audio]);
 
     const togglePlay = () => {
-        if (!audio) return;
-        if (isPlaying) {
-            audio.pause();
-            setIsPlaying(false);
-        } else {
-            audio.play();
-            setIsPlaying(true);
-        }
+        usePlayerStore.getState().togglePlay();
     };
 
     const handleDrag = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -123,15 +96,27 @@ export default function MusicTrackFooter() {
         }
     };
 
+    const handleVolumeChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        const newVolume = parseFloat(event.target.value);
+        usePlayerStore.setState({ volume: newVolume });
+        if (audio) {
+            audio.volume = newVolume;
+        }
+    };
+
     const formatTime = (time: number) => {
         const minutes = Math.floor(time / 60);
         const seconds = Math.floor(time % 60).toString().padStart(2, "0");
         return `${minutes}:${seconds}`;
     };
 
+    if (!musicTrack || !audio) {
+        return <div className={styles["main-container"]} />;
+    }
+
     return (
         <div className={styles["main-container"]}>
-            <div className={styles["music-track-container"]} >
+            <div className={styles["music-track-container"]}>
                 <div className={styles["image-container"]}>
                     <Image
                         src={musicTrack.cover_url || DEFAULT_MUSIC_ARTIST_IMAGE_SOURCE}
@@ -144,16 +129,19 @@ export default function MusicTrackFooter() {
                 </div>
                 <div className={styles["music-track-info-container"]}>
                     <div className={styles["music-track-title-container"]}>
-                        <Link href={`/search/track/${musicTrack.id}`}>{musicTrack.title}</Link></div>
+                        <Link href={`/search/track/${musicTrack.id}`}>{musicTrack.title}</Link>
+                    </div>
                     <div className={styles["music-artists-container"]}>
-                        {musicTrack.music_artists.length > 0 ? musicTrack.music_artists.map((artist: MusicArtist, index: number) => {
-                            return (
-                                <div key={artist.id}>
-                                    <Link key={artist.id} href={`/search/artist/${artist.id}`}>{artist.name}</Link>
-                                    {index < musicTrack.music_artists.length - 1 && ', '}
-                                </div>
-                            )
-                        }) : (<div>Unknown artist</div>)}
+                        {musicTrack.music_artists.length > 0 ? (
+                            musicTrack.music_artists.map((artist: MusicArtistShort, index: number) => (
+                                <span key={artist.id}>
+                                    <Link href={`/search/artist/${artist.id}`}>{artist.name}</Link>
+                                    {index < musicTrack.music_artists.length - 1 && ", "}
+                                </span>
+                            ))
+                        ) : (
+                            <div>Unknown artist</div>
+                        )}
                     </div>
                 </div>
             </div>
@@ -186,7 +174,7 @@ export default function MusicTrackFooter() {
                         max={1}
                         step={0.01}
                         value={volume}
-                        onChange={(e) => setVolume(parseFloat(e.target.value))}
+                        onChange={handleVolumeChange}
                         className={styles["volume-slider"]}
                     />
                 </div>

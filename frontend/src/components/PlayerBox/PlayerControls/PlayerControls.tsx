@@ -1,92 +1,30 @@
 "use client";
-import React, { useRef, useState, useEffect } from "react";
+import styles from "./PlayerControls.module.css";
 import PlayButton from "./PlayButton";
 import ShuffleButton from "./ShuffleButton";
 import FastRewindButton from "./FastRewindButton";
 import FastForwardButton from "./FastForwardButton";
 import ReplayButton from "./ReplayButton";
-import styles from "./PlayerControls.module.css";
-import { MusicTrack } from "@/types/MusicTrack";
+import PlayerOptions from "./PlayerOptions/PlayerOptions";
+import { usePlayerStore } from "@/store/usePlayerStore";
 
-type PlayerControlsProps = {
-    currentTrack: MusicTrack;
-    changeToNextTrack: () => void;
-    changeToPreviousTrack: () => void;
-};
-
-export default function PlayerControls({ currentTrack, changeToNextTrack, changeToPreviousTrack }: PlayerControlsProps) {
-    const audioRef = useRef<HTMLAudioElement>(typeof Audio !== "undefined" ? new Audio() : null);
-    const [isPlaying, setIsPlaying] = useState(false);
-    const [currentTime, setCurrentTime] = useState(0);
-    const [duration, setDuration] = useState(0);
-
-    useEffect(() => {
-        if (!audioRef.current || !currentTrack?.file_path) return;
-
-        audioRef.current.src = currentTrack.file_path;
-        audioRef.current.load();
-
-        audioRef.current.play().then(() => {
-            setIsPlaying(true);
-        }).catch(() => {
-            setIsPlaying(false);
-        });
-
-        setCurrentTime(0);
-        setDuration(0);
-
-    }, [currentTrack]);
-
-    useEffect(() => {
-        const audio = audioRef.current;
-        if (!audio) return;
-
-        const updateTime = () => {
-            setCurrentTime(audio.currentTime);
-        };
-
-        const setAudioDuration = () => {
-            setDuration(audio.duration);
-        };
-
-        const handleEnded = () => {
-            setIsPlaying(false);
-            changeToNextTrack();
-        };
-
-        audio.addEventListener("timeupdate", updateTime);
-        audio.addEventListener("loadedmetadata", setAudioDuration);
-        audio.addEventListener("ended", handleEnded);
-
-        return () => {
-            audio.removeEventListener("timeupdate", updateTime);
-            audio.removeEventListener("loadedmetadata", setAudioDuration);
-            audio.removeEventListener("ended", handleEnded);
-        };
-    }, [changeToNextTrack]);
-
-    const togglePlay = () => {
-        if (!audioRef.current) return;
-        if (isPlaying) {
-            audioRef.current.pause();
-        } else {
-            audioRef.current.play();
-        }
-        setIsPlaying(!isPlaying);
-    };
-
-    const handleDrag = (event: React.ChangeEvent<HTMLInputElement>) => {
-        const newTime = parseFloat(event.target.value);
-        if (audioRef.current) {
-            audioRef.current.currentTime = newTime;
-            setCurrentTime(newTime);
-        }
-    };
+export default function PlayerControls() {
+    const isPlaying = usePlayerStore((s) => s.isPlaying);
+    const togglePlay = usePlayerStore((s) => s.togglePlay);
+    const currentTime = usePlayerStore((s) => s.currentTime);
+    const duration = usePlayerStore((s) => s.duration);
+    const seek = usePlayerStore((s) => s.seek);
+    const goToNextTrack = usePlayerStore((s) => s.goToNextTrack);
+    const goToPreviousTrack = usePlayerStore((s) => s.goToPreviousTrack);
 
     const formatTime = (time: number) => {
-        const minutes = Math.floor(time / 60);
-        const seconds = Math.floor(time % 60).toString().padStart(2, "0");
-        return `${minutes}:${seconds}`;
+        const m = Math.floor(time / 60);
+        const s = Math.floor(time % 60).toString().padStart(2, "0");
+        return `${m}:${s}`;
+    };
+
+    const onSeek = (e: React.ChangeEvent<HTMLInputElement>) => {
+        seek(parseFloat(e.target.value));
     };
 
     return (
@@ -96,21 +34,23 @@ export default function PlayerControls({ currentTrack, changeToNextTrack, change
                 <input
                     type="range"
                     min="0"
-                    max={duration}
+                    max={isNaN(duration) ? 0 : duration}
                     step="0.1"
                     value={currentTime}
-                    onChange={handleDrag}
+                    onChange={onSeek}
                     className={styles["progress-bar"]}
                 />
                 <span>{formatTime(duration)}</span>
             </div>
+
             <div className={styles["control-buttons-container"]}>
                 <ReplayButton />
-                <FastRewindButton changeToPreviousTrack={changeToPreviousTrack} />
+                <FastRewindButton changeToPreviousTrack={goToPreviousTrack} />
                 <PlayButton onClick={togglePlay} isPlaying={isPlaying} />
-                <FastForwardButton changeToNextTrack={changeToNextTrack} />
+                <FastForwardButton changeToNextTrack={goToNextTrack} />
                 <ShuffleButton />
             </div>
+            <PlayerOptions />
         </div>
     );
 }

@@ -10,6 +10,7 @@ import { authOptions } from "@/lib/auth";
 import { Queue } from "@/types/Queue";
 import { QueueItemFull } from "@/types/QueueItem";
 import PlayerInitializer from "@/components/PlayerBox/PlayerInitializer";
+import AudioProvider from "@/components/AudioProvider/AudioProvider";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -100,9 +101,8 @@ export default async function RootLayout({
       <body className={`${geistSans.variable} ${geistMono.variable}`}>
         <Providers>
           <main className={styles["main-container"]}>
-            {queue && (
-              <PlayerInitializer userId={userId} queue={queue} queueItems={queueItems} />
-            )}
+            <AudioProvider />
+            {queue && <PlayerInitializer userId={userId} queue={queue} queueItems={queueItems} />}
             <Suspense fallback={null}>
               <NavigationHeader />
             </Suspense>

@@ -1,5 +1,4 @@
 import MusicTrackFooter from "@/components/MusicTrackFooter/MusicTrackFooter";
-import PlayerInitializer from "@/components/PlayerBox/PlayerInitializer";
 import styles from "./layout.module.css";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
@@ -78,9 +77,6 @@ export default async function RootMusicBarLayout({
     return (
         <div>
             {children}
-            {queue && (
-                <PlayerInitializer userId={userId} queue={queue} queueItems={queueItems} />
-            )}
             <div className={styles["footer-container"]}>
                 <MusicTrackFooter />
             </div>

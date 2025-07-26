@@ -61,6 +61,15 @@ export default async function Home() {
   const session = await getServerSession(authOptions);
   const userId = session?.userId as string;
   const queue = await getQueueByUserId(userId);
+
+  if (!queue) {
+    return (
+      <div className={styles["empty-queue-container"]}>
+        <p>No queue found!</p>
+      </div>
+    );
+  }
+
   const queueItems: QueueItemFull[] = await getQueueItemsWithMusicTracks(queue.id);
   const musicTracks: MusicTrack[] = queueItems.map(item => ({
     ...item.track,
