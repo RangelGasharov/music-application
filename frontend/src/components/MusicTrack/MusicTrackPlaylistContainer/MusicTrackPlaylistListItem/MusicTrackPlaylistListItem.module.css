@@ -31,11 +31,15 @@
 }
 
 .music-artist-container {
-    grid-column: span 4;
+    grid-column: span 3;
     display: flex;
     justify-content: space-between;
 }
 
-.duration-box {
+.music-track-added-box {
     grid-column: span 2;
+}
+
+.duration-box {
+    grid-column: span 1;
 }

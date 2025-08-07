@@ -26,11 +26,15 @@
 }
 
 .music-artist-name-box {
-    grid-column: span 4;
+    grid-column: span 3;
+}
+
+.music-track-added-box {
+    grid-column: span 2;
 }
 
 .music-track-duration-box {
-    grid-column: span 2;
+    grid-column: span 1;
 }
 
 .music-tracks-container {

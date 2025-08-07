@@ -1,6 +1,6 @@
 "use client";
 import { usePlayerStore } from "@/store/usePlayerStore";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import styles from "./MusicTrackFooter.module.css";
 import Image from "next/image";
 import { DEFAULT_MUSIC_ARTIST_IMAGE_SOURCE } from "@/constants/constants";

@@ -1,4 +1,4 @@
-import { MusicTrack, MusicTrackFull } from '@/types/MusicTrack'
+import { MusicTrackFull } from '@/types/MusicTrack'
 import { formatDuration } from '@/utils/formatDuration';
 import styles from "./MusicTrackPlaylistListItem.module.css";
 import React from 'react'
@@ -14,6 +14,9 @@ type MusicTrackListItem = {
 }
 
 export default function MusicTrackPlaylistListItem({ musicTrack, position, queueId }: MusicTrackListItem) {
+    const musicTrackAddedDateFormatted: string = new Intl.DateTimeFormat(navigator.language, {
+        year: 'numeric', month: 'short', day: 'numeric'
+    }).format(musicTrack.added_at);
     return (
         <div className={styles["main-container"]}>
             <div className={styles["position-box"]}>{position}</div>
@@ -41,6 +44,7 @@ export default function MusicTrackPlaylistListItem({ musicTrack, position, queue
                     </div>
                 })}
             </div>
+            <div className={styles["music-track-added-box"]}>{musicTrackAddedDateFormatted}</div>
             <div className={styles["duration-box"]}>{formatDuration(musicTrack.duration)}</div>
             <div><MusicTrackMoreButton musicTrack={musicTrack} queueId={queueId} /></div>
         </div>
