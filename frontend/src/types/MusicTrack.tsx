@@ -33,6 +33,15 @@ export type MusicTrackWithPosition = {
     track: MusicTrackFull;
 }
 
+export type MusicTrackPlaylist = {
+    id: string;
+    play_list_id: string;
+    track_id: string;
+    added_at: string;
+    position: number;
+    music_track: MusicTrackFull;
+}
+
 export type MusicTrackPost = {
     title: string;
     release_date: string;

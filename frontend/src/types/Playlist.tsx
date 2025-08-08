@@ -1,3 +1,5 @@
+import { MusicTrackPlaylist } from "./MusicTrack";
+
 export type Playlist = {
     id: string;
     user_id: string;
@@ -7,4 +9,5 @@ export type Playlist = {
     updated_at: string;
     cover_url: string;
     is_public: boolean;
+    music_track_playlists: MusicTrackPlaylist[];
 }

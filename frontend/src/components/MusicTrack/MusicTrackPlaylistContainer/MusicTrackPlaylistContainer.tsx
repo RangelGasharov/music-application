@@ -1,4 +1,4 @@
-import { MusicTrackWithPosition } from '@/types/MusicTrack';
+import { MusicTrackPlaylist } from '@/types/MusicTrack';
 import React from 'react';
 import MusicTrackPlaylistListItem from './MusicTrackPlaylistListItem/MusicTrackPlaylistListItem';
 import styles from "./MusicTrackPlaylistContainer.module.css";
@@ -10,11 +10,12 @@ import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
 import ImageIcon from '@mui/icons-material/Image';
 
 type Props = {
-    musicTracks: MusicTrackWithPosition[];
+    musicTracks: MusicTrackPlaylist[];
     queueId: string;
 }
 
 export default function MusicTrackPlaylistContainer({ musicTracks, queueId }: Props) {
+
     return (
         <div>
             <div className={styles["music-tracks-container-heading-box"]}>
@@ -26,8 +27,8 @@ export default function MusicTrackPlaylistContainer({ musicTracks, queueId }: Pr
                 <div className={styles["music-track-duration-box"]}><AccessTimeIcon /></div>
             </div>
             <div className={styles["music-tracks-container"]}>
-                {musicTracks.map((musicTrack: MusicTrackWithPosition) => {
-                    return <MusicTrackPlaylistListItem position={musicTrack.position} musicTrack={musicTrack.track} key={musicTrack.track.id} queueId={queueId} />
+                {musicTracks.map((musicTrack: MusicTrackPlaylist) => {
+                    return <MusicTrackPlaylistListItem position={musicTrack.position} added_at={musicTrack.added_at} musicTrack={musicTrack.music_track} key={musicTrack.music_track.id} queueId={queueId} />
                 })}
             </div>
         </div>

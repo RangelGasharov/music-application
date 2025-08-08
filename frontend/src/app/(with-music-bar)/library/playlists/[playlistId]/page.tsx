@@ -1,4 +1,4 @@
-import { MusicTrackWithPosition } from '@/types/MusicTrack';
+import { MusicTrackPlaylist, MusicTrackWithPosition } from '@/types/MusicTrack';
 import styles from "./playlist-single-page.module.css";
 import { Playlist } from '@/types/Playlist';
 import React from 'react';
@@ -25,22 +25,6 @@ async function getPlaylistById(playlistId: string): Promise<Playlist> {
     }
 }
 
-async function getMusicTracksByPlaylistId(playlistId: string): Promise<MusicTrackWithPosition[]> {
-    try {
-        const res = await fetch(`${process.env.WEB_API_URL}/music-track/playlist/${playlistId}`);
-
-        if (!res.ok) {
-            throw new Error('Failed to fetch tracks');
-        }
-
-        const musicTracks = await res.json();
-        return musicTracks;
-    } catch (error) {
-        console.error('Error fetching tracks:', error);
-        throw error;
-    }
-}
-
 async function getQueueByUserId(userId: string | undefined): Promise<Queue> {
     if (!userId) {
         throw new Error('No user id was provided!');
@@ -63,8 +47,8 @@ async function getQueueByUserId(userId: string | undefined): Promise<Queue> {
 
 export default async function PlaylistSingleViewPage({ params }: { params: Params }) {
     const { playlistId } = await params;
-    const playlist = await getPlaylistById(playlistId);
-    const musicTracks: MusicTrackWithPosition[] = await getMusicTracksByPlaylistId(playlistId);
+    const playlist: Playlist = await getPlaylistById(playlistId);
+    const musicTracks: MusicTrackPlaylist[] = playlist.music_track_playlists;
     const session = await getServerSession(authOptions);
     const userId = session?.userId;
     const queue: Queue = await getQueueByUserId(userId);

@@ -31,7 +31,7 @@ const getPlaylistsByUserId = async (userId: string) => {
 export default async function LibraryPage() {
     const session = await getServerSession(authOptions);
     const userId = session?.userId as string;
-    const playlists = await getPlaylistsByUserId(userId);
+    const playlists: Playlist[] = await getPlaylistsByUserId(userId);
 
     return (
         <div>

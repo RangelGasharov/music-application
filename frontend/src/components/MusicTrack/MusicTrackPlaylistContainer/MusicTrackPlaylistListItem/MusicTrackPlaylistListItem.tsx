@@ -11,12 +11,13 @@ type MusicTrackListItem = {
     musicTrack: MusicTrackFull;
     position: number;
     queueId: string;
+    added_at: string;
 }
 
-export default function MusicTrackPlaylistListItem({ musicTrack, position, queueId }: MusicTrackListItem) {
+export default function MusicTrackPlaylistListItem({ musicTrack, position, queueId, added_at }: MusicTrackListItem) {
     const musicTrackAddedDateFormatted: string = new Intl.DateTimeFormat(navigator.language, {
         year: 'numeric', month: 'short', day: 'numeric'
-    }).format(musicTrack.added_at);
+    }).format(new Date(added_at));
     return (
         <div className={styles["main-container"]}>
             <div className={styles["position-box"]}>{position}</div>
