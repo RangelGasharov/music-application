@@ -22,12 +22,28 @@ namespace MusicApplicationWebAPI.Repository
 
         public async Task<List<Playlist>> GetAllPlaylists()
         {
-            return await _context.Playlist.ToListAsync();
+            var playlists = await _context.Playlist
+            .Include(p => p.MusicTrackPlaylists)
+                .ThenInclude(mtp => mtp.MusicTrack)
+            .ToListAsync();
+
+            foreach (var playlist in playlists)
+            {
+                playlist.MusicTrackPlaylists = playlist.MusicTrackPlaylists
+                    .OrderBy(mtp => mtp.Position)
+                    .ToList();
+            }
+
+            return playlists;
         }
 
         public async Task<Playlist?> GetPlaylistById(Guid id)
         {
-            return await _context.Playlist.FindAsync(id);
+            return await _context.Playlist
+            .Where(p => p.Id == id)
+            .Include(p => p.MusicTrackPlaylists)
+                .ThenInclude(mtp => mtp.MusicTrack)
+            .FirstOrDefaultAsync();
         }
 
         public async Task<Playlist> AddPlaylist(AddPlaylistDto addPlaylistDto)
