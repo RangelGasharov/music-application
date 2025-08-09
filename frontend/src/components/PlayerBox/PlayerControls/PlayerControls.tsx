@@ -45,7 +45,7 @@ export default function PlayerControls() {
 
             <div className={styles["control-buttons-container"]}>
                 <ReplayButton />
-                <FastRewindButton changeToPreviousTrack={goToPreviousTrack} />
+                <FastRewindButton seek={seek} changeToPreviousTrack={goToPreviousTrack} />
                 <PlayButton onClick={togglePlay} isPlaying={isPlaying} />
                 <FastForwardButton changeToNextTrack={goToNextTrack} />
                 <ShuffleButton />

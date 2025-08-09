@@ -21,13 +21,6 @@ export default function PlayerBox() {
     const isPlaying = usePlayerStore((state) => state.isPlaying);
     const loadAndPlayTrack = usePlayerStore((state) => state.loadAndPlayTrack);
 
-    console.log("[PlayerBox] mounted with:", {
-        musicTrack,
-        audio,
-        currentTimeFromStore,
-        isPlaying,
-    });
-
     useEffect(() => {
         if (!musicTrack || !audio) return;
 

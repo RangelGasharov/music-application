@@ -26,6 +26,7 @@ export default function MusicTrackFooter() {
     const setIsPlaying = usePlayerStore((state) => state.setIsPlaying);
     const duration = usePlayerStore((state) => state.duration);
     const setDuration = usePlayerStore((state) => state.setDuration);
+    const seek = usePlayerStore((s) => s.seek);
 
     useEffect(() => {
         if (!audio) return;
@@ -148,7 +149,7 @@ export default function MusicTrackFooter() {
             </div>
             <div className={styles["controls-container"]}>
                 <div className={styles["control-buttons-container"]}>
-                    <FastRewindButton changeToPreviousTrack={goToPreviousTrack} />
+                    <FastRewindButton seek={seek} changeToPreviousTrack={goToPreviousTrack} />
                     <PlayButton onClick={togglePlay} isPlaying={isPlaying} />
                     <FastForwardButton changeToNextTrack={goToNextTrack} />
                 </div>

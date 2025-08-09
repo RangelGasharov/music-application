@@ -54,6 +54,7 @@ export default function AudioProvider() {
 
             audio.currentTime = 0;
             setCurrentTime(0);
+            setIsPlaying(true);
 
             setIsLoadingTrack(false);
 
