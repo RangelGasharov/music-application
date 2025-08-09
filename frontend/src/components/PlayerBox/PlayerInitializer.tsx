@@ -17,20 +17,31 @@ export default function PlayerInitializer({ userId, queue, queueItems }: Props) 
     const setQueueItems = usePlayerStore((state) => state.setQueueItems);
     const setQueueItem = usePlayerStore((state) => state.setQueueItem);
     const setMusicTrack = usePlayerStore((state) => state.setMusicTrack);
+    const audio = usePlayerStore((state) => state.audioRef);
 
     useEffect(() => {
+        const state = usePlayerStore.getState();
+
         setUserId(userId);
         setQueue(queue);
         setQueueItems(queueItems);
 
-        const state = usePlayerStore.getState();
-        const alreadyInitialized = state.queue?.id === queue.id && state.queueItem !== null;
+        const alreadyInitialized =
+            state.queue?.id === queue.id &&
+            state.queueItem !== null &&
+            state.musicTrack !== null;
+
         if (!alreadyInitialized && queueItems.length > 0) {
             const firstItem = queueItems[0];
             setQueueItem(firstItem);
             setMusicTrack(firstItem.track);
+        } else if (alreadyInitialized && audio) {
+            if (state.isPlaying) {
+                audio.play().catch(() => { });
+            }
+            audio.currentTime = state.currentTime;
         }
-    }, [userId, queue, queueItems]);
+    }, [userId, queue, queueItems, audio]);
 
     return null;
 }

@@ -1,6 +1,5 @@
-"use client";
-
-import { useEffect, useRef } from "react";
+"use client"
+import { useEffect, useRef, useState } from "react";
 import { usePlayerStore } from "@/store/usePlayerStore";
 
 export default function AudioProvider() {
@@ -11,8 +10,11 @@ export default function AudioProvider() {
     const setIsPlaying = usePlayerStore((s) => s.setIsPlaying);
     const setCurrentTime = usePlayerStore((s) => s.setCurrentTime);
     const setDuration = usePlayerStore((s) => s.setDuration);
-    const goToNextTrack = usePlayerStore((s) => s.goToNextTrack);
+    const currentTime = usePlayerStore((s) => s.currentTime);
     const volume = usePlayerStore((s) => s.volume);
+    const goToNextTrack = usePlayerStore((s) => s.goToNextTrack);
+
+    const [isLoadingTrack, setIsLoadingTrack] = useState(false);
 
     useEffect(() => {
         audioRef.current = new Audio();
@@ -28,23 +30,42 @@ export default function AudioProvider() {
         const audio = audioRef.current;
         if (!audio) return;
 
-        audio.volume = volume;
-
         if (!musicTrack) {
             audio.pause();
             setIsPlaying(false);
             setDuration(0);
+            setCurrentTime(0);
             return;
         }
 
+        if (audio.src !== musicTrack.file_path) {
+            setIsLoadingTrack(true);
+            audio.pause();
+            audio.src = musicTrack.file_path;
+            audio.load();
+        }
+
         const onLoadedMetadata = () => {
-            if (!isNaN(audio.duration)) {
-                setDuration(audio.duration);
-                console.log("Duration set via loadedmetadata:", audio.duration);
+            setDuration(audio.duration);
+
+            if (currentTime && currentTime < audio.duration) {
+                audio.currentTime = currentTime;
+            }
+
+            audio.currentTime = 0;
+            setCurrentTime(0);
+
+            setIsLoadingTrack(false);
+
+            if (isPlaying) {
+                audio.play().catch(() => setIsPlaying(false));
             }
         };
 
-        const onTimeUpdate = () => setCurrentTime(audio.currentTime);
+        const onTimeUpdate = () => {
+            if (!isLoadingTrack) setCurrentTime(audio.currentTime);
+        };
+
         const onEnded = () => {
             setIsPlaying(false);
             goToNextTrack();
@@ -54,27 +75,11 @@ export default function AudioProvider() {
         audio.addEventListener("timeupdate", onTimeUpdate);
         audio.addEventListener("ended", onEnded);
 
-        const setDurationManuallyIfNeeded = () => {
-            if (!isNaN(audio.duration) && audio.duration > 0) {
-                setDuration(audio.duration);
-                console.log("Duration set manually:", audio.duration);
-            }
-        };
-        if (audio.src !== musicTrack.file_path) {
-            audio.src = musicTrack.file_path;
-            audio.load();
-            setCurrentTime(0);
+        if (audio.readyState >= 1 && isLoadingTrack) {
+            onLoadedMetadata();
+        }
 
-            audio.play()
-                .then(() => setIsPlaying(true))
-                .catch(() => setIsPlaying(false));
-        } else {
-            if (!audio.duration || isNaN(audio.duration) || audio.duration === Infinity) {
-                setTimeout(() => {
-                    setDurationManuallyIfNeeded();
-                }, 200);
-            }
-
+        if (!isLoadingTrack) {
             if (isPlaying) {
                 audio.play().catch(() => setIsPlaying(false));
             } else {
@@ -82,12 +87,24 @@ export default function AudioProvider() {
             }
         }
 
+        audio.volume = volume;
+
         return () => {
             audio.removeEventListener("loadedmetadata", onLoadedMetadata);
             audio.removeEventListener("timeupdate", onTimeUpdate);
             audio.removeEventListener("ended", onEnded);
         };
-    }, [musicTrack?.file_path, isPlaying, setCurrentTime, setDuration, setIsPlaying, goToNextTrack, volume,]);
+    }, [
+        musicTrack?.file_path,
+        isPlaying,
+        currentTime,
+        setCurrentTime,
+        setDuration,
+        setIsPlaying,
+        goToNextTrack,
+        volume,
+        isLoadingTrack,
+    ]);
 
     return null;
 }

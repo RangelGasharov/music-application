@@ -1,11 +1,11 @@
-"use client"
-import PlayerControls from "./PlayerControls/PlayerControls"
-import PlayerImage from "./PlayerImage/PlayerImage"
-import styles from "./PlayerBox.module.css"
-import PlayerBackgroundImage from "./PlayerBackgroundImage/PlayerBackgroundImage"
-import PlayerMusicTrackInfo from "./PlayerMusicTrackInfo/PlayerMusicTrackInfo"
-import { usePlayerStore } from "@/store/usePlayerStore"
-import { useEffect } from "react"
+"use client";
+import PlayerControls from "./PlayerControls/PlayerControls";
+import PlayerImage from "./PlayerImage/PlayerImage";
+import styles from "./PlayerBox.module.css";
+import PlayerBackgroundImage from "./PlayerBackgroundImage/PlayerBackgroundImage";
+import PlayerMusicTrackInfo from "./PlayerMusicTrackInfo/PlayerMusicTrackInfo";
+import { usePlayerStore } from "@/store/usePlayerStore";
+import { useEffect } from "react";
 
 export default function PlayerBox() {
     const musicTrack = usePlayerStore((state) => state.musicTrack);
@@ -17,17 +17,44 @@ export default function PlayerBox() {
     const audio = usePlayerStore((state) => state.audioRef);
     const setCurrentTime = usePlayerStore((state) => state.setCurrentTime);
     const volume = usePlayerStore((state) => state.volume);
+    const currentTimeFromStore = usePlayerStore((state) => state.currentTime);
+    const isPlaying = usePlayerStore((state) => state.isPlaying);
     const loadAndPlayTrack = usePlayerStore((state) => state.loadAndPlayTrack);
 
-    useEffect(() => {
-        if (!musicTrack) return;
-        if (!audio) return;
+    console.log("[PlayerBox] mounted with:", {
+        musicTrack,
+        audio,
+        currentTimeFromStore,
+        isPlaying,
+    });
 
-        loadAndPlayTrack({
-            id: queueItem?.id || "",
-            track: musicTrack,
-        } as any);
-    }, [musicTrack?.id]);
+    useEffect(() => {
+        if (!musicTrack || !audio) return;
+
+        const currentSrc = audio.src;
+        const newSrc = musicTrack.file_path || "";
+
+        console.log("[PlayerBox] audio.src:", currentSrc);
+        console.log("[PlayerBox] newSrc:", newSrc);
+
+        if (!currentSrc.endsWith(newSrc)) {
+            console.log("[PlayerBox] Loading and playing new track");
+            loadAndPlayTrack({
+                id: queueItem?.id || "",
+                track: musicTrack,
+            } as any);
+        } else {
+            console.log("[PlayerBox] Same source - syncing time and play state");
+            if (Math.abs(audio.currentTime - currentTimeFromStore) > 0.5) {
+                audio.currentTime = currentTimeFromStore;
+            }
+            if (isPlaying) {
+                audio.play().catch(() => { });
+            } else {
+                audio.pause();
+            }
+        }
+    }, [musicTrack?.id, audio, queueItem?.id, loadAndPlayTrack, currentTimeFromStore, isPlaying]);
 
     useEffect(() => {
         if (audio) {
@@ -101,5 +128,5 @@ export default function PlayerBox() {
             <PlayerMusicTrackInfo currentTrack={musicTrack} />
             <PlayerControls />
         </div>
-    )
+    );
 }
