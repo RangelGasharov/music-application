@@ -57,6 +57,7 @@
 
 .progress-bar {
     accent-color: var(--text-color);
+    width: 24rem;
 }
 
 .volume-container {

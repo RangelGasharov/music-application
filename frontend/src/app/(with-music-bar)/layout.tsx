@@ -75,7 +75,7 @@ export default async function RootMusicBarLayout({
     }
 
     return (
-        <div>
+        <div className={styles["main-container"]}>
             {children}
             <div className={styles["footer-container"]}>
                 <MusicTrackFooter />
