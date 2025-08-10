@@ -1,5 +1,5 @@
 import { MusicArtist } from '@/types/MusicArtist';
-import { MusicTrack, MusicTrackFull } from '@/types/MusicTrack';
+import { MusicTrackFull } from '@/types/MusicTrack';
 import { MusicAlbum } from '@/types/MusicAlbum';
 import { notFound } from 'next/navigation';
 import React from 'react'
