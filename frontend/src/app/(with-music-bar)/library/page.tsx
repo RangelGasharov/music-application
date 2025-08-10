@@ -2,7 +2,8 @@ import PlaylistCard from '@/components/PlaylistCard/PlaylistCard';
 import { authOptions } from '@/lib/auth';
 import { Playlist } from '@/types/Playlist';
 import { getServerSession } from 'next-auth';
-import React from 'react'
+import React from 'react';
+import styles from "./library-page.module.css";
 
 const getPlaylistsByUserId = async (userId: string) => {
     try {
@@ -34,7 +35,7 @@ export default async function LibraryPage() {
     const playlists: Playlist[] = await getPlaylistsByUserId(userId);
 
     return (
-        <div>
+        <div className={styles["main-container"]}>
             <h1>Library</h1>
             <div>{playlists?.map((playlist: Playlist) => {
                 return <PlaylistCard key={playlist.id} playlist={playlist} />

@@ -60,6 +60,11 @@
     width: 24rem;
 }
 
+.options-container {
+    display: grid;
+    justify-content: center;
+}
+
 .volume-container {
     display: flex;
     align-items: center;
