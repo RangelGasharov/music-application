@@ -1,11 +1,6 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-
 namespace MusicApplicationWebAPI.Models.Entities
 {
-    public class MusicTrackStats
+    public class MusicTrackStat
     {
         public Guid TrackId { get; set; }
         public required MusicTrack MusicTrack { get; set; }

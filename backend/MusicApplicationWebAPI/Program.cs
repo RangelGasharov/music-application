@@ -53,6 +53,7 @@ builder.Services.AddScoped<IMusicTrackRepository, MusicTrackRepository>();
 builder.Services.AddScoped<PlaylistRepository>();
 builder.Services.AddScoped<IQueueRepository, QueueRepository>();
 builder.Services.AddScoped<IQueueProgressRepository, QueueProgressRepository>();
+builder.Services.AddScoped<IMusicStreamRepository, MusicStreamsRepository>();
 
 builder.Services.AddSingleton<MinioFileService>();
 
