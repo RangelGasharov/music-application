@@ -40,18 +40,19 @@ export default function SearchPageContent({ queueId }: Props) {
     useEffect(() => {
         async function fetchResults() {
             if (!term) return;
-
             setLoading(true);
             setHasError(false);
-
             try {
                 const res = await fetch(`/api/search?term=${encodeURIComponent(term)}`);
-                if (!res.ok) {
-                    throw new Error(`Fetch failed with status ${res.status}`);
-                }
-
+                if (!res.ok) throw new Error(`Fetch failed with status ${res.status}`);
                 const data = await res.json();
-                setResults(data);
+
+                if (!Array.isArray(data)) {
+                    console.warn('Search API did not return an array:', data);
+                    setResults([]);
+                } else {
+                    setResults(data);
+                }
             } catch (error) {
                 console.error('Failed to fetch search results:', error);
                 setHasError(true);
