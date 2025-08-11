@@ -11,8 +11,9 @@ type PlayListCardType = {
 
 export default function PlaylistCard({ playlist }: PlayListCardType) {
     return (
-        <Link href={`/library/playlists/${playlist.id}`}>
-            <div className={styles["main-container"]}>
+
+        <div className={styles["main-container"]}>
+            <Link href={`/library/playlists/${playlist.id}`}>
                 <Image
                     quality={50}
                     src={playlist.cover_url || DEFAULT_PLAYLIST_IMAGE_SOURCE}
@@ -23,7 +24,7 @@ export default function PlaylistCard({ playlist }: PlayListCardType) {
                     priority
                 />
                 <div className={styles["title-container"]}>{playlist.title}</div>
-            </div>
-        </Link>
+            </Link>
+        </div>
     )
 }

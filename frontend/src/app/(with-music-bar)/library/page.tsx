@@ -37,9 +37,12 @@ export default async function LibraryPage() {
     return (
         <div className={styles["main-container"]}>
             <h1>Library</h1>
-            <div>{playlists?.map((playlist: Playlist) => {
-                return <PlaylistCard key={playlist.id} playlist={playlist} />
-            })}</div>
+            <h2>Playlists</h2>
+            <div>
+                {playlists?.map((playlist: Playlist) => {
+                    return <PlaylistCard key={playlist.id} playlist={playlist} />
+                })}
+            </div>
         </div>
     )
 }

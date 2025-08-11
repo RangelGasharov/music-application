@@ -72,6 +72,8 @@ export default function NavigationHeader() {
         if (e.key === 'Enter') {
             e.preventDefault();
             if (searchTerm.trim()) {
+                setIsFocused(false);
+                setSearchResults([]);
                 router.push(`/search?term=${encodeURIComponent(searchTerm.trim())}`);
             }
         }
