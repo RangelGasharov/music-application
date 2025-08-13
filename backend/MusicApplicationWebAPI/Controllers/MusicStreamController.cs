@@ -1,19 +1,18 @@
 using Microsoft.AspNetCore.Mvc;
 using MusicApplicationWebAPI.Dtos.MusicAlbum;
 using MusicApplicationWebAPI.Interfaces;
-using MusicApplicationWebAPI.Models.Entities;
 
 namespace MusicApplicationWebAPI.Controllers
 {
     [ApiController]
     [Route("music-stream")]
-    public class MusicStreamsController : ControllerBase
+    public class MusicStreamController : ControllerBase
     {
         private readonly IMusicStreamRepository _musicStreamRepository;
 
-        public MusicStreamsController(IMusicStreamRepository musicStreamsRepository)
+        public MusicStreamController(IMusicStreamRepository musicStreamRepository)
         {
-            _musicStreamRepository = musicStreamsRepository;
+            _musicStreamRepository = musicStreamRepository;
         }
 
         [HttpGet]

@@ -99,60 +99,62 @@ export default async function MusicAlbumPage({ params }: { params: Params }) {
 
         return (
             <div className={styles["main-container"]}>
-                <div className={styles['music-album-information-container']}>
-                    <div className={styles['music-album-title-description-container']}>
-                        <div className={styles['music-album-title-container']}>
-                            <h1>{musicAlbum.title}</h1>
-                            <div className={styles["music-album-artists"]}>
-                                {musicAlbum.music_artists.map((musicArtist: MusicArtistShort) => {
-                                    return <Link href={`/search/artist/${musicArtist.id}`} className={styles["music-artist-name"]} key={musicArtist.id}>{musicArtist.name}</Link>
-                                })}
+                <div className={styles["music-album-information-container"]}>
+                    <div className={styles["music-album-description-cover-container"]}>
+                        <div className={styles["music-album-description-container"]}>
+                            <div className={styles["music-album-title-container"]}>
+                                <h1>{musicAlbum.title}</h1>
+                                <div className={styles["music-album-artists"]}>
+                                    {musicAlbum.music_artists.map((musicArtist: MusicArtistShort) => {
+                                        return <Link href={`/search/artist/${musicArtist.id}`} className={styles["music-artist-name"]} key={musicArtist.id}>{musicArtist.name}</Link>
+                                    })}
+                                </div>
+                            </div>
+                            <div>
+                                {musicAlbum?.description}
                             </div>
                         </div>
                         <div>
-                            {musicAlbum?.description}
-                        </div>
-                        <div className={styles["info-containers-wrapper"]}>
-                            <div className={styles["info-container"]}>
-                                <div className={styles["info-container-title-icon-box"]}>
-                                    <div className={styles["info-container-icon"]}><CalendarMonthIcon /></div>
-                                    <div className={styles["info-container-title"]}>Release</div>
-                                </div>
-                                <div className={styles["info-container-value"]}>
-                                    {musicAlbumDateFormatted}
-                                </div>
-                            </div>
-                            <div className={styles["info-container"]}>
-                                <div className={styles["info-container-title-icon-box"]}>
-                                    <div className={styles["info-container-icon"]}><AccessTimeIcon /></div>
-                                    <div className={styles["info-container-title"]}>Length</div>
-                                </div>
-                                <div className={styles["info-container-value"]}>
-                                    {totalAlbumLength} min.
-                                </div>
-                            </div>
-                            <div className={styles["info-container"]}>
-                                <div className={styles["info-container-title-icon-box"]}>
-                                    <div className={styles["info-container-icon"]}><MusicNoteIcon /></div>
-                                    <div className={styles["info-container-title"]}>Tracks</div>
-                                </div>
-                                <div className={styles["info-container-value"]}>
-                                    {musicTracks.length}
-                                </div>
-                            </div>
-                            <div className={styles["info-container"]}>
-                                <div className={styles["info-container-title-icon-box"]}>
-                                    <div className={styles["info-container-icon"]}><PlayArrowIcon /></div>
-                                    <div className={styles["info-container-title"]}>Streams</div>
-                                </div>
-                                <div className={styles["info-container-value"]}>
-                                    {totalStreams}
-                                </div>
-                            </div>
+                            <MusicAlbumCoverDialog coverSource={musicAlbum.cover_url} title={musicAlbum.title} />
                         </div>
                     </div>
-                    <div>
-                        <MusicAlbumCoverDialog coverSource={musicAlbum.cover_url} title={musicAlbum.title} />
+                    <div className={styles["info-container"]}>
+                        <div className={styles["info-box"]}>
+                            <div className={styles["info-box-title-icon-box"]}>
+                                <div className={styles["info-box-icon"]}><CalendarMonthIcon /></div>
+                                <div className={styles["info-box-title"]}>Release</div>
+                            </div>
+                            <div className={styles["info-box-value"]}>
+                                {musicAlbumDateFormatted}
+                            </div>
+                        </div>
+                        <div className={styles["info-box"]}>
+                            <div className={styles["info-box-title-icon-box"]}>
+                                <div className={styles["info-box-icon"]}><AccessTimeIcon /></div>
+                                <div className={styles["info-box-title"]}>Length</div>
+                            </div>
+                            <div className={styles["info-box-value"]}>
+                                {totalAlbumLength} min.
+                            </div>
+                        </div>
+                        <div className={styles["info-box"]}>
+                            <div className={styles["info-box-title-icon-box"]}>
+                                <div className={styles["info-box-icon"]}><MusicNoteIcon /></div>
+                                <div className={styles["info-box-title"]}>Tracks</div>
+                            </div>
+                            <div className={styles["info-box-value"]}>
+                                {musicTracks.length}
+                            </div>
+                        </div>
+                        <div className={styles["info-box"]}>
+                            <div className={styles["info-box-title-icon-box"]}>
+                                <div className={styles["info-box-icon"]}><PlayArrowIcon /></div>
+                                <div className={styles["info-box-title"]}>Streams</div>
+                            </div>
+                            <div className={styles["info-box-value"]}>
+                                {totalStreams}
+                            </div>
+                        </div>
                     </div>
                 </div>
 
