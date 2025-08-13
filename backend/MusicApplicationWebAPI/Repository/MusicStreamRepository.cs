@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using MusicApplicationWebAPI.Data;
+using MusicApplicationWebAPI.Dtos.MusicAlbum;
 using MusicApplicationWebAPI.Interfaces;
 using MusicApplicationWebAPI.Models.Entities;
 
@@ -21,10 +22,16 @@ namespace MusicApplicationWebAPI.Repository
                 .ToListAsync();
         }
 
-        public async Task<MusicStream> CreateMusicStream(MusicStream musicStream)
+        public async Task<MusicStream> AddMusicStream(AddMusicStreamDto addMusicStreamDto)
         {
-            if (musicStream.Id == Guid.Empty)
-                musicStream.Id = Guid.NewGuid();
+            var musicStream = new MusicStream
+            {
+                UserId = addMusicStreamDto.UserId,
+                TrackId = addMusicStreamDto.TrackId,
+                StartTime = addMusicStreamDto.StartTime,
+                EndTime = addMusicStreamDto.EndTime,
+                Duration = addMusicStreamDto.EndTime - addMusicStreamDto.StartTime
+            };
 
             await _context.MusicStream.AddAsync(musicStream);
             await _context.SaveChangesAsync();

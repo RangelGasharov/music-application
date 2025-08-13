@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
+using MusicApplicationWebAPI.Dtos.MusicAlbum;
 using MusicApplicationWebAPI.Interfaces;
 using MusicApplicationWebAPI.Models.Entities;
 
@@ -23,14 +24,14 @@ namespace MusicApplicationWebAPI.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreateMusicStream([FromBody] MusicStream musicStream)
+        public async Task<IActionResult> AddMusicStream([FromBody] AddMusicStreamDto addMusicStreamDto)
         {
-            if (musicStream == null)
+            if (addMusicStreamDto == null)
             {
                 return BadRequest("MusicStream data is required.");
             }
 
-            var createdStream = await _musicStreamRepository.CreateMusicStream(musicStream);
+            var createdStream = await _musicStreamRepository.AddMusicStream(addMusicStreamDto);
             return CreatedAtAction(nameof(GetAllMusicStreams), new { id = createdStream.Id }, createdStream);
         }
     }

@@ -1,9 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using MusicApplicationWebAPI.Dtos;
 using MusicApplicationWebAPI.Dtos.MusicAlbum;
 using MusicApplicationWebAPI.Interfaces;
-using MusicApplicationWebAPI.Models.Entities;
 using MusicApplicationWebAPI.Services;
 
 namespace MusicApplicationWebAPI.Controllers;

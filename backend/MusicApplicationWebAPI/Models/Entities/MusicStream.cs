@@ -8,6 +8,6 @@ namespace MusicApplicationWebAPI.Models.Entities
         public required DateTime StartTime { get; set; }
         public DateTime EndTime { get; set; }
         public TimeSpan Duration { get; set; }
-        public required MusicTrack MusicTrack { get; set; }
+        public MusicTrack? MusicTrack { get; set; }
     }
 }
