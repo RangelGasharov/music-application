@@ -1,5 +1,3 @@
-using System;
-using System.Collections.Generic;
 using MusicApplicationWebAPI.Dtos.MusicTrack;
 
 namespace MusicApplicationWebAPI.Dtos.Playlist

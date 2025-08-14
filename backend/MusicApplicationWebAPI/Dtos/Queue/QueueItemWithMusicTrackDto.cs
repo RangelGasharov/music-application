@@ -1,6 +1,4 @@
 using MusicApplicationWebAPI.Dtos.MusicTrack;
-using MusicApplicationWebAPI.Models.Entities;
-
 public class QueueItemWithMusicTrackDto
 {
     public Guid Id { get; set; }

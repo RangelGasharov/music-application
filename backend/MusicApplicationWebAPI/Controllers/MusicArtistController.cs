@@ -1,14 +1,10 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using MusicApplicationWebAPI.Data;
 using MusicApplicationWebAPI.Dtos.MusicAlbum;
 using MusicApplicationWebAPI.Interfaces;
 using MusicApplicationWebAPI.Models.Entities;
 
 namespace MusicApplicationWebAPI.Controllers;
+
 [ApiController]
 [Route("music-artist")]
 public class MusicArtistController : ControllerBase
