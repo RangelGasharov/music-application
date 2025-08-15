@@ -6,8 +6,9 @@ namespace MusicApplicationWebAPI.Models.Entities
         public Guid UserId { get; set; }
         public Guid TrackId { get; set; }
         public required DateTime StartTime { get; set; }
-        public DateTime EndTime { get; set; }
-        public TimeSpan Duration { get; set; }
+        public DateTime? EndTime { get; set; }
+        public TimeSpan? Duration { get; set; }
         public MusicTrack? MusicTrack { get; set; }
+        public bool Counted { get; set; }
     }
 }

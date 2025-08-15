@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using MusicApplicationWebAPI.Dtos.MusicAlbum;
+using MusicApplicationWebAPI.Dtos.MusicStream;
 using MusicApplicationWebAPI.Interfaces;
 
 namespace MusicApplicationWebAPI.Controllers
@@ -22,16 +23,30 @@ namespace MusicApplicationWebAPI.Controllers
             return Ok(musicStreams);
         }
 
-        [HttpPost]
-        public async Task<IActionResult> AddMusicStream([FromBody] AddMusicStreamDto addMusicStreamDto)
+        [HttpPost("start")]
+        public async Task<IActionResult> StartStream([FromBody] StartMusicStreamDto dto)
         {
-            if (addMusicStreamDto == null)
-            {
-                return BadRequest("MusicStream data is required.");
-            }
+            if (dto == null)
+                return BadRequest("Request body is required.");
 
-            var createdStream = await _musicStreamRepository.AddMusicStream(addMusicStreamDto);
+            if (dto.UserId == Guid.Empty || dto.TrackId == Guid.Empty)
+                return BadRequest("UserId and TrackId are required.");
+
+            var createdStream = await _musicStreamRepository.StartStream(dto.UserId, dto.TrackId);
             return CreatedAtAction(nameof(GetAllMusicStreams), new { id = createdStream.Id }, createdStream);
+        }
+
+        [HttpPost("end")]
+        public async Task<IActionResult> EndStream([FromBody] EndMusicStreamDto dto)
+        {
+            if (dto == null)
+                return BadRequest("Request body is required.");
+
+            if (dto.StreamId == Guid.Empty)
+                return BadRequest("StreamId is required.");
+
+            var updatedStream = await _musicStreamRepository.EndStream(dto.StreamId);
+            return Ok(updatedStream);
         }
     }
 }
