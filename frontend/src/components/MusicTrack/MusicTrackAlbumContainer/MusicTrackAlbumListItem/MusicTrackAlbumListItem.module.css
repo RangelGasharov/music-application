@@ -29,7 +29,8 @@
 .music-artist-container {
     grid-column: span 3;
     display: flex;
-    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: .2rem;
 }
 
 .streams-box {

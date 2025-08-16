@@ -5,4 +5,5 @@ export type MusicStream = {
     end_time: string;
     duration: string;
     counted: boolean;
+    processed: boolean;
 }
