@@ -42,6 +42,11 @@ interface PlayerState {
     pause(): void;
 
     loadAndPlayTrack: (item: QueueItemFull) => Promise<void>;
+
+    streamId: string | null;
+    setStreamId: (id: string | null) => void;
+    startStream: () => Promise<void>;
+    endStream: () => Promise<void>;
 }
 
 export const usePlayerStore = create<PlayerState>((set, get) => ({
@@ -89,16 +94,23 @@ export const usePlayerStore = create<PlayerState>((set, get) => ({
         get().setIsPlaying(false);
     },
 
-    togglePlay: () => {
-        const audio = get().audioRef;
-        if (!audio) return;
-        if (get().isPlaying) {
-            audio.pause();
-            get().setIsPlaying(false);
+    togglePlay: async () => {
+        const { audioRef, isPlaying, setIsPlaying, startStream, endStream } = get();
+        if (!audioRef) return;
+
+        if (isPlaying) {
+            audioRef.pause();
+            setIsPlaying(false);
+            await endStream();
         } else {
-            audio.play()
-                .then(() => get().setIsPlaying(true))
-                .catch(() => get().setIsPlaying(false));
+            try {
+                await startStream();
+                await audioRef.play();
+                setIsPlaying(true);
+            } catch (err) {
+                console.error("Error toggling play:", err);
+                setIsPlaying(false);
+            }
         }
     },
 
@@ -161,4 +173,67 @@ export const usePlayerStore = create<PlayerState>((set, get) => ({
 
     duration: 0,
     setDuration: (d) => set({ duration: d }),
+
+    streamId: null,
+    setStreamId: (id) => set({ streamId: id }),
+
+    startStream: async () => {
+        const { userId, musicTrack } = get();
+        if (!userId || !musicTrack?.id) {
+            console.error("Missing userId or trackId for startStream");
+            return;
+        }
+
+        try {
+            const res = await fetch("/api/music-stream/start", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    user_id: userId,
+                    track_id: musicTrack.id,
+                }),
+            });
+
+            if (!res.ok) {
+                const errText = await res.text();
+                throw new Error(errText || "Failed to start stream");
+            }
+            const data = await res.json();
+            get().setStreamId(data.id || data.stream_id);
+            return data;
+        } catch (error) {
+            console.error("Start stream error:", error);
+            throw error;
+        }
+    },
+
+    endStream: async () => {
+        const { userId, musicTrack } = get();
+        if (!userId || !musicTrack?.id) {
+            console.error("Missing userId or trackId for endStream");
+            return;
+        }
+
+        try {
+            const res = await fetch("/api/music-stream/end", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    stream_id: get().streamId
+                }),
+            });
+
+            if (!res.ok) {
+                const errText = await res.text();
+                throw new Error(errText || "Failed to end stream");
+            }
+
+            get().setStreamId(null);
+
+            return await res.json();
+        } catch (error) {
+            console.error("End stream error:", error);
+            throw error;
+        }
+    },
 }));

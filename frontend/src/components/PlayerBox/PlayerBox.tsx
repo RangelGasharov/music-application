@@ -27,17 +27,12 @@ export default function PlayerBox() {
         const currentSrc = audio.src;
         const newSrc = musicTrack.file_path || "";
 
-        console.log("[PlayerBox] audio.src:", currentSrc);
-        console.log("[PlayerBox] newSrc:", newSrc);
-
         if (!currentSrc.endsWith(newSrc)) {
-            console.log("[PlayerBox] Loading and playing new track");
             loadAndPlayTrack({
                 id: queueItem?.id || "",
                 track: musicTrack,
             } as any);
         } else {
-            console.log("[PlayerBox] Same source - syncing time and play state");
             if (Math.abs(audio.currentTime - currentTimeFromStore) > 0.5) {
                 audio.currentTime = currentTimeFromStore;
             }
