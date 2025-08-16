@@ -127,7 +127,6 @@ export const usePlayerStore = create<PlayerState>((set, get) => ({
 
         try {
             audio.pause();
-            set({ queueItem: item, musicTrack: item.track });
 
             audio.src = item.track.file_path;
             audio.load();
@@ -146,28 +145,44 @@ export const usePlayerStore = create<PlayerState>((set, get) => ({
     },
 
     goToNextTrack: async () => {
-        const { queueItems, queueItem, loadAndPlayTrack, isPlaying } = get();
+        const { queueItems, queueItem, isPlaying, endStream, startStream, loadAndPlayTrack } = get();
         if (!queueItem || queueItems.length === 0) return;
 
         const currentIndex = queueItems.findIndex((item) => item.id === queueItem.id);
         const next = queueItems[currentIndex + 1];
-        if (next) {
-            if (isPlaying) {
-                await loadAndPlayTrack(next);
-            } else {
-                set({ queueItem: next, musicTrack: next.track });
-            }
+        if (!next) return;
+
+        if (get().streamId) {
+            await endStream();
+        }
+
+        set({ queueItem: next, musicTrack: next.track });
+
+        await startStream();
+
+        if (isPlaying) {
+            await loadAndPlayTrack(next);
         }
     },
 
-    goToPreviousTrack: () => {
-        const { queueItems, queueItem, loadAndPlayTrack } = get();
+    goToPreviousTrack: async () => {
+        const { queueItems, queueItem, isPlaying, endStream, startStream, loadAndPlayTrack } = get();
         if (!queueItem || queueItems.length === 0) return;
 
         const currentIndex = queueItems.findIndex((item) => item.id === queueItem.id);
         const prev = queueItems[currentIndex - 1];
-        if (prev) {
-            loadAndPlayTrack(prev);
+        if (!prev) return;
+
+        if (get().streamId) {
+            await endStream();
+        }
+
+        set({ queueItem: prev, musicTrack: prev.track });
+
+        await startStream();
+
+        if (isPlaying) {
+            await loadAndPlayTrack(prev);
         }
     },
 
@@ -208,9 +223,9 @@ export const usePlayerStore = create<PlayerState>((set, get) => ({
     },
 
     endStream: async () => {
-        const { userId, musicTrack } = get();
-        if (!userId || !musicTrack?.id) {
-            console.error("Missing userId or trackId for endStream");
+        const { streamId } = get();
+        if (!streamId) {
+            console.error("No streamId to end");
             return;
         }
 
@@ -219,7 +234,7 @@ export const usePlayerStore = create<PlayerState>((set, get) => ({
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({
-                    stream_id: get().streamId
+                    stream_id: streamId
                 }),
             });
 

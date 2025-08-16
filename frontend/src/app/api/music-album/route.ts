@@ -1,43 +1,28 @@
 import { NextResponse } from "next/server";
 
 export const config = {
-    api: {
-        bodyParser: false,
-    },
+    api: { bodyParser: false },
 };
-
-interface CustomRequestInit extends RequestInit {
-    duplex?: 'half' | 'full';
-}
 
 export async function POST(req: Request) {
     const API_URL = process.env.WEB_API_URL;
-    if (!API_URL) {
-        return NextResponse.json({ error: "API_URL not configured" }, { status: 500 });
-    }
-
-    const targetUrl = `${API_URL}/music-album/with-tracks`;
+    if (!API_URL) return NextResponse.json({ error: "API_URL not configured" }, { status: 500 });
 
     try {
-        const response = await fetch(targetUrl, {
+        const response = await fetch(`${API_URL}/music-album/with-tracks`, {
             method: "POST",
             headers: {
                 'Content-Type': req.headers.get('content-type') || '',
                 'Authorization': req.headers.get('authorization') || '',
             },
             body: req.body,
-            redirect: "manual",
-            duplex: 'half'
-        } as CustomRequestInit);
+            duplex: 'half',
+        });
 
         const responseBody = await response.arrayBuffer();
-        const nextResponse = new NextResponse(responseBody, {
-            status: response.status,
-        });
+        const nextResponse = new NextResponse(responseBody, { status: response.status });
 
-        response.headers.forEach((value, key) => {
-            nextResponse.headers.set(key, value);
-        });
+        response.headers.forEach((value, key) => nextResponse.headers.set(key, value));
 
         return nextResponse;
     } catch (error) {
