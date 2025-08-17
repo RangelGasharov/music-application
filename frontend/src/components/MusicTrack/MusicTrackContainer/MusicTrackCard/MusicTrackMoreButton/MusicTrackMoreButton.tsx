@@ -21,7 +21,7 @@ export default function MusicTrackMoreButton({ musicTrack, queueId }: Props) {
     const open = Boolean(anchorEl);
 
     const addTrackToQueue = async (queueId: string, musicTrackId: string) => {
-        const response = await fetch("/api/queue/add", {
+        const response = await fetch("/api/queue/item/add", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
