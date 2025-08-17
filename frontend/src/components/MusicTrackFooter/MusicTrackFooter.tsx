@@ -10,6 +10,7 @@ import FastRewindButton from "../PlayerBox/PlayerControls/FastRewindButton";
 import PlayButton from "../PlayerBox/PlayerControls/PlayButton";
 import FastForwardButton from "../PlayerBox/PlayerControls/FastForwardButton";
 import { VolumeUp } from "@mui/icons-material";
+import MusicQueueContainer from "./MusicQueueContainer/MusicQueueContainer";
 
 export default function MusicTrackFooter() {
     const queueItem = usePlayerStore((state) => state.queueItem);
@@ -179,6 +180,9 @@ export default function MusicTrackFooter() {
                         onChange={handleVolumeChange}
                         className={styles["volume-slider"]}
                     />
+                </div>
+                <div>
+                    <MusicQueueContainer />
                 </div>
             </div>
         </div>

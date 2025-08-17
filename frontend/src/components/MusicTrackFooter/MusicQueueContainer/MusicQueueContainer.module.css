@@ -1,0 +1,87 @@
+.music-queue-container {
+    position: absolute;
+    bottom: 8rem;
+    right: 1rem;
+    width: 24rem;
+    max-height: 24rem;
+    background: var(--cards-background-color);
+    border-radius: .5rem;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+    overflow-y: auto;
+    padding: 1rem;
+    animation: slideUp 0.25s ease-out;
+}
+
+@keyframes slideUp {
+    from {
+        transform: translateY(20px);
+        opacity: 0;
+    }
+
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+.title {
+    font-size: 1.1rem;
+    font-weight: bold;
+    margin-bottom: 0.75rem;
+}
+
+.empty {
+    text-align: center;
+    color: var(--text-muted);
+}
+
+.queue-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.queue-item {
+    display: flex;
+    align-items: center;
+    padding: 0.5rem;
+    cursor: pointer;
+}
+
+.queue-item:hover {
+    background: rgba(255, 255, 255, 0.05);
+}
+
+.cover {
+    width: 50px;
+    height: 50px;
+    border-radius: .3rem;
+    object-fit: cover;
+    margin-right: .75rem;
+}
+
+.info {
+    flex: 1;
+    overflow: hidden;
+}
+
+.track-title {
+    font-weight: 500;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.track-artist {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.duration {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    margin-left: 0.5rem;
+}

@@ -4,14 +4,15 @@ import React from 'react'
 
 type Props = {
     onClick: React.MouseEventHandler<HTMLButtonElement>,
-    children?: React.ReactNode
+    children?: React.ReactNode,
+    color?: string
 }
 
-export default function ButtonClean({ onClick, children }: Props) {
+export default function ButtonClean({ onClick, children, color }: Props) {
     return (
         <Button disableTouchRipple
             sx={{
-                color: "var(--text-color)", backgroundColor: "transparent", boxShadow: "none", padding: ".2rem", minWidth: 0, width: 'auto', height: 'auto',
+                color: color ?? "var(--text-color)", backgroundColor: "transparent", boxShadow: "none", padding: ".2rem", minWidth: 0, width: 'auto', height: 'auto',
                 transformOrigin: 'center',
                 '&:hover': {
                     transform: "scale(1.2)"

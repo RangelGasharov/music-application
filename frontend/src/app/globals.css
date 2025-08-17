@@ -16,6 +16,7 @@
   --cards-background-color: rgb(242, 242, 242);
   --cards-heading-background-color: rgb(230, 232, 232);
   --skeleton-loading-color: #e0e0e0;
+  --active-color: #ffd16e;
 }
 
 .dark {
@@ -27,6 +28,7 @@
   --cards-background-color: rgb(31, 32, 33);
   --cards-heading-background-color: rgb(26, 27, 28);
   --skeleton-loading-color: #1a1a1a;
+  --active-color: #ffd16e;
 }
 
 body {
