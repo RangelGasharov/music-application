@@ -117,5 +117,16 @@ namespace MusicApplicationWebAPI.Controllers
                 return BadRequest(e.Message);
             }
         }
+
+        [HttpDelete("{queueId:guid}/item/{position}")]
+        public async Task<IActionResult> DeleteQueueItemByPosition(Guid queueId, string position)
+        {
+            var success = await _queueRepository.DeleteQueueItemByPosition(queueId, position);
+
+            if (!success)
+                return NotFound();
+
+            return NoContent();
+        }
     }
 }

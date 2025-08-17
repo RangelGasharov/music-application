@@ -141,7 +141,19 @@ namespace MusicApplicationWebAPI.Repository
             return result;
         }
 
+        public async Task<bool> DeleteQueueItemByPosition(Guid queueId, string position)
+        {
+            var item = await _context.QueueItem
+                .FirstOrDefaultAsync(i => i.QueueId == queueId && i.Position == position);
 
+            if (item == null)
+                return false;
+
+            _context.QueueItem.Remove(item);
+            await _context.SaveChangesAsync();
+
+            return true;
+        }
 
         public async Task<Queue> CreateQueue(Guid userId, string? name)
         {
