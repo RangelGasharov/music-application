@@ -5,11 +5,13 @@ import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import { MusicTrack } from "@/types/MusicTrack";
+import { usePlayerStore } from "@/store/usePlayerStore";
+import { QueueItemFull } from "@/types/QueueItem";
 
 type Props = {
     queueId: string;
     musicTrack: MusicTrack;
-}
+};
 
 type Option = {
     text: string;
@@ -19,6 +21,8 @@ type Option = {
 export default function MusicTrackMoreButton({ musicTrack, queueId }: Props) {
     const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
     const open = Boolean(anchorEl);
+
+    const { queueItems, setQueueItems } = usePlayerStore();
 
     const addTrackToQueue = async (queueId: string, musicTrackId: string) => {
         const response = await fetch("/api/queue/item/add", {
@@ -34,8 +38,12 @@ export default function MusicTrackMoreButton({ musicTrack, queueId }: Props) {
             throw new Error(error.error || "Unknown error");
         }
 
-        return await response.json();
-    }
+        const newItem: QueueItemFull = await response.json();
+
+        setQueueItems([...queueItems, newItem]);
+
+        return newItem;
+    };
 
     const handleOpen = (event: React.MouseEvent<HTMLElement>) => {
         setAnchorEl(event.currentTarget);
@@ -49,7 +57,8 @@ export default function MusicTrackMoreButton({ musicTrack, queueId }: Props) {
         {
             text: "Add to queue",
             action: () => {
-                addTrackToQueue(queueId, musicTrack.id);
+                addTrackToQueue(queueId, musicTrack.id)
+                    .catch((err) => console.error("Failed to add track:", err));
             },
         },
         {
@@ -83,14 +92,16 @@ export default function MusicTrackMoreButton({ musicTrack, queueId }: Props) {
                 }}
             >
                 {options.map((option) => (
-                    <MenuItem key={option.text}
+                    <MenuItem
+                        key={option.text}
                         onClick={() => {
                             option.action?.();
                             handleClose();
                         }}
                         sx={{
                             "&:hover": {
-                                backgroundColor: "var(--navigation-drawer-hover-color)",
+                                backgroundColor:
+                                    "var(--navigation-drawer-hover-color)",
                             },
                         }}
                     >
