@@ -118,15 +118,18 @@ namespace MusicApplicationWebAPI.Controllers
             }
         }
 
-        [HttpDelete("{queueId:guid}/item/{position}")]
-        public async Task<IActionResult> DeleteQueueItemByPosition(Guid queueId, string position)
+        [HttpDelete("{queueId:guid}/items")]
+        public async Task<IActionResult> DeleteQueueItem(Guid queueId, [FromBody] DeleteQueueItemRequest request)
         {
-            var success = await _queueRepository.DeleteQueueItemByPosition(queueId, position);
+            if (string.IsNullOrWhiteSpace(request.Position))
+                return BadRequest(new { message = "Position is required" });
+
+            var success = await _queueRepository.DeleteQueueItemByPosition(queueId, request.Position);
 
             if (!success)
-                return NotFound();
+                return NotFound(new { message = $"Queue item not found at position {request.Position}" });
 
-            return NoContent();
+            return Ok(new { message = $"Deleted queue item at position {request.Position}" });
         }
     }
 }

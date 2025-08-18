@@ -9,3 +9,8 @@ public class QueueItemWithMusicTrackDto
 
     public MusicTrackDto? Track { get; set; }
 }
+
+public class DeleteQueueItemRequest
+{
+    public required string Position { get; set; }
+}
