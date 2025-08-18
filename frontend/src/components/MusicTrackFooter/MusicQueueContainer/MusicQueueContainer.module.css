@@ -85,3 +85,17 @@
     color: var(--text-muted);
     margin-left: 0.5rem;
 }
+
+.delete-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: var(--danger-color, red);
+    margin-left: 1rem;
+    transition: opacity 0.2s;
+}
+
+.delete-btn:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+}

@@ -2,9 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 
 export async function DELETE(req: NextRequest) {
     try {
-        const { searchParams } = new URL(req.url);
-        const queueId = searchParams.get("queueId");
-        const position = searchParams.get("position");
+        const { queueId, position } = await req.json();
 
         if (!queueId || !position) {
             return NextResponse.json(
@@ -13,24 +11,27 @@ export async function DELETE(req: NextRequest) {
             );
         }
 
-        const backendResponse = await fetch(
-            `${process.env.WEB_API_URL}/queue/${queueId}/items/${encodeURIComponent(position)}`,
-            {
-                method: "DELETE",
-            }
-        );
+        const targetUrl = `${process.env.WEB_API_URL}/queue/${queueId}/items`;
 
-        if (backendResponse.status === 404) {
+        const response = await fetch(targetUrl, {
+            method: "DELETE",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ position }),
+        });
+
+        const responseData = await response.json().catch(() => ({}));
+
+        if (response.status === 404) {
             return NextResponse.json(
                 { error: "Queue item not found" },
                 { status: 404 }
             );
         }
 
-        if (!backendResponse.ok) {
+        if (!response.ok) {
             return NextResponse.json(
-                { error: "Failed to delete queue item" },
-                { status: backendResponse.status }
+                { error: responseData.message || "Failed to delete queue item" },
+                { status: response.status }
             );
         }
 
