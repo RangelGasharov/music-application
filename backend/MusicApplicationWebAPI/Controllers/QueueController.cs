@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
+using MusicApplicationWebAPI.Dtos.MusicTrack;
 using MusicApplicationWebAPI.Interfaces;
 
 namespace MusicApplicationWebAPI.Controllers
@@ -97,8 +98,9 @@ namespace MusicApplicationWebAPI.Controllers
             if (request == null)
                 return BadRequest("Invalid request");
 
-            var item = await _queueRepository.AddTrackToQueue(queueId, request.TrackId);
-            return Ok(item);
+            var dto = await _queueRepository.AddTrackToQueue(queueId, request.TrackId);
+
+            return Ok(dto);
         }
 
         [HttpPost("{queueId:guid}/reorder")]

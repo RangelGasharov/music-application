@@ -170,7 +170,7 @@ namespace MusicApplicationWebAPI.Repository
             return queue;
         }
 
-        public async Task<QueueItem> AddTrackToQueue(Guid queueId, Guid trackId)
+        public async Task<QueueItemWithMusicTrackDto> AddTrackToQueue(Guid queueId, Guid trackId)
         {
             var lastItem = await _context.QueueItem
                 .Where(i => i.QueueId == queueId)
@@ -192,7 +192,58 @@ namespace MusicApplicationWebAPI.Repository
 
             _context.QueueItem.Add(item);
             await _context.SaveChangesAsync();
-            return item;
+
+            var dto = await _context.QueueItem
+                .Where(q => q.Id == item.Id)
+                .Select(q => new QueueItemWithMusicTrackDto
+                {
+                    Id = q.Id,
+                    QueueId = q.QueueId,
+                    TrackId = q.TrackId,
+                    Position = q.Position,
+                    AddedAt = q.AddedAt,
+                    Track = _context.MusicTrack
+                        .Where(t => t.Id == q.TrackId)
+                        .Select(t => new MusicTrackDto
+                        {
+                            Id = t.Id,
+                            Title = t.Title,
+                            ReleaseDate = t.ReleaseDate,
+                            FilePath = t.FilePath,
+                            IsExplicit = t.IsExplicit,
+                            UploadedAt = t.UploadedAt,
+                            CoverURL = t.CoverURL,
+                            Duration = t.Duration,
+                            MusicArtists = t.MusicArtistTrack
+                                .Select(mat => new MusicArtistShortFormDto
+                                {
+                                    Id = mat.MusicArtist.Id,
+                                    Name = mat.MusicArtist.Name
+                                })
+                                .ToList(),
+                            MusicAlbums = t.MusicTrackAlbum
+                                .Select(mta => new MusicAlbumShortFormDto
+                                {
+                                    Id = mta.MusicAlbum.Id,
+                                    Title = mta.MusicAlbum.Title,
+                                    CoverURL = mta.MusicAlbum.CoverURL,
+                                    UploadedAt = mta.MusicAlbum.UploadedAt,
+                                    ReleaseDate = mta.MusicAlbum.ReleaseDate
+                                })
+                                .ToList(),
+                            MusicGenres = t.MusicGenreTrack
+                                .Select(mgt => new MusicGenreDto
+                                {
+                                    Id = mgt.MusicGenre.Id,
+                                    Name = mgt.MusicGenre.Name
+                                })
+                                .ToList()
+                        })
+                        .FirstOrDefault()
+                })
+                .FirstAsync();
+
+            return dto;
         }
 
         public async Task<QueueItem> ReorderTrack(Guid itemId, string? leftPos, string? rightPos)
