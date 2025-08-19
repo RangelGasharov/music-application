@@ -87,12 +87,12 @@ builder.Services.AddAuthorization();
 
 builder.Services.Configure<FormOptions>(options =>
 {
-    options.MultipartBodyLengthLimit = 100_000_000;
+    options.MultipartBodyLengthLimit = 200_000_000;
 });
 
 builder.WebHost.ConfigureKestrel(serverOptions =>
 {
-    serverOptions.Limits.MaxRequestBodySize = 100_000_000;
+    serverOptions.Limits.MaxRequestBodySize = 200_000_000;
 });
 
 var app = builder.Build();

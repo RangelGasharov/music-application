@@ -47,6 +47,10 @@ export default function MusicQueueContainer({ }: Props) {
         }
     };
 
+    const visibleQueueItems = queueItem
+        ? queueItems.filter((item) => item.position >= queueItem.position)
+        : queueItems;
+
     return (
         <div>
             <ButtonClean
@@ -60,11 +64,11 @@ export default function MusicQueueContainer({ }: Props) {
                 <div className={styles["music-queue-container"]}>
                     <h3 className={styles["title"]}>Queue</h3>
 
-                    {queueItems.length === 0 ? (
+                    {visibleQueueItems.length === 0 ? (
                         <div className={styles["empty"]}>No tracks in queue</div>
                     ) : (
                         <ul className={styles["queue-list"]}>
-                            {queueItems.map((item) => (
+                            {visibleQueueItems.map((item) => (
                                 <li key={item.id} className={styles["queue-item"]}>
                                     <Image
                                         width={100}

@@ -85,14 +85,40 @@ export default async function MusicAlbumPage({ params }: { params: Params }) {
         const totalStreams: number = musicTracks.reduce((acc, currentMusicTrack: MusicTrackFull) => acc + (currentMusicTrack.music_track_stat?.total_plays ?? 0),
             0);
 
-        function getTotalMinutes(musicTracks: MusicTrack[]): number {
-            const totalSeconds = musicTracks
+        function getTotalTimeAsString(musicTracks: MusicTrack[]): string {
+            let totalTimeString = "";
+            let totalSeconds = musicTracks
                 .map(musicTrack => getDurationInSeconds(musicTrack.duration))
                 .reduce((sum, seconds) => sum + seconds, 0);
-            return Math.floor(totalSeconds / 60);
+            const hours = Math.floor(totalSeconds / 3600);
+            if (hours > 0) {
+                totalTimeString += `${hours} h.`
+                totalSeconds -= hours * 3600
+            }
+
+            const minutes = Math.floor(totalSeconds / 60);
+            if (minutes > 0) {
+                if (hours > 0) {
+                    totalTimeString += " "
+                }
+                totalTimeString += `${minutes} min.`
+                totalSeconds -= minutes * 60
+            }
+
+            if (hours < 1) {
+                const seconds = Math.floor(totalSeconds);
+                if (totalSeconds > 0) {
+                    if (minutes > 0) {
+                        totalTimeString += " "
+                    }
+                    totalTimeString += `${seconds} sec.`
+                }
+            }
+
+            return totalTimeString;
         }
 
-        const totalAlbumLength = getTotalMinutes(musicTracks);
+        const totalAlbumLength = getTotalTimeAsString(musicTracks);
         const session = await getServerSession(authOptions);
         const userId = session?.userId;
         const queue: Queue = await getQueueByUserId(userId);
@@ -135,7 +161,7 @@ export default async function MusicAlbumPage({ params }: { params: Params }) {
                                 <div className={styles["info-box-title"]}>Length</div>
                             </div>
                             <div className={styles["info-box-value"]}>
-                                {totalAlbumLength} min.
+                                {totalAlbumLength}
                             </div>
                         </div>
                         <div className={styles["info-box"]}>
