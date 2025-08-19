@@ -1,6 +1,7 @@
 import { MusicAlbumShortDto } from "./MusicAlbum";
 import { MusicArtistShort } from "./MusicArtist";
 import { MusicGenreShort } from "./MusicGenre";
+import { MusicTrackStat } from "./MusicTrackStat";
 
 export type MusicTrack = {
     id: string;
@@ -25,7 +26,7 @@ export type MusicTrackFull = {
     music_artists: MusicArtistShort[];
     music_genres: MusicGenreShort[];
     music_albums: MusicAlbumShortDto[];
-    position?: number;
+    music_track_stat: MusicTrackStat;
 }
 
 export type MusicTrackWithPosition = {

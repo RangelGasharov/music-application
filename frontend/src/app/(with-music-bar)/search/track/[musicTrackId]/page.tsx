@@ -1,4 +1,4 @@
-import { MusicTrack } from '@/types/MusicTrack';
+import { MusicTrack, MusicTrackFull } from '@/types/MusicTrack';
 import React from 'react'
 import styles from "./music-track-page.module.css"
 import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
@@ -10,7 +10,7 @@ import { MusicAlbumShortDto } from '@/types/MusicAlbum';
 
 type Params = Promise<{ musicTrackId: string }>
 
-async function getMusicTrackById(musicTrackId: string): Promise<MusicTrack> {
+async function getMusicTrackById(musicTrackId: string): Promise<MusicTrackFull> {
     try {
         const res = await fetch(`${process.env.WEB_API_URL}/music-track/${musicTrackId}`);
 
@@ -18,7 +18,7 @@ async function getMusicTrackById(musicTrackId: string): Promise<MusicTrack> {
             throw new Error('Failed to fetch music track');
         }
 
-        const musicTrack: MusicTrack = await res.json();
+        const musicTrack: MusicTrackFull = await res.json();
         return musicTrack;
     } catch (error) {
         console.error('Error fetching music tracl:', error);
@@ -26,7 +26,7 @@ async function getMusicTrackById(musicTrackId: string): Promise<MusicTrack> {
     }
 }
 
-function getTotalMinutes(musicTrack: MusicTrack): number {
+function getTotalMinutes(musicTrack: MusicTrackFull): number {
     const totalSeconds = getDurationInSeconds(musicTrack.duration);
     return Math.floor(totalSeconds / 60);
 }
@@ -93,7 +93,7 @@ export default async function MusicTrackPage({ params }: { params: Params }) {
                         <div className={styles["info-container-title"]}>Streams</div>
                     </div>
                     <div className={styles["info-container-value"]}>
-                        0
+                        {musicTrack.music_track_stat?.total_plays ?? 0}
                     </div>
                 </div>
             </div>

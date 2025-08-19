@@ -1,4 +1,4 @@
-import { MusicTrack, MusicTrackWithPosition } from '@/types/MusicTrack';
+import { MusicTrack, MusicTrackFull, MusicTrackWithPosition } from '@/types/MusicTrack';
 import { notFound } from 'next/navigation';
 import styles from "./music-album-page.module.css";
 import { MusicAlbum } from '@/types/MusicAlbum';
@@ -82,7 +82,8 @@ export default async function MusicAlbumPage({ params }: { params: Params }) {
             year: 'numeric', month: 'short', day: 'numeric'
         }).format(musicAlbumDate);
 
-        const totalStreams: number = musicTracks.reduce((acc/*, currentMusicTrack: MusicTrack*/) => acc, 0);
+        const totalStreams: number = musicTracks.reduce((acc, currentMusicTrack: MusicTrackFull) => acc + (currentMusicTrack.music_track_stat?.total_plays ?? 0),
+            0);
 
         function getTotalMinutes(musicTracks: MusicTrack[]): number {
             const totalSeconds = musicTracks

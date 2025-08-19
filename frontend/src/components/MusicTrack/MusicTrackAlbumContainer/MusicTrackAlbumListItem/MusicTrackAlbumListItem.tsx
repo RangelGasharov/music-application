@@ -33,7 +33,7 @@ export default function MusicTrackAlbumListItem({ musicTrack, position, queueId 
                     </Link>
                 ))}
             </div>
-            <div className={styles["streams-box"]}>0</div>
+            <div className={styles["streams-box"]}>{musicTrack.music_track_stat?.total_plays ?? 0}</div>
             <div className={styles["duration-box"]}>{formatDuration(musicTrack.duration)}</div>
             <div><MusicTrackMoreButton queueId={queueId} musicTrack={musicTrack} /></div>
         </div>
