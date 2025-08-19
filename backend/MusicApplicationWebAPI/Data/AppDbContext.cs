@@ -22,6 +22,7 @@ public class AppDbContext : DbContext
     public DbSet<QueueProgress> QueueProgress { get; set; }
     public DbSet<MusicTrackPlaylist> MusicTrackPlaylist { get; set; }
     public DbSet<MusicStream> MusicStream { get; set; }
+    public DbSet<MusicTrackStat> MusicTrackStat { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -66,5 +67,21 @@ public class AppDbContext : DbContext
             .HasOne(ms => ms.MusicTrack)
             .WithMany(mt => mt.MusicStream)
             .HasForeignKey(ms => ms.TrackId);
+
+        modelBuilder.Entity<MusicTrackStat>(entity =>
+        {
+            entity.HasKey(mts => mts.TrackId);
+
+            entity.HasOne(mts => mts.MusicTrack)
+                .WithOne(mt => mt.MusicTrackStat)
+                .HasForeignKey<MusicTrackStat>(mts => mts.TrackId)
+                .OnDelete(DeleteBehavior.Cascade);
+        });
+
+        modelBuilder.Entity<MusicTrack>()
+                .HasOne(mt => mt.MusicTrackStat)
+                .WithOne(stat => stat.MusicTrack)
+                .HasForeignKey<MusicTrackStat>(stat => stat.TrackId)
+                .OnDelete(DeleteBehavior.Cascade);
     }
 }

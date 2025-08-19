@@ -11,13 +11,10 @@ namespace MusicApplicationWebAPI.Controllers;
 public class MusicTrackController : ControllerBase
 {
     private readonly IMusicTrackRepository _musicTrackRepository;
-    private readonly MinioFileService _minioFileService;
 
-
-    public MusicTrackController(IMusicTrackRepository musicTrackRepository, MinioFileService minioFileService)
+    public MusicTrackController(IMusicTrackRepository musicTrackRepository)
     {
         _musicTrackRepository = musicTrackRepository;
-        _minioFileService = minioFileService;
     }
     [HttpGet]
     public async Task<IActionResult> GetAllMusicTracks()

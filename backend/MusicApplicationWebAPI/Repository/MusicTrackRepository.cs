@@ -30,6 +30,7 @@ namespace MusicApplicationWebAPI.Repository
                 .ThenInclude(mgt => mgt.MusicGenre)
             .Include(music_track => music_track.MusicTrackAlbum)
                 .ThenInclude(mta => mta.MusicAlbum)
+            .Include(mts => mts.MusicTrackStat)
             .ToListAsync();
 
             return [.. musicTracks.Select(musicTrack => new MusicTrackDto
@@ -62,7 +63,15 @@ namespace MusicApplicationWebAPI.Repository
                             CoverURL = mta.MusicAlbum.CoverURL,
                             UploadedAt = mta.MusicAlbum.UploadedAt,
                             ReleaseDate = mta.MusicAlbum.ReleaseDate
-                    })]
+                    })],
+                 MusicTrackStat = musicTrack.MusicTrackStat == null ? null : new MusicTrackStat
+                {
+                    TrackId = musicTrack.MusicTrackStat.TrackId,
+                    TotalPlays = musicTrack.MusicTrackStat.TotalPlays,
+                    LastUpdated = musicTrack.MusicTrackStat.LastUpdated,
+                    AvgDuration = musicTrack.MusicTrackStat.AvgDuration,
+                    UniqueListeners = musicTrack.MusicTrackStat.UniqueListeners
+                }
             })];
         }
 
@@ -75,6 +84,7 @@ namespace MusicApplicationWebAPI.Repository
                 .ThenInclude(mgt => mgt.MusicGenre)
             .Include(music_track => music_track.MusicTrackAlbum)
                 .ThenInclude(mta => mta.MusicAlbum)
+            .Include(mts => mts.MusicTrackStat)
             .FirstOrDefaultAsync(musicTrack => musicTrack.Id == id);
 
             if (musicTrack == null)
@@ -111,7 +121,15 @@ namespace MusicApplicationWebAPI.Repository
                             CoverURL = mta.MusicAlbum.CoverURL,
                             UploadedAt = mta.MusicAlbum.UploadedAt,
                             ReleaseDate = mta.MusicAlbum.ReleaseDate
-                        })]
+                        })],
+                MusicTrackStat = musicTrack.MusicTrackStat == null ? null : new MusicTrackStat
+                {
+                    TrackId = musicTrack.MusicTrackStat.TrackId,
+                    TotalPlays = musicTrack.MusicTrackStat.TotalPlays,
+                    LastUpdated = musicTrack.MusicTrackStat.LastUpdated,
+                    AvgDuration = musicTrack.MusicTrackStat.AvgDuration,
+                    UniqueListeners = musicTrack.MusicTrackStat.UniqueListeners
+                }
             };
         }
 
@@ -121,6 +139,7 @@ namespace MusicApplicationWebAPI.Repository
                 .Include(mt => mt.MusicArtistTrack)
                     .ThenInclude(mat => mat.MusicArtist)
                 .Where(mt => mt.MusicArtistTrack.Any(mat => mat.MusicArtistId == artistId))
+                .Include(mts => mts.MusicTrackStat)
                 .ToListAsync();
 
             return [.. musicTracks.Select(musicTrack => new MusicTrackDto
@@ -153,7 +172,15 @@ namespace MusicApplicationWebAPI.Repository
                             CoverURL = mta.MusicAlbum.CoverURL,
                             UploadedAt = mta.MusicAlbum.UploadedAt,
                             ReleaseDate = mta.MusicAlbum.ReleaseDate
-                    })]
+                    })],
+                MusicTrackStat = musicTrack.MusicTrackStat == null ? null : new MusicTrackStat
+                {
+                    TrackId = musicTrack.MusicTrackStat.TrackId,
+                    TotalPlays = musicTrack.MusicTrackStat.TotalPlays,
+                    LastUpdated = musicTrack.MusicTrackStat.LastUpdated,
+                    AvgDuration = musicTrack.MusicTrackStat.AvgDuration,
+                    UniqueListeners = musicTrack.MusicTrackStat.UniqueListeners
+                }
             })];
         }
 
@@ -165,6 +192,7 @@ namespace MusicApplicationWebAPI.Repository
                 .Include(mt => mt.MusicTrackAlbum)
                     .ThenInclude(mta => mta.MusicAlbum)
                 .Where(mt => mt.MusicTrackAlbum.Any(mta => mta.MusicAlbumId == albumId))
+                .Include(mts => mts.MusicTrackStat)
                 .ToListAsync();
 
             var result = musicTracks
@@ -183,14 +211,13 @@ namespace MusicApplicationWebAPI.Repository
                         FilePath = musicTrack.FilePath,
                         IsExplicit = musicTrack.IsExplicit,
                         Duration = musicTrack.Duration,
-                        MusicArtists = musicTrack.MusicArtistTrack
+                        MusicArtists = [.. musicTrack.MusicArtistTrack
                             .Select(mat => new MusicArtistShortFormDto
                             {
                                 Id = mat.MusicArtist.Id,
                                 Name = mat.MusicArtist.Name
-                            })
-                            .ToList(),
-                        MusicAlbums = musicTrack.MusicTrackAlbum
+                            })],
+                        MusicAlbums = [.. musicTrack.MusicTrackAlbum
                             .Select(mta => new MusicAlbumShortFormDto
                             {
                                 Id = mta.MusicAlbum.Id,
@@ -198,8 +225,15 @@ namespace MusicApplicationWebAPI.Repository
                                 CoverURL = mta.MusicAlbum.CoverURL,
                                 UploadedAt = mta.MusicAlbum.UploadedAt,
                                 ReleaseDate = mta.MusicAlbum.ReleaseDate
-                            })
-                            .ToList()
+                            })],
+                        MusicTrackStat = musicTrack.MusicTrackStat == null ? null : new MusicTrackStat
+                        {
+                            TrackId = musicTrack.MusicTrackStat.TrackId,
+                            TotalPlays = musicTrack.MusicTrackStat.TotalPlays,
+                            LastUpdated = musicTrack.MusicTrackStat.LastUpdated,
+                            AvgDuration = musicTrack.MusicTrackStat.AvgDuration,
+                            UniqueListeners = musicTrack.MusicTrackStat.UniqueListeners
+                        }
                     };
 
                     return new MusicTrackWithPositionDto

@@ -1,6 +1,7 @@
 using MusicApplicationWebAPI.Dtos.MusicAlbum;
 using MusicApplicationWebAPI.Dtos.MusicArtist;
 using MusicApplicationWebAPI.Dtos.MusicGenre;
+using MusicApplicationWebAPI.Models.Entities;
 
 namespace MusicApplicationWebAPI.Dtos.MusicTrack
 {
@@ -17,6 +18,7 @@ namespace MusicApplicationWebAPI.Dtos.MusicTrack
         public List<MusicArtistShortFormDto> MusicArtists { get; set; } = [];
         public List<MusicAlbumShortFormDto> MusicAlbums { get; set; } = [];
         public List<MusicGenreDto> MusicGenres { get; set; } = [];
+        public MusicTrackStat? MusicTrackStat { get; set; }
     }
 
     public class MusicTrackWithPositionDto
