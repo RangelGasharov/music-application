@@ -1,4 +1,4 @@
-import { MusicTrack, MusicTrackFull } from '@/types/MusicTrack';
+import { MusicTrackFull } from '@/types/MusicTrack';
 import React from 'react'
 import styles from "./music-track-page.module.css"
 import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';

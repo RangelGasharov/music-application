@@ -6,7 +6,7 @@ import { Typography, Box, CircularProgress } from '@mui/material';
 import MusicAlbumContainer from '../MusicAlbumContainer/MusicAlbumContainer';
 import { MusicAlbum } from '@/types/MusicAlbum';
 import { MusicArtist } from '@/types/MusicArtist';
-import { MusicTrack } from '@/types/MusicTrack';
+import { MusicTrackFull } from '@/types/MusicTrack';
 import MusicTrackContainer from '../MusicTrack/MusicTrackContainer/MusicTrackContainer';
 import MusicArtistContainer from '../MusicArtistCard/MusicArtistContainer';
 import styles from "./SearchpageContent.module.css";
@@ -22,7 +22,7 @@ type Props = {
 interface SearchResult {
     music_album: MusicAlbum;
     music_artist: MusicArtist;
-    music_track: MusicTrack;
+    music_track: MusicTrackFull;
     title?: string;
     name?: string;
     type: string;
@@ -79,7 +79,7 @@ export default function SearchPageContent({ queueId }: Props) {
 
     const musicAlbums: MusicAlbum[] = results.filter(item => item.type === 'Music Album').map(item => item.music_album);
     const musicArtists: MusicArtist[] = results.filter(item => item.type === 'Music Artist').map(item => item.music_artist);
-    const musicTracks: MusicTrack[] = results.filter(item => item.type === 'Music Track').map(item => item.music_track);
+    const musicTracks: MusicTrackFull[] = results.filter(item => item.type === 'Music Track').map(item => item.music_track);
 
     const noResults = results.length === 0;
 

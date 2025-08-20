@@ -1,3 +1,4 @@
+import { MusicTrackFull } from "./MusicTrack";
 import { Queue } from "./Queue";
 import { QueueItemFull } from "./QueueItem";
 
@@ -6,7 +7,7 @@ export type PlayerState = {
     queue: Queue | null;
     queueItems: QueueItemFull[];
     queueItem: QueueItemFull | null;
-    musicTrack: any | null;
+    musicTrack: MusicTrackFull | null;
     audioRef: HTMLAudioElement | null;
     isInitialized: boolean;
 

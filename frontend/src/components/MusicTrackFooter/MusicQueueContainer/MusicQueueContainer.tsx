@@ -9,9 +9,7 @@ import { DEFAULT_MUSIC_ARTIST_IMAGE_SOURCE } from "@/constants/constants";
 import { formatDuration } from "@/utils/formatDuration";
 import Image from "next/image";
 
-type Props = {};
-
-export default function MusicQueueContainer({ }: Props) {
+export default function MusicQueueContainer() {
     const queueItems = usePlayerStore((state) => state.queueItems);
     const setQueueItems = usePlayerStore((state) => state.setQueueItems);
     const queueItem = usePlayerStore((state) => state.queueItem);

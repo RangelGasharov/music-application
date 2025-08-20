@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect } from "react";
 import { usePlayerStore } from "@/store/usePlayerStore";
 import { Queue } from "@/types/Queue";
 import { QueueItemFull } from "@/types/QueueItem";

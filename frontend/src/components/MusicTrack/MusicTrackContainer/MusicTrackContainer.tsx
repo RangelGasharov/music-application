@@ -1,10 +1,10 @@
-import { MusicTrack } from '@/types/MusicTrack';
+import { MusicTrackFull } from '@/types/MusicTrack';
 import React from 'react';
 import styles from "./MusicTrackContainer.module.css";
 import MusicTrackCard from './MusicTrackCard/MusicTrackCard';
 
 type MusicTrackContainerType = {
-    musicTracks: MusicTrack[];
+    musicTracks: MusicTrackFull[];
     queueId: string;
 }
 
