@@ -1,8 +1,13 @@
 "use client"
 import { useEffect, useRef, useState } from "react";
 import { usePlayerStore } from "@/store/usePlayerStore";
+import { QueueProgress } from "@/types/QueueProgress";
 
-export default function AudioProvider() {
+type Props = {
+    queueProgress: QueueProgress;
+}
+
+export default function AudioProvider({ queueProgress }: Props) {
     const audioRef = useRef<HTMLAudioElement | null>(null);
     const setAudioRef = usePlayerStore((s) => s.setAudioRef);
     const musicTrack = usePlayerStore((s) => s.musicTrack);
@@ -47,13 +52,14 @@ export default function AudioProvider() {
 
         const onLoadedMetadata = () => {
             setDuration(audio.duration);
+            setCurrentTime(queueProgress.progress_in_seconds);
 
             if (currentTime && currentTime < audio.duration) {
                 audio.currentTime = currentTime;
             }
 
-            audio.currentTime = 0;
-            setCurrentTime(0);
+            audio.currentTime = currentTime ?? 0;
+            setCurrentTime(currentTime ?? 0);
             setIsPlaying(true);
 
             setIsLoadingTrack(false);

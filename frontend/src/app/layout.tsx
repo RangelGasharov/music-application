@@ -11,6 +11,7 @@ import { Queue } from "@/types/Queue";
 import { QueueItemFull } from "@/types/QueueItem";
 import PlayerInitializer from "@/components/PlayerBox/PlayerInitializer";
 import AudioProvider from "@/components/AudioProvider/AudioProvider";
+import { QueueProgress } from "@/types/QueueProgress";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -77,6 +78,31 @@ const getQueueItemsWithMusicTracks = async (queueId: string) => {
   }
 }
 
+const getQueueProgress = async (queueId: string, userId: string) => {
+  try {
+    const API_URL = process.env.WEB_API_URL;
+    const targetUrl = `${API_URL}/queue-progress/${userId}/${queueId}`;
+    const response = await fetch(targetUrl, {
+      method: "GET",
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+
+    if (!response.ok) {
+      const errorText = await response.text();
+      console.warn(`Failed to fetch queue progress: ${errorText}`);
+      return [];
+    }
+
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.error('Error fetching the queue progress:', error);
+    return [];
+  }
+}
+
 export default async function RootLayout({
   children,
 }: Readonly<{
@@ -88,11 +114,13 @@ export default async function RootLayout({
 
   let queue: Queue | null = null;
   let queueItems: QueueItemFull[] = [];
+  let queueProgress: QueueProgress | null = null;
 
   if (userId) {
     queue = await getQueueByUserId(userId);
     if (queue) {
       queueItems = await getQueueItemsWithMusicTracks(queue.id);
+      queueProgress = await getQueueProgress(queue.id, userId);
     }
   }
 
@@ -101,8 +129,8 @@ export default async function RootLayout({
       <body className={`${geistSans.variable} ${geistMono.variable}`}>
         <Providers>
           <main className={styles["main-container"]}>
-            <AudioProvider />
-            {queue && <PlayerInitializer userId={userId} queue={queue} queueItems={queueItems} />}
+            {queueProgress && <AudioProvider queueProgress={queueProgress} />}
+            {queue && queueProgress && <PlayerInitializer userId={userId} queue={queue} queueItems={queueItems} queueProgress={queueProgress} />}
             <Suspense fallback={null}>
               <NavigationHeader />
             </Suspense>

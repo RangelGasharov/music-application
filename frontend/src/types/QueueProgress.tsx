@@ -3,6 +3,6 @@ export type QueueProgress = {
     user_id: string;
     queue_id: string;
     queue_item_id: string;
-    progress: string;
+    progress_in_seconds: number;
     updated_at: string;
 }
