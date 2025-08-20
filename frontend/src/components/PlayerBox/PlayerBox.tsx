@@ -31,7 +31,11 @@ export default function PlayerBox() {
             loadAndPlayTrack({
                 id: queueItem?.id || "",
                 track: musicTrack,
-            } as any);
+                queue_id: "",
+                track_id: "",
+                position: "",
+                added_at: ""
+            });
         } else {
             if (Math.abs(audio.currentTime - currentTimeFromStore) > 0.5) {
                 audio.currentTime = currentTimeFromStore;

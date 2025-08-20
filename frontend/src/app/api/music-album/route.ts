@@ -4,6 +4,10 @@ export const config = {
     api: { bodyParser: false },
 };
 
+interface RequestInitWithDuplex extends RequestInit {
+    duplex?: 'half';
+}
+
 export async function POST(req: Request) {
     const API_URL = process.env.WEB_API_URL;
     if (!API_URL) return NextResponse.json({ error: "API_URL not configured" }, { status: 500 });
@@ -17,7 +21,7 @@ export async function POST(req: Request) {
             },
             body: req.body,
             duplex: 'half',
-        });
+        } as RequestInitWithDuplex);
 
         const responseBody = await response.arrayBuffer();
         const nextResponse = new NextResponse(responseBody, { status: response.status });
