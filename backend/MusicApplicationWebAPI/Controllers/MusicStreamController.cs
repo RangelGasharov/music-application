@@ -37,6 +37,13 @@ namespace MusicApplicationWebAPI.Controllers
             return Ok(musicStreams);
         }
 
+        [HttpGet("top-music-tracks")]
+        public async Task<IActionResult> GetTopMusicTracksToday()
+        {
+            var musicTracks = await _musicStreamRepository.GetTopMusicTracksToday();
+            return Ok(musicTracks);
+        }
+
         [HttpPost("start")]
         public async Task<IActionResult> StartStream([FromBody] StartMusicStreamDto dto)
         {
