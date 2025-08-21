@@ -100,3 +100,10 @@
     opacity: 0.4;
     cursor: not-allowed;
 }
+
+.queue-section-title {
+    font-size: 0.9rem;
+    font-weight: bold;
+    margin: 1rem 0 0.25rem 0;
+    color: var(--text-color);
+}

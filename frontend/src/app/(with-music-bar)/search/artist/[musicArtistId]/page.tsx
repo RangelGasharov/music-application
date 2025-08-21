@@ -128,7 +128,7 @@ export default async function MusicArtistPage({ params }: { params: Params }) {
             </div>
         );
     } catch (error) {
-        console.log(`An error has occured: ${error}`);
+        console.error(`An error has occured: ${error}`);
         notFound();
     }
 }

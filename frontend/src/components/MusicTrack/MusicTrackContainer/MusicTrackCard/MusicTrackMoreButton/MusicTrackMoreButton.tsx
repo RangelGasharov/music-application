@@ -64,7 +64,7 @@ export default function MusicTrackMoreButton({ musicTrack, queueId }: Props) {
         {
             text: "Share",
             action: () => {
-                console.log("Share clicked");
+                console.info("Share clicked");
             },
         },
     ];

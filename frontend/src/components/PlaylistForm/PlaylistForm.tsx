@@ -81,7 +81,7 @@ export default function PlaylistForm({ session }: PlaylistFormType) {
             }
 
             const result = await res.json();
-            console.log("Playlist created:", result);
+            console.info("Playlist created:", result);
         } catch (err) {
             console.error("Error submitting playlist:", err);
         }

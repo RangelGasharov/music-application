@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import { useState, Fragment } from "react";
 import QueueMusicIcon from "@mui/icons-material/QueueMusic";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { usePlayerStore } from "@/store/usePlayerStore";
@@ -22,7 +22,6 @@ export default function MusicQueueContainer() {
 
 
     const handleDelete = async (id: string, position: string) => {
-        console.log(queueItem?.id, position);
         try {
             const res = await fetch("/api/queue/item/delete", {
                 method: "DELETE",
@@ -66,39 +65,56 @@ export default function MusicQueueContainer() {
                         <div className={styles["empty"]}>No tracks in queue</div>
                     ) : (
                         <ul className={styles["queue-list"]}>
-                            {visibleQueueItems.map((item) => (
-                                <li key={item.id} className={styles["queue-item"]}>
-                                    <Image
-                                        width={100}
-                                        height={100}
-                                        src={item.track?.cover_url || DEFAULT_MUSIC_ARTIST_IMAGE_SOURCE}
-                                        alt={item.track?.title || "Unknown track"}
-                                        className={styles["cover"]}
-                                    />
-                                    <div className={styles["info"]}>
-                                        <p className={styles["track-title"]}>{item.track?.title}</p>
-                                        <p className={styles["track-artist"]}>
-                                            {item.track?.music_artists?.map((a) => a.name).join(", ")}
-                                        </p>
-                                    </div>
-                                    <span className={styles["duration"]}>
-                                        {formatDuration(item.track?.duration)}
-                                    </span>
+                            {visibleQueueItems.map((item, index) => {
+                                const isCurrent = queueItem?.id === item.id;
+                                const isNext =
+                                    !isCurrent &&
+                                    index > 0 &&
+                                    visibleQueueItems[index - 1].id === queueItem?.id;
 
-                                    <button
-                                        className={styles["delete-btn"]}
-                                        onClick={() => handleDelete(item.id, item.position)}
-                                        disabled={queueItem?.id === item.id}
-                                        title={
-                                            queueItem?.id === item.id
-                                                ? "Cannot delete currently playing track"
-                                                : "Remove from queue"
-                                        }
-                                    >
-                                        <DeleteIcon />
-                                    </button>
-                                </li>
-                            ))}
+                                return (
+                                    <Fragment key={item.id}>
+                                        {isCurrent && <h4 className={styles["queue-section-title"]}>Current track</h4>}
+                                        {isNext && <h4 className={styles["queue-section-title"]}>Next track</h4>}
+
+                                        <li
+                                            className={`${styles["queue-item"]} ${isCurrent ? styles["active-item"] : ""
+                                                }`}
+                                        >
+                                            <Image
+                                                width={100}
+                                                height={100}
+                                                src={item.track?.cover_url || DEFAULT_MUSIC_ARTIST_IMAGE_SOURCE}
+                                                alt={item.track?.title || "Unknown track"}
+                                                className={styles["cover"]}
+                                            />
+                                            <div className={styles["info"]}>
+                                                <p className={styles["track-title"]}>{item.track?.title}</p>
+                                                <p className={styles["track-artist"]}>
+                                                    {item.track?.music_artists?.map((a) => a.name).join(", ")}
+                                                </p>
+                                            </div>
+
+                                            <span className={styles["duration"]}>
+                                                {formatDuration(item.track?.duration)}
+                                            </span>
+
+                                            <button
+                                                className={styles["delete-btn"]}
+                                                onClick={() => handleDelete(item.id, item.position)}
+                                                disabled={queueItem?.id === item.id}
+                                                title={
+                                                    queueItem?.id === item.id
+                                                        ? "Cannot delete currently playing track"
+                                                        : "Remove from queue"
+                                                }
+                                            >
+                                                <DeleteIcon />
+                                            </button>
+                                        </li>
+                                    </Fragment>
+                                );
+                            })}
                         </ul>
                     )}
                 </div>

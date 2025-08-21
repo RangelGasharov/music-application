@@ -194,7 +194,7 @@ export default async function MusicAlbumPage({ params }: { params: Params }) {
             </div>
         );
     } catch (error) {
-        console.log(`An error has occurred: ${error}`);
+        console.error(`An error has occurred: ${error}`);
         notFound();
     }
 }
