@@ -21,6 +21,21 @@ namespace MusicApplicationWebAPI.Repository
                 .ToListAsync();
         }
 
+        public async Task<List<MusicStream>> GetStreamsByMusicArtistId(Guid artistId)
+        {
+            return await _context.MusicStream
+                .Where(ms => ms.MusicTrack.MusicArtistTrack
+                    .Any(mat => mat.MusicArtistId == artistId))
+                .ToListAsync();
+        }
+
+        public async Task<List<MusicStream>> GetStreamsByUserId(Guid userId)
+        {
+            return await _context.MusicStream
+                .Where(ms => ms.UserId == userId)
+                .ToListAsync();
+        }
+
         public async Task<MusicStream> StartStream(Guid userId, Guid trackId)
         {
             var musicStream = new MusicStream

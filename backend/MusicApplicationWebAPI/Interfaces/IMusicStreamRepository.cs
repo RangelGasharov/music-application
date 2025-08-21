@@ -7,5 +7,7 @@ namespace MusicApplicationWebAPI.Interfaces
         Task<List<MusicStream>> GetAllMusicStreams();
         Task<MusicStream> StartStream(Guid userId, Guid trackId);
         Task<MusicStream> EndStream(Guid streamId);
+        Task<List<MusicStream>> GetStreamsByMusicArtistId(Guid artistId);
+        Task<List<MusicStream>> GetStreamsByUserId(Guid userId);
     }
 }

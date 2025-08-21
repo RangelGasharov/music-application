@@ -1,5 +1,4 @@
 using Microsoft.AspNetCore.Mvc;
-using MusicApplicationWebAPI.Dtos.MusicAlbum;
 using MusicApplicationWebAPI.Dtos.MusicStream;
 using MusicApplicationWebAPI.Interfaces;
 
@@ -20,6 +19,21 @@ namespace MusicApplicationWebAPI.Controllers
         public async Task<IActionResult> GetAllMusicStreams()
         {
             var musicStreams = await _musicStreamRepository.GetAllMusicStreams();
+            return Ok(musicStreams);
+        }
+
+        [HttpGet("music-artist/{id:guid}")]
+
+        public async Task<IActionResult> GetStreamsByMusicArtistId(Guid id)
+        {
+            var musicStreams = await _musicStreamRepository.GetStreamsByMusicArtistId(id);
+            return Ok(musicStreams);
+        }
+
+        [HttpGet("user/{id:guid}")]
+        public async Task<IActionResult> GetStreamsByUserId(Guid id)
+        {
+            var musicStreams = await _musicStreamRepository.GetStreamsByUserId(id);
             return Ok(musicStreams);
         }
 
