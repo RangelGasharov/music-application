@@ -129,7 +129,7 @@ export default async function RootLayout({
       <body className={`${geistSans.variable} ${geistMono.variable}`}>
         <Providers>
           <main className={styles["main-container"]}>
-            {queueProgress && <AudioProvider queueProgress={queueProgress} />}
+            <AudioProvider />
             {queue && queueProgress && <PlayerInitializer userId={userId} queue={queue} queueItems={queueItems} queueProgress={queueProgress} />}
             <Suspense fallback={null}>
               <NavigationHeader />

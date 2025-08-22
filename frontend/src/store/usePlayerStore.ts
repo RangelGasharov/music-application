@@ -131,7 +131,8 @@ export const usePlayerStore = create<PlayerState>((set, get) => ({
             audio.src = item.track.file_path;
             audio.load();
 
-            await new Promise((r) => setTimeout(r, 50));
+            audio.currentTime = 0;
+            get().setCurrentTime(0);
 
             const playPromise = audio.play();
             if (playPromise !== undefined) {
@@ -145,7 +146,7 @@ export const usePlayerStore = create<PlayerState>((set, get) => ({
     },
 
     goToNextTrack: async () => {
-        const { queueItems, queueItem, isPlaying, endStream, startStream, loadAndPlayTrack } = get();
+        const { queueItems, queueItem, isPlaying, endStream, startStream, loadAndPlayTrack, setCurrentTime } = get();
         if (!queueItem || queueItems.length === 0) return;
 
         const currentIndex = queueItems.findIndex((item) => item.id === queueItem.id);
@@ -156,13 +157,12 @@ export const usePlayerStore = create<PlayerState>((set, get) => ({
             await endStream();
         }
 
+        setCurrentTime(0);
         set({ queueItem: next, musicTrack: next.track });
 
         await startStream();
 
-        if (isPlaying) {
-            await loadAndPlayTrack(next);
-        }
+        await loadAndPlayTrack(next);
     },
 
     goToPreviousTrack: async () => {

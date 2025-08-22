@@ -1,13 +1,8 @@
 "use client"
 import { useEffect, useRef, useState } from "react";
 import { usePlayerStore } from "@/store/usePlayerStore";
-import { QueueProgress } from "@/types/QueueProgress";
 
-type Props = {
-    queueProgress: QueueProgress;
-}
-
-export default function AudioProvider({ queueProgress }: Props) {
+export default function AudioProvider() {
     const audioRef = useRef<HTMLAudioElement | null>(null);
     const setAudioRef = usePlayerStore((s) => s.setAudioRef);
     const musicTrack = usePlayerStore((s) => s.musicTrack);
@@ -22,11 +17,12 @@ export default function AudioProvider({ queueProgress }: Props) {
     const [isLoadingTrack, setIsLoadingTrack] = useState(false);
 
     useEffect(() => {
-        audioRef.current = new Audio();
-        setAudioRef(audioRef.current);
+        const audio = new Audio();
+        audioRef.current = audio;
+        setAudioRef(audio);
 
         return () => {
-            audioRef.current?.pause();
+            audio.pause();
             audioRef.current = null;
         };
     }, [setAudioRef]);
@@ -52,30 +48,27 @@ export default function AudioProvider({ queueProgress }: Props) {
 
         const onLoadedMetadata = () => {
             setDuration(audio.duration);
-            setCurrentTime(queueProgress.progress_in_seconds);
+            setIsLoadingTrack(false);
 
-            if (currentTime && currentTime < audio.duration) {
+            if (currentTime > 0 && audio.currentTime === 0) {
                 audio.currentTime = currentTime;
             }
 
-            audio.currentTime = currentTime ?? 0;
-            setCurrentTime(currentTime ?? 0);
+            audio.play().catch(() => setIsPlaying(false));
             setIsPlaying(true);
-
-            setIsLoadingTrack(false);
-
-            if (isPlaying) {
-                audio.play().catch(() => setIsPlaying(false));
-            }
         };
 
         const onTimeUpdate = () => {
             if (!isLoadingTrack) setCurrentTime(audio.currentTime);
         };
 
-        const onEnded = () => {
+        const onEnded = async () => {
             setIsPlaying(false);
-            goToNextTrack();
+            try {
+                await goToNextTrack();
+            } catch (err) {
+                console.error("Error going to next track:", err);
+            }
         };
 
         audio.addEventListener("loadedmetadata", onLoadedMetadata);
@@ -84,14 +77,6 @@ export default function AudioProvider({ queueProgress }: Props) {
 
         if (audio.readyState >= 1 && isLoadingTrack) {
             onLoadedMetadata();
-        }
-
-        if (!isLoadingTrack) {
-            if (isPlaying) {
-                audio.play().catch(() => setIsPlaying(false));
-            } else {
-                audio.pause();
-            }
         }
 
         audio.volume = volume;
@@ -104,7 +89,6 @@ export default function AudioProvider({ queueProgress }: Props) {
     }, [
         musicTrack?.file_path,
         isPlaying,
-        currentTime,
         setCurrentTime,
         setDuration,
         setIsPlaying,

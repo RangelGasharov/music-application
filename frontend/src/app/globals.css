@@ -20,7 +20,7 @@
 }
 
 .dark {
-  --player-box-controls-color: rgba(169, 159, 159, 0.356);
+  --player-box-controls-color: rgba(38, 36, 36, 0.5);
   --bg-color: #121212;
   --text-color: #ffffff;
   --text-shadow: #a0a0a0;
