@@ -14,4 +14,11 @@ namespace MusicApplicationWebAPI.Dtos.MusicArtist
         public List<MusicArtistPhotoDto> Photos { get; set; } = [];
         public MusicArtistPhotoDto? PrimaryPhoto => Photos.FirstOrDefault(p => p.IsPrimary);
     }
+
+    public class TopStreamedMusicArtistDto
+    {
+        public Guid ArtistId { get; set; }
+        public string Name { get; set; } = string.Empty;
+        public int TotalPlays { get; set; }
+    }
 }

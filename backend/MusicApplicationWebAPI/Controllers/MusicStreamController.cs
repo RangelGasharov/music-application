@@ -37,6 +37,20 @@ namespace MusicApplicationWebAPI.Controllers
             return Ok(musicStreams);
         }
 
+        [HttpGet("top-music-tracks/user/{id:guid}")]
+        public async Task<IActionResult> GetTopMusicTracksOfUserThisMonth(Guid id)
+        {
+            var musicTracks = await _musicStreamRepository.GetTopMusicTracksOfUserThisMonth(id);
+            return Ok(musicTracks);
+        }
+
+        [HttpGet("top-music-artists/user/{id:guid}")]
+        public async Task<IActionResult> GetTopMusicArtistsOfUserThisMonth(Guid id)
+        {
+            var musicArtists = await _musicStreamRepository.GetTopMusicArtistsOfUserThisMonth(id);
+            return Ok(musicArtists);
+        }
+
         [HttpGet("top-music-tracks")]
         public async Task<IActionResult> GetTopMusicTracksToday()
         {

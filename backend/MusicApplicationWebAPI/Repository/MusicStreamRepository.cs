@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using MusicApplicationWebAPI.Data;
 using MusicApplicationWebAPI.Dtos;
+using MusicApplicationWebAPI.Dtos.MusicArtist;
 using MusicApplicationWebAPI.Dtos.MusicTrack;
 using MusicApplicationWebAPI.Interfaces;
 using MusicApplicationWebAPI.Models.Entities;
@@ -35,6 +36,55 @@ namespace MusicApplicationWebAPI.Repository
         {
             return await _context.MusicStream
                 .Where(ms => ms.UserId == userId)
+                .ToListAsync();
+        }
+
+        public async Task<List<TopStreamedMusicArtistDto>> GetTopMusicArtistsOfUserThisMonth(Guid userId)
+        {
+            var now = DateTime.UtcNow;
+            var monthStart = new DateTime(now.Year, now.Month, 1, 0, 0, 0, DateTimeKind.Utc);
+            var nextMonthStart = monthStart.AddMonths(1);
+
+            return await _context.MusicStream
+                .Where(ms => ms.UserId == userId
+                             && ms.Counted
+                             && ms.EndTime >= monthStart
+                             && ms.EndTime < nextMonthStart
+                             && ms.MusicTrack != null)
+                .SelectMany(ms => ms.MusicTrack!.MusicArtistTrack)
+                .GroupBy(mat => new { mat.MusicArtistId, mat.MusicArtist!.Name })
+                .Select(g => new TopStreamedMusicArtistDto
+                {
+                    ArtistId = g.Key.MusicArtistId,
+                    Name = g.Key.Name,
+                    TotalPlays = g.Count()
+                })
+                .OrderByDescending(x => x.TotalPlays)
+                .Take(50)
+                .ToListAsync();
+        }
+
+        public async Task<List<TopStreamedMusicTrackDto>> GetTopMusicTracksOfUserThisMonth(Guid userId)
+        {
+            var now = DateTime.UtcNow;
+            var monthStart = new DateTime(now.Year, now.Month, 1, 0, 0, 0, DateTimeKind.Utc);
+            var nextMonthStart = monthStart.AddMonths(1);
+
+            return await _context.MusicStream
+                .Where(ms => ms.UserId == userId
+                             && ms.Counted
+                             && ms.EndTime >= monthStart
+                             && ms.EndTime < nextMonthStart
+                             && ms.MusicTrack != null)
+                .GroupBy(ms => new { ms.TrackId, ms.MusicTrack!.Title })
+                .Select(g => new TopStreamedMusicTrackDto
+                {
+                    TrackId = g.Key.TrackId,
+                    Title = g.Key.Title,
+                    TotalPlays = g.Count()
+                })
+                .OrderByDescending(x => x.TotalPlays)
+                .Take(30)
                 .ToListAsync();
         }
 
