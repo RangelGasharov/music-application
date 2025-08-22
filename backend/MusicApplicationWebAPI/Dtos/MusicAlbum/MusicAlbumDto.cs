@@ -12,4 +12,11 @@ namespace MusicApplicationWebAPI.Dtos
         public string? Description { get; set; }
         public List<MusicArtistShortFormDto> MusicArtists { get; set; } = [];
     }
+
+    public class TopStreamedMusicAlbumDto
+    {
+        public Guid AlbumId { get; set; }
+        public required string Title { get; set; }
+        public int TotalPlays { get; set; }
+    }
 }

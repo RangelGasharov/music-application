@@ -1,3 +1,4 @@
+using MusicApplicationWebAPI.Dtos;
 using MusicApplicationWebAPI.Dtos.MusicTrack;
 using MusicApplicationWebAPI.Models.Entities;
 
@@ -11,5 +12,6 @@ namespace MusicApplicationWebAPI.Interfaces
         Task<List<MusicStream>> GetStreamsByMusicArtistId(Guid artistId);
         Task<List<MusicStream>> GetStreamsByUserId(Guid userId);
         Task<List<TopStreamedMusicTrackDto>> GetTopMusicTracksToday();
+        Task<List<TopStreamedMusicAlbumDto>> GetTopMusicAlbumsToday();
     }
 }

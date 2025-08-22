@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using MusicApplicationWebAPI.Data;
+using MusicApplicationWebAPI.Dtos;
 using MusicApplicationWebAPI.Dtos.MusicTrack;
 using MusicApplicationWebAPI.Interfaces;
 using MusicApplicationWebAPI.Models.Entities;
@@ -48,6 +49,29 @@ namespace MusicApplicationWebAPI.Repository
                 .Select(g => new TopStreamedMusicTrackDto
                 {
                     TrackId = g.Key.TrackId,
+                    Title = g.Key.Title,
+                    TotalPlays = g.Count()
+                })
+                .OrderByDescending(x => x.TotalPlays)
+                .Take(100)
+                .ToListAsync();
+        }
+
+        public async Task<List<TopStreamedMusicAlbumDto>> GetTopMusicAlbumsToday()
+        {
+            var todayStart = DateTime.UtcNow.Date;
+            var tomorrowStart = todayStart.AddDays(1);
+
+            return await _context.MusicStream
+                .Where(ms => ms.Counted
+                             && ms.EndTime >= todayStart
+                             && ms.EndTime < tomorrowStart
+                             && ms.MusicTrack != null)
+                .SelectMany(ms => ms.MusicTrack!.MusicTrackAlbum)
+                .GroupBy(mat => new { mat.MusicAlbumId, mat.MusicAlbum!.Title })
+                .Select(g => new TopStreamedMusicAlbumDto
+                {
+                    AlbumId = g.Key.MusicAlbumId,
                     Title = g.Key.Title,
                     TotalPlays = g.Count()
                 })
