@@ -193,6 +193,11 @@ namespace MusicApplicationWebAPI.Repository
             _context.QueueItem.Add(item);
             await _context.SaveChangesAsync();
 
+            if (item.Position.Length >= 40)
+            {
+                await RebalanceQueue(queueId);
+            }
+
             var dto = await _context.QueueItem
                 .Where(q => q.Id == item.Id)
                 .Select(q => new QueueItemWithMusicTrackDto
@@ -258,7 +263,30 @@ namespace MusicApplicationWebAPI.Repository
             item.Position = newRank.ToString();
 
             await _context.SaveChangesAsync();
+
+            if (item.Position.Length >= 40)
+            {
+                await RebalanceQueue(item.QueueId);
+            }
+
             return item;
+        }
+
+        private async Task RebalanceQueue(Guid queueId)
+        {
+            var items = await _context.QueueItem
+                .Where(q => q.QueueId == queueId)
+                .OrderBy(q => q.Position)
+                .ToListAsync();
+
+            var rank = LexoRank.Middle();
+            foreach (var item in items)
+            {
+                item.Position = rank.ToString();
+                rank = rank.Between(LexoRank.Max());
+            }
+
+            await _context.SaveChangesAsync();
         }
     }
 }
