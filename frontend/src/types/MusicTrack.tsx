@@ -29,6 +29,11 @@ export type MusicTrackFull = {
     music_track_stat: MusicTrackStat;
 }
 
+export type TopStreamedMusicTrack = {
+    music_track: MusicTrack;
+    total_plays: number;
+}
+
 export type MusicTrackWithPosition = {
     position: number;
     track: MusicTrackFull;

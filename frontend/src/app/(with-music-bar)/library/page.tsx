@@ -24,7 +24,7 @@ const getPlaylistsByUserId = async (userId: string) => {
         const data = await response.json();
         return data;
     } catch (error) {
-        console.error('Error fetching music tracks:', error);
+        console.error('Error fetching playlists:', error);
         return [];
     }
 }

@@ -146,7 +146,7 @@ export const usePlayerStore = create<PlayerState>((set, get) => ({
     },
 
     goToNextTrack: async () => {
-        const { queueItems, queueItem, isPlaying, endStream, startStream, loadAndPlayTrack, setCurrentTime } = get();
+        const { queueItems, queueItem, endStream, startStream, loadAndPlayTrack, setCurrentTime } = get();
         if (!queueItem || queueItems.length === 0) return;
 
         const currentIndex = queueItems.findIndex((item) => item.id === queueItem.id);
