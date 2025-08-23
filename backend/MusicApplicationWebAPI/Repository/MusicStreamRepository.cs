@@ -20,7 +20,6 @@ namespace MusicApplicationWebAPI.Repository
         public async Task<List<MusicStream>> GetAllMusicStreams()
         {
             return await _context.MusicStream
-                .Include(ms => ms.MusicTrack)
                 .ToListAsync();
         }
 
@@ -127,6 +126,27 @@ namespace MusicApplicationWebAPI.Repository
                 })
                 .OrderByDescending(x => x.TotalPlays)
                 .Take(100)
+                .ToListAsync();
+        }
+
+        public async Task<List<TopStreamedMusicTrackDto>> GetTopMusicTracksOfMusicArtist(Guid artistId)
+        {
+            var since = DateTime.UtcNow.AddDays(-30);
+
+            return await _context.MusicStream
+                .Where(ms => ms.Counted
+                             && ms.EndTime >= since
+                             && ms.MusicTrack != null
+                             && ms.MusicTrack.MusicArtistTrack.Any(mat => mat.MusicArtistId == artistId))
+                .GroupBy(ms => new { ms.TrackId, ms.MusicTrack!.Title })
+                .Select(g => new TopStreamedMusicTrackDto
+                {
+                    TrackId = g.Key.TrackId,
+                    Title = g.Key.Title,
+                    TotalPlays = g.Count()
+                })
+                .OrderByDescending(x => x.TotalPlays)
+                .Take(5)
                 .ToListAsync();
         }
 

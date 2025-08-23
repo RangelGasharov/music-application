@@ -30,6 +30,13 @@ namespace MusicApplicationWebAPI.Controllers
             return Ok(musicStreams);
         }
 
+        [HttpGet("music-artist/{id:guid}/top-music-tracks/")]
+        public async Task<IActionResult> GetTopMusicTracksOfMusicArtist(Guid id)
+        {
+            var musicStreams = await _musicStreamRepository.GetTopMusicTracksOfMusicArtist(id);
+            return Ok(musicStreams);
+        }
+
         [HttpGet("user/{id:guid}")]
         public async Task<IActionResult> GetStreamsByUserId(Guid id)
         {

@@ -16,5 +16,6 @@ namespace MusicApplicationWebAPI.Interfaces
         Task<List<TopStreamedMusicAlbumDto>> GetTopMusicAlbumsToday();
         Task<List<TopStreamedMusicArtistDto>> GetTopMusicArtistsOfUserThisMonth(Guid userId);
         Task<List<TopStreamedMusicTrackDto>> GetTopMusicTracksOfUserThisMonth(Guid userId);
+        Task<List<TopStreamedMusicTrackDto>> GetTopMusicTracksOfMusicArtist(Guid artistId);
     }
 }
