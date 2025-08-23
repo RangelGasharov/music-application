@@ -29,8 +29,7 @@ namespace MusicApplicationWebAPI.Dtos.MusicTrack
 
     public class TopStreamedMusicTrackDto
     {
-        public Guid TrackId { get; set; }
-        public required string Title { get; set; }
+        public required MusicTrackDto MusicTrack { get; set; }
         public int TotalPlays { get; set; }
     }
 }
