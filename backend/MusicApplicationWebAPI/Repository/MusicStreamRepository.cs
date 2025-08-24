@@ -135,52 +135,62 @@ namespace MusicApplicationWebAPI.Repository
             var todayStart = DateTime.UtcNow.Date;
             var tomorrowStart = todayStart.AddDays(1);
 
-            return await _context.MusicStream
+            var grouped = await _context.MusicStream
                 .Where(ms => ms.Counted
                              && ms.EndTime >= todayStart
                              && ms.EndTime < tomorrowStart
                              && ms.MusicTrack != null)
                 .GroupBy(ms => ms.MusicTrack!)
-                .Select(g => new TopStreamedMusicTrackDto
+                .Select(g => new
                 {
-                    TotalPlays = g.Count(),
-                    MusicTrack = new MusicTrackDto
-                    {
-                        Id = g.Key.Id,
-                        Title = g.Key.Title,
-                        ReleaseDate = g.Key.ReleaseDate,
-                        FilePath = g.Key.FilePath,
-                        IsExplicit = g.Key.IsExplicit,
-                        UploadedAt = g.Key.UploadedAt,
-                        CoverURL = g.Key.CoverURL,
-                        Duration = g.Key.Duration,
-                        MusicArtists = g.Key.MusicArtistTrack
-                            .Select(mat => new MusicArtistShortFormDto
-                            {
-                                Id = mat.MusicArtist.Id,
-                                Name = mat.MusicArtist.Name
-                            }).ToList(),
-                        MusicAlbums = g.Key.MusicTrackAlbum
-                            .Select(mta => new MusicAlbumShortFormDto
-                            {
-                                Id = mta.MusicAlbum.Id,
-                                Title = mta.MusicAlbum.Title,
-                                CoverURL = mta.MusicAlbum.CoverURL,
-                                UploadedAt = mta.MusicAlbum.UploadedAt,
-                                ReleaseDate = mta.MusicAlbum.ReleaseDate
-                            }).ToList(),
-                        MusicGenres = g.Key.MusicGenreTrack
-                            .Select(mgt => new MusicGenreDto
-                            {
-                                Id = mgt.MusicGenre.Id,
-                                Name = mgt.MusicGenre.Name
-                            }).ToList(),
-                        MusicTrackStat = g.Key.MusicTrackStat
-                    }
+                    MusicTrack = g.Key,
+                    TotalPlays = g.Count()
                 })
                 .OrderByDescending(x => x.TotalPlays)
                 .Take(100)
                 .ToListAsync();
+
+            return grouped.Select(g => new TopStreamedMusicTrackDto
+            {
+                TotalPlays = g.TotalPlays,
+                MusicTrack = new MusicTrackDto
+                {
+                    Id = g.MusicTrack.Id,
+                    Title = g.MusicTrack.Title,
+                    ReleaseDate = g.MusicTrack.ReleaseDate,
+                    FilePath = g.MusicTrack.FilePath,
+                    IsExplicit = g.MusicTrack.IsExplicit,
+                    UploadedAt = g.MusicTrack.UploadedAt,
+                    CoverURL = g.MusicTrack.CoverURL,
+                    Duration = g.MusicTrack.Duration,
+
+                    MusicArtists = g.MusicTrack.MusicArtistTrack
+                        .Select(mat => new MusicArtistShortFormDto
+                        {
+                            Id = mat.MusicArtist.Id,
+                            Name = mat.MusicArtist.Name
+                        }).ToList(),
+
+                    MusicAlbums = g.MusicTrack.MusicTrackAlbum
+                        .Select(mta => new MusicAlbumShortFormDto
+                        {
+                            Id = mta.MusicAlbum.Id,
+                            Title = mta.MusicAlbum.Title,
+                            CoverURL = mta.MusicAlbum.CoverURL,
+                            UploadedAt = mta.MusicAlbum.UploadedAt,
+                            ReleaseDate = mta.MusicAlbum.ReleaseDate
+                        }).ToList(),
+
+                    MusicGenres = g.MusicTrack.MusicGenreTrack
+                        .Select(mgt => new MusicGenreDto
+                        {
+                            Id = mgt.MusicGenre.Id,
+                            Name = mgt.MusicGenre.Name
+                        }).ToList(),
+
+                    MusicTrackStat = g.MusicTrack.MusicTrackStat
+                }
+            }).ToList();
         }
 
         public async Task<List<TopStreamedMusicAlbumDto>> GetTopMusicAlbumsToday()
