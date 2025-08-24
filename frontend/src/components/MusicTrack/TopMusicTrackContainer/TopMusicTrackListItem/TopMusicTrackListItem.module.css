@@ -1,0 +1,48 @@
+.main-container {
+    display: grid;
+    align-items: center;
+    grid-template-columns: repeat(12, 1fr);
+    gap: 1rem;
+    padding: 0.25rem 0;
+}
+
+.position-box {
+    grid-column: span 1;
+    display: flex;
+    justify-content: center;
+}
+
+.music-track-cover-box {
+    grid-column: span 1;
+    display: flex;
+    justify-content: center;
+}
+
+.image {
+    border-radius: .2rem;
+    max-width: 100%;
+    height: 100%;
+}
+
+.title-box {
+    grid-column: span 3;
+}
+
+.title-box:hover {
+    text-decoration: underline;
+}
+
+.music-album-container {
+    grid-column: span 3;
+    display: flex;
+    flex-wrap: wrap;
+    gap: .2rem;
+}
+
+.streams-box {
+    grid-column: span 2;
+}
+
+.duration-box {
+    grid-column: span 2;
+}

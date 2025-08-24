@@ -227,28 +227,28 @@ export const usePlayerStore = create<PlayerState>((set, get) => ({
         if (!streamId) {
             console.error("No streamId to end");
             return;
-        }
+        } else {
+            try {
+                const res = await fetch("/api/music-stream/end", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({
+                        stream_id: streamId
+                    }),
+                });
 
-        try {
-            const res = await fetch("/api/music-stream/end", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({
-                    stream_id: streamId
-                }),
-            });
+                if (!res.ok) {
+                    const errText = await res.text();
+                    throw new Error(errText || "Failed to end stream");
+                }
 
-            if (!res.ok) {
-                const errText = await res.text();
-                throw new Error(errText || "Failed to end stream");
+                get().setStreamId(null);
+
+                return await res.json();
+            } catch (error) {
+                console.error("End stream error:", error);
+                throw error;
             }
-
-            get().setStreamId(null);
-
-            return await res.json();
-        } catch (error) {
-            console.error("End stream error:", error);
-            throw error;
         }
     },
 }));

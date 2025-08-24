@@ -30,7 +30,7 @@ export type MusicTrackFull = {
 }
 
 export type TopStreamedMusicTrack = {
-    music_track: MusicTrack;
+    music_track: MusicTrackFull;
     total_plays: number;
 }
 

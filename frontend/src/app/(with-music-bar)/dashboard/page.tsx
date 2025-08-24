@@ -2,6 +2,7 @@ import React from 'react';
 import { authOptions } from '@/lib/auth';
 import { getServerSession } from 'next-auth';
 import { TopStreamedMusicTrack } from '@/types/MusicTrack';
+import TopMusicTrackContainer from '@/components/MusicTrack/TopMusicTrackContainer/TopMusicTrackContainer';
 
 const getTopMusicTracksByUserId = async (userId: string) => {
     try {
@@ -35,15 +36,7 @@ export default async function DashboardPage() {
     return (
         <div>
             <h1>Dashboard</h1>
-            {topStreamedMusicTracks?.map((topStreamedMusicTrack: TopStreamedMusicTrack) => {
-                return (
-                    <div key={topStreamedMusicTrack.music_track.id}>
-                        <div>{topStreamedMusicTrack.music_track.title}</div>
-                        <div>{topStreamedMusicTrack.total_plays}</div>
-                    </div>
-                )
-            })
-            }
+            <TopMusicTrackContainer topMusicTracks={topStreamedMusicTracks} />
         </div>
     )
 }

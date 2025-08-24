@@ -53,9 +53,9 @@ export default function AudioProvider() {
             if (currentTime > 0 && audio.currentTime === 0) {
                 audio.currentTime = currentTime;
             }
-
-            audio.play().catch(() => setIsPlaying(false));
-            setIsPlaying(true);
+            if (isPlaying) {
+                audio.play().catch(() => setIsPlaying(false));
+            }
         };
 
         const onTimeUpdate = () => {
