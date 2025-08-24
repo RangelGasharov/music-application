@@ -77,57 +77,78 @@ namespace MusicApplicationWebAPI.Repository
                              && ms.EndTime >= monthStart
                              && ms.EndTime < nextMonthStart
                              && ms.MusicTrack != null)
-                .GroupBy(ms => ms.MusicTrack!)
+                .GroupBy(ms => ms.MusicTrack.Id)
                 .Select(g => new
                 {
-                    MusicTrack = g.Key,
+                    MusicTrackId = g.Key,
                     TotalPlays = g.Count()
                 })
                 .OrderByDescending(x => x.TotalPlays)
                 .Take(30)
                 .ToListAsync();
 
-            return grouped.Select(g => new TopStreamedMusicTrackDto
-            {
-                TotalPlays = g.TotalPlays,
-                MusicTrack = new MusicTrackDto
+            var trackIds = grouped.Select(g => g.MusicTrackId).ToList();
+
+            var tracks = await _context.MusicTrack
+                .Where(mt => trackIds.Contains(mt.Id))
+                .Include(mt => mt.MusicArtistTrack).ThenInclude(mat => mat.MusicArtist)
+                .Include(mt => mt.MusicGenreTrack).ThenInclude(mgt => mgt.MusicGenre)
+                .Include(mt => mt.MusicTrackAlbum).ThenInclude(mta => mta.MusicAlbum)
+                .Include(mt => mt.MusicTrackStat)
+                .ToListAsync();
+
+            var result = grouped
+                .Select(g =>
                 {
-                    Id = g.MusicTrack.Id,
-                    Title = g.MusicTrack.Title,
-                    ReleaseDate = g.MusicTrack.ReleaseDate,
-                    FilePath = g.MusicTrack.FilePath,
-                    IsExplicit = g.MusicTrack.IsExplicit,
-                    UploadedAt = g.MusicTrack.UploadedAt,
-                    CoverURL = g.MusicTrack.CoverURL,
-                    Duration = g.MusicTrack.Duration,
-
-                    MusicArtists = g.MusicTrack.MusicArtistTrack
-                        .Select(mat => new MusicArtistShortFormDto
+                    var track = tracks.First(t => t.Id == g.MusicTrackId);
+                    return new TopStreamedMusicTrackDto
+                    {
+                        TotalPlays = g.TotalPlays,
+                        MusicTrack = new MusicTrackDto
                         {
-                            Id = mat.MusicArtist.Id,
-                            Name = mat.MusicArtist.Name
-                        }).ToList(),
+                            Id = track.Id,
+                            Title = track.Title,
+                            ReleaseDate = track.ReleaseDate,
+                            FilePath = track.FilePath,
+                            IsExplicit = track.IsExplicit,
+                            UploadedAt = track.UploadedAt,
+                            CoverURL = track.CoverURL,
+                            Duration = track.Duration,
+                            MusicArtists = track.MusicArtistTrack
+                                .Select(mat => new MusicArtistShortFormDto
+                                {
+                                    Id = mat.MusicArtist.Id,
+                                    Name = mat.MusicArtist.Name
+                                }).ToList(),
+                            MusicAlbums = track.MusicTrackAlbum
+                                .Select(mta => new MusicAlbumShortFormDto
+                                {
+                                    Id = mta.MusicAlbum.Id,
+                                    Title = mta.MusicAlbum.Title,
+                                    CoverURL = mta.MusicAlbum.CoverURL,
+                                    UploadedAt = mta.MusicAlbum.UploadedAt,
+                                    ReleaseDate = mta.MusicAlbum.ReleaseDate
+                                }).ToList(),
+                            MusicGenres = track.MusicGenreTrack
+                                .Select(mgt => new MusicGenreDto
+                                {
+                                    Id = mgt.MusicGenre.Id,
+                                    Name = mgt.MusicGenre.Name
+                                }).ToList(),
+                            MusicTrackStat = track.MusicTrackStat == null ? null : new MusicTrackStat
+                            {
+                                TrackId = track.MusicTrackStat.TrackId,
+                                TotalPlays = track.MusicTrackStat.TotalPlays,
+                                LastUpdated = track.MusicTrackStat.LastUpdated,
+                                AvgDuration = track.MusicTrackStat.AvgDuration,
+                                UniqueListeners = track.MusicTrackStat.UniqueListeners
+                            }
+                        }
+                    };
+                })
+                .ToList();
 
-                    MusicAlbums = g.MusicTrack.MusicTrackAlbum
-                        .Select(mta => new MusicAlbumShortFormDto
-                        {
-                            Id = mta.MusicAlbum.Id,
-                            Title = mta.MusicAlbum.Title,
-                            CoverURL = mta.MusicAlbum.CoverURL,
-                            UploadedAt = mta.MusicAlbum.UploadedAt,
-                            ReleaseDate = mta.MusicAlbum.ReleaseDate
-                        }).ToList(),
-
-                    MusicGenres = g.MusicTrack.MusicGenreTrack
-                        .Select(mgt => new MusicGenreDto
-                        {
-                            Id = mgt.MusicGenre.Id,
-                            Name = mgt.MusicGenre.Name
-                        }).ToList(),
-
-                    MusicTrackStat = g.MusicTrack.MusicTrackStat
-                }
-            }).ToList();
+            return result;
         }
 
         public async Task<List<TopStreamedMusicTrackDto>> GetTopMusicTracksToday()
