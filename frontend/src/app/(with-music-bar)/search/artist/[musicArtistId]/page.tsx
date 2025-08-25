@@ -1,5 +1,5 @@
 import { MusicArtist } from '@/types/MusicArtist';
-import { MusicTrackFull } from '@/types/MusicTrack';
+import { TopStreamedMusicTrack } from '@/types/MusicTrack';
 import { MusicAlbum } from '@/types/MusicAlbum';
 import { notFound } from 'next/navigation';
 import React from 'react'
@@ -30,18 +30,18 @@ async function getMusicArtistById(musicArtistId: string): Promise<MusicArtist> {
     }
 }
 
-async function getMusicTracksByArtistId(musicArtistId: string): Promise<MusicTrackFull[]> {
+async function getTopMusicTracksByArtistId(musicArtistId: string): Promise<TopStreamedMusicTrack[]> {
     try {
-        const res = await fetch(`${process.env.WEB_API_URL}/music-track/music-artist/${musicArtistId}`);
+        const res = await fetch(`${process.env.WEB_API_URL}/music-stream/top-music-tracks/music-artist/${musicArtistId}`);
 
         if (!res.ok) {
-            throw new Error('Failed to fetch Music Tracks');
+            throw new Error('Failed to fetch top music tracks');
         }
 
-        const musicTracks = await res.json();
-        return musicTracks;
+        const topMusicTracks: TopStreamedMusicTrack[] = await res.json();
+        return topMusicTracks;
     } catch (error) {
-        console.error('Error fetching music tracks:', error);
+        console.error('Error fetching top music tracks:', error);
         throw error;
     }
 }
@@ -90,11 +90,13 @@ export default async function MusicArtistPage({ params }: { params: Params }) {
     const queueId = queue.id;
 
     try {
-        const [musicArtist, musicTracks, musicAlbums] = await Promise.all([
+        const [musicArtist, topMusicTracks, musicAlbums] = await Promise.all([
             getMusicArtistById(musicArtistId),
-            getMusicTracksByArtistId(musicArtistId),
+            getTopMusicTracksByArtistId(musicArtistId),
             getMusicAlbumsByArtistId(musicArtistId)
         ]);
+
+        const musicTracks = topMusicTracks.map(t => t.music_track);
 
         return (
             <div className={styles["main-container"]}>
@@ -109,7 +111,7 @@ export default async function MusicArtistPage({ params }: { params: Params }) {
                 </div>
                 <div className={styles["music-tracks-wrapper"]}>
                     <h2>Popular Tracks</h2>
-                    {musicTracks.length === 0 ? (<p>No tracks found for this artist.</p>) : (
+                    {topMusicTracks.length === 0 ? (<p>No tracks found for this artist.</p>) : (
                         <MusicTrackAlbumContainer musicTracks={musicTracks} queueId={queueId} />
                     )}
                 </div>
