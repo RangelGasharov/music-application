@@ -11,9 +11,10 @@ import ImageIcon from '@mui/icons-material/Image';
 
 type Props = {
     topMusicTracks: TopStreamedMusicTrack[];
+    queueId: string;
 }
 
-export default function TopMusicTrackContainer({ topMusicTracks }: Props) {
+export default function TopMusicTrackContainer({ topMusicTracks, queueId }: Props) {
     return (
         <div className={styles["main-container"]}>
             <h2>Top music tracks</h2>
@@ -27,7 +28,7 @@ export default function TopMusicTrackContainer({ topMusicTracks }: Props) {
             </div>
             <div className={styles["music-tracks-container"]}>
                 {topMusicTracks.map((topMusicTrack: TopStreamedMusicTrack, index: number) => {
-                    return (<TopMusicTrackListItem key={topMusicTrack.music_track.id} position={index + 1} topMusicTrack={topMusicTrack} />)
+                    return (<TopMusicTrackListItem key={topMusicTrack.music_track.id} position={index + 1} topMusicTrack={topMusicTrack} queueId={queueId} />)
                 })}
             </div>
         </div>

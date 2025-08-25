@@ -3,6 +3,7 @@ import { authOptions } from '@/lib/auth';
 import { getServerSession } from 'next-auth';
 import { TopStreamedMusicTrack } from '@/types/MusicTrack';
 import TopMusicTrackContainer from '@/components/MusicTrack/TopMusicTrackContainer/TopMusicTrackContainer';
+import { Queue } from '@/types/Queue';
 
 const getTopMusicTracksByUserId = async (userId: string) => {
     try {
@@ -28,15 +29,37 @@ const getTopMusicTracksByUserId = async (userId: string) => {
     }
 }
 
+async function getQueueByUserId(userId: string | undefined): Promise<Queue> {
+    if (!userId) {
+        throw new Error('No user id was provided!');
+    }
+    try {
+        const res = await fetch(`${process.env.WEB_API_URL}/queue/user-id/${userId}`, {
+            cache: "no-store",
+        });
+
+        if (!res.ok) {
+            throw new Error('Failed to fetch queue');
+        }
+        const queue: Queue = await res.json();
+        return queue;
+    } catch (error) {
+        console.error("An error has occured while trying to fetch the queue: ", error);
+        throw error;
+    }
+}
+
 export default async function DashboardPage() {
     const session = await getServerSession(authOptions);
     const userId = session?.userId as string;
     const topStreamedMusicTracks: TopStreamedMusicTrack[] = await getTopMusicTracksByUserId(userId);
+    const queue: Queue = await getQueueByUserId(userId);
+    const queueId = queue.id;
 
     return (
         <div>
             <h1>Dashboard</h1>
-            <TopMusicTrackContainer topMusicTracks={topStreamedMusicTracks} />
+            <TopMusicTrackContainer topMusicTracks={topStreamedMusicTracks} queueId={queueId} />
         </div>
     )
 }

@@ -10,9 +10,10 @@ import { MusicAlbumShortDto } from '@/types/MusicAlbum';
 type Props = {
     topMusicTrack: TopStreamedMusicTrack;
     position: number;
+    queueId: string;
 }
 
-export default function TopMusicTrackListItem({ topMusicTrack, position }: Props) {
+export default function TopMusicTrackListItem({ topMusicTrack, position, queueId }: Props) {
     return (
         <div className={styles["main-container"]}>
             <div className={styles["position-box"]}>{position}</div>
@@ -45,7 +46,7 @@ export default function TopMusicTrackListItem({ topMusicTrack, position }: Props
             </div>
             <div className={styles["streams-box"]}>{topMusicTrack.total_plays ?? 0}</div>
             <div className={styles["duration-box"]}>{formatDuration(topMusicTrack.music_track.duration)}</div>
-            {/* <div><MusicTrackMoreButton queueId={queueId} topMusicTrack={musicTrack} /></div>*/}
+            <div><MusicTrackMoreButton queueId={queueId} musicTrack={topMusicTrack.music_track} /></div>
         </div>
     )
 }
