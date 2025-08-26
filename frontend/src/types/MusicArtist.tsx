@@ -15,3 +15,8 @@ export type MusicArtistShort = {
     id: string;
     name: string;
 }
+
+export type TopStreamedMusicArtists = {
+    total_plays: number;
+    music_artist: MusicArtist;
+}

@@ -5,6 +5,8 @@ import { TopStreamedMusicTrack } from '@/types/MusicTrack';
 import TopMusicTrackContainer from '@/components/MusicTrack/TopMusicTrackContainer/TopMusicTrackContainer';
 import { Queue } from '@/types/Queue';
 import styles from "./dashboard-page.module.css";
+import MusicArtistContainer from '@/components/MusicArtistCard/MusicArtistContainer';
+import { TopStreamedMusicArtists } from '@/types/MusicArtist';
 
 const getTopMusicTracksByUserId = async (userId: string) => {
     try {
@@ -26,6 +28,30 @@ const getTopMusicTracksByUserId = async (userId: string) => {
         return data;
     } catch (error) {
         console.error('Error fetching music tracks:', error);
+        return [];
+    }
+}
+
+const getTopMusicArtistsByUserId = async (userId: string) => {
+    try {
+        const API_URL = process.env.WEB_API_URL;
+        const targetUrl = `${API_URL}/music-stream/top-music-artists/user/${userId}`;
+        const response = await fetch(targetUrl, {
+            method: "GET",
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        });
+
+        if (!response.ok) {
+            const errorText = await response.text();
+            console.warn(`Failed to fetch music artists: ${errorText}`);
+            return [];
+        }
+        const data = await response.json();
+        return data;
+    } catch (error) {
+        console.error('Error fetching music artists:', error);
         return [];
     }
 }
@@ -54,6 +80,8 @@ export default async function DashboardPage() {
     const session = await getServerSession(authOptions);
     const userId = session?.userId as string;
     const topStreamedMusicTracks: TopStreamedMusicTrack[] = await getTopMusicTracksByUserId(userId);
+    const topStreamedMusicArtists: TopStreamedMusicArtists[] = await getTopMusicArtistsByUserId(userId);
+    const musicArtists = topStreamedMusicArtists.map(tsma => tsma.music_artist);
     const queue: Queue = await getQueueByUserId(userId);
     const queueId = queue.id;
 
@@ -63,6 +91,10 @@ export default async function DashboardPage() {
             <div className={styles["top-music-tracks-container"]}>
                 <h2>Top music tracks</h2>
                 <TopMusicTrackContainer topMusicTracks={topStreamedMusicTracks} queueId={queueId} />
+            </div>
+            <div className={styles["top-music-artists-container"]}>
+                <h2>Top music artists</h2>
+                <MusicArtistContainer musicArtists={musicArtists} />
             </div>
         </div>
     )
