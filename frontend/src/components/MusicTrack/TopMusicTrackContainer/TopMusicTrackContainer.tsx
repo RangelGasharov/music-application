@@ -17,7 +17,6 @@ type Props = {
 export default function TopMusicTrackContainer({ topMusicTracks, queueId }: Props) {
     return (
         <div className={styles["main-container"]}>
-            <h2>Top music tracks</h2>
             <div className={styles["music-tracks-container-heading-box"]}>
                 <div className={styles["music-track-position-box"]}><NumbersIcon /></div>
                 <div className={styles["music-track-cover-box"]}><ImageIcon /></div>

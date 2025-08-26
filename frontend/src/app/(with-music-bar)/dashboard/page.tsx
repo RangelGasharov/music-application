@@ -4,6 +4,7 @@ import { getServerSession } from 'next-auth';
 import { TopStreamedMusicTrack } from '@/types/MusicTrack';
 import TopMusicTrackContainer from '@/components/MusicTrack/TopMusicTrackContainer/TopMusicTrackContainer';
 import { Queue } from '@/types/Queue';
+import styles from "./dashboard-page.module.css";
 
 const getTopMusicTracksByUserId = async (userId: string) => {
     try {
@@ -57,9 +58,12 @@ export default async function DashboardPage() {
     const queueId = queue.id;
 
     return (
-        <div>
+        <div className={styles["main-container"]}>
             <h1>Dashboard</h1>
-            <TopMusicTrackContainer topMusicTracks={topStreamedMusicTracks} queueId={queueId} />
+            <div className={styles["top-music-tracks-container"]}>
+                <h2>Top music tracks</h2>
+                <TopMusicTrackContainer topMusicTracks={topStreamedMusicTracks} queueId={queueId} />
+            </div>
         </div>
     )
 }

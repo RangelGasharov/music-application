@@ -7,10 +7,10 @@ import styles from "./music-artist-page.module.css"
 import MusicAlbumCard from '@/components/MusicAlbumContainer/MusicAlbumCard/MusicAlbumCard';
 import Image from 'next/image';
 import { DEFAULT_MUSIC_ARTIST_IMAGE_SOURCE } from '@/constants/constants';
-import MusicTrackAlbumContainer from '@/components/MusicTrack/MusicTrackAlbumContainer/MusicTrackAlbumContainer';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 import { Queue } from '@/types/Queue';
+import TopMusicTrackContainer from '@/components/MusicTrack/TopMusicTrackContainer/TopMusicTrackContainer';
 
 type Params = Promise<{ musicArtistId: string }>
 
@@ -96,8 +96,6 @@ export default async function MusicArtistPage({ params }: { params: Params }) {
             getMusicAlbumsByArtistId(musicArtistId)
         ]);
 
-        const musicTracks = topMusicTracks.map(t => t.music_track);
-
         return (
             <div className={styles["main-container"]}>
                 <div className={styles["artist-header-container"]}>
@@ -112,7 +110,7 @@ export default async function MusicArtistPage({ params }: { params: Params }) {
                 <div className={styles["music-tracks-wrapper"]}>
                     <h2>Popular Tracks</h2>
                     {topMusicTracks.length === 0 ? (<p>No tracks found for this artist.</p>) : (
-                        <MusicTrackAlbumContainer musicTracks={musicTracks} queueId={queueId} />
+                        <TopMusicTrackContainer topMusicTracks={topMusicTracks} queueId={queueId} />
                     )}
                 </div>
 

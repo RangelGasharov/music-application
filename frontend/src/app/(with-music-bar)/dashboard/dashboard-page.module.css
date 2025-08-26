@@ -1,0 +1,9 @@
+.main-container {
+    display: grid;
+    gap: 2rem;
+}
+
+.top-music-tracks-container {
+    display: grid;
+    gap: 1rem;
+}
