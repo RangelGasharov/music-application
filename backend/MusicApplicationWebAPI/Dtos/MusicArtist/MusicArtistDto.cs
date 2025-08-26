@@ -17,8 +17,7 @@ namespace MusicApplicationWebAPI.Dtos.MusicArtist
 
     public class TopStreamedMusicArtistDto
     {
-        public Guid ArtistId { get; set; }
-        public string Name { get; set; } = string.Empty;
         public int TotalPlays { get; set; }
+        public required MusicArtistDto MusicArtist { get; set; }
     }
 }

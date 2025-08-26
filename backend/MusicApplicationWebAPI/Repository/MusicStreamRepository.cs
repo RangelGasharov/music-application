@@ -46,23 +46,69 @@ namespace MusicApplicationWebAPI.Repository
             var monthStart = new DateTime(now.Year, now.Month, 1, 0, 0, 0, DateTimeKind.Utc);
             var nextMonthStart = monthStart.AddMonths(1);
 
-            return await _context.MusicStream
-                .Where(ms => ms.UserId == userId
-                             && ms.Counted
-                             && ms.EndTime >= monthStart
-                             && ms.EndTime < nextMonthStart
-                             && ms.MusicTrack != null)
-                .SelectMany(ms => ms.MusicTrack!.MusicArtistTrack)
-                .GroupBy(mat => new { mat.MusicArtistId, mat.MusicArtist!.Name })
-                .Select(g => new TopStreamedMusicArtistDto
+            var artistPlayCounts = await _context.MusicStream
+       .Where(ms => ms.UserId == userId
+                    && ms.Counted
+                    && ms.EndTime >= monthStart
+                    && ms.EndTime < nextMonthStart
+                    && ms.MusicTrack != null)
+       .SelectMany(ms => ms.MusicTrack!.MusicArtistTrack)
+       .GroupBy(mat => mat.MusicArtistId)
+       .Select(g => new
+       {
+           MusicArtistId = g.Key,
+           TotalPlays = g.Count()
+       })
+       .OrderByDescending(x => x.TotalPlays)
+       .Take(50)
+       .ToListAsync();
+
+            var artistIds = artistPlayCounts.Select(x => x.MusicArtistId).ToList();
+
+            var artists = await _context.MusicArtist
+                .Where(a => artistIds.Contains(a.Id))
+                .Select(a => new MusicArtistDto
                 {
-                    ArtistId = g.Key.MusicArtistId,
-                    Name = g.Key.Name,
-                    TotalPlays = g.Count()
+                    Id = a.Id,
+                    Name = a.Name,
+                    Description = a.Description,
+                    FirstName = a.FirstName,
+                    LastName = a.LastName,
+                    BirthDate = a.BirthDate,
+                    MusicAlbums = a.MusicArtistAlbums
+                        .Select(maa => new MusicAlbumShortFormDto
+                        {
+                            Id = maa.MusicAlbum.Id,
+                            Title = maa.MusicAlbum.Title,
+                            ReleaseDate = maa.MusicAlbum.ReleaseDate,
+                            UploadedAt = maa.MusicAlbum.UploadedAt,
+                            CoverURL = maa.MusicAlbum.CoverURL
+                        })
+                        .ToList(),
+                    Photos = a.MusicArtistPhotos
+                        .Select(p => new MusicArtistPhotoDto
+                        {
+                            Id = p.Id,
+                            FilePath = p.FilePath,
+                            IsPrimary = p.IsPrimary
+                        })
+                        .ToList()
                 })
-                .OrderByDescending(x => x.TotalPlays)
-                .Take(50)
                 .ToListAsync();
+
+            var result = artistPlayCounts
+                .Join(artists,
+                      play => play.MusicArtistId,
+                      artist => artist.Id,
+                      (play, artist) => new TopStreamedMusicArtistDto
+                      {
+                          MusicArtist = artist,
+                          TotalPlays = play.TotalPlays
+                      })
+                .OrderByDescending(x => x.TotalPlays)
+                .ToList();
+
+            return result;
         }
 
         public async Task<List<TopStreamedMusicTrackDto>> GetTopMusicTracksOfUserThisMonth(Guid userId)
