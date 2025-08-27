@@ -1,5 +1,6 @@
 using MusicApplicationWebAPI.Dtos;
 using MusicApplicationWebAPI.Dtos.MusicArtist;
+using MusicApplicationWebAPI.Dtos.MusicStream;
 using MusicApplicationWebAPI.Dtos.MusicTrack;
 using MusicApplicationWebAPI.Models.Entities;
 
@@ -17,5 +18,7 @@ namespace MusicApplicationWebAPI.Interfaces
         Task<List<TopStreamedMusicArtistDto>> GetTopMusicArtistsOfUserThisMonth(Guid userId);
         Task<List<TopStreamedMusicTrackDto>> GetTopMusicTracksOfUserThisMonth(Guid userId);
         Task<List<TopStreamedMusicTrackDto>> GetTopMusicTracksOfMusicArtist(Guid artistId);
+        Task<List<StreamCountPerDayDto>> GetMusicTrackStreamCountsInRange(Guid trackId, DateTime startDate, DateTime endDate);
+        Task<List<StreamCountPerDayDto>> GetMusicAlbumStreamCountsInRange(Guid albumId, DateTime startDate, DateTime endDate);
     }
 }

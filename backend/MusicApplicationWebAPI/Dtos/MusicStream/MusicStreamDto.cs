@@ -10,4 +10,10 @@ namespace MusicApplicationWebAPI.Dtos.MusicStream
     {
         public Guid StreamId { get; set; }
     }
+
+    public class StreamCountPerDayDto
+    {
+        public DateTime Date { get; set; }
+        public int TotalStreams { get; set; }
+    }
 }

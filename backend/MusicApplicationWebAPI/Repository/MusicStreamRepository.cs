@@ -4,6 +4,7 @@ using MusicApplicationWebAPI.Dtos;
 using MusicApplicationWebAPI.Dtos.MusicAlbum;
 using MusicApplicationWebAPI.Dtos.MusicArtist;
 using MusicApplicationWebAPI.Dtos.MusicGenre;
+using MusicApplicationWebAPI.Dtos.MusicStream;
 using MusicApplicationWebAPI.Dtos.MusicTrack;
 using MusicApplicationWebAPI.Interfaces;
 using MusicApplicationWebAPI.Models.Entities;
@@ -28,7 +29,7 @@ namespace MusicApplicationWebAPI.Repository
         public async Task<List<MusicStream>> GetStreamsByMusicArtistId(Guid artistId)
         {
             return await _context.MusicStream
-                .Where(ms => ms.MusicTrack.MusicArtistTrack
+                .Where(ms => ms.MusicTrack!.MusicArtistTrack
                     .Any(mat => mat.MusicArtistId == artistId))
                 .ToListAsync();
         }
@@ -123,7 +124,7 @@ namespace MusicApplicationWebAPI.Repository
                              && ms.EndTime >= monthStart
                              && ms.EndTime < nextMonthStart
                              && ms.MusicTrack != null)
-                .GroupBy(ms => ms.MusicTrack.Id)
+                .GroupBy(ms => ms.MusicTrack!.Id)
                 .Select(g => new
                 {
                     MusicTrackId = g.Key,
@@ -169,7 +170,7 @@ namespace MusicApplicationWebAPI.Repository
                             MusicAlbums = track.MusicTrackAlbum
                                 .Select(mta => new MusicAlbumShortFormDto
                                 {
-                                    Id = mta.MusicAlbum.Id,
+                                    Id = mta.MusicAlbum!.Id,
                                     Title = mta.MusicAlbum.Title,
                                     CoverURL = mta.MusicAlbum.CoverURL,
                                     UploadedAt = mta.MusicAlbum.UploadedAt,
@@ -241,7 +242,7 @@ namespace MusicApplicationWebAPI.Repository
                     MusicAlbums = g.MusicTrack.MusicTrackAlbum
                         .Select(mta => new MusicAlbumShortFormDto
                         {
-                            Id = mta.MusicAlbum.Id,
+                            Id = mta.MusicAlbum!.Id,
                             Title = mta.MusicAlbum.Title,
                             CoverURL = mta.MusicAlbum.CoverURL,
                             UploadedAt = mta.MusicAlbum.UploadedAt,
@@ -292,7 +293,7 @@ namespace MusicApplicationWebAPI.Repository
                              && ms.EndTime >= since
                              && ms.MusicTrack != null
                              && ms.MusicTrack.MusicArtistTrack.Any(mat => mat.MusicArtistId == artistId))
-                .GroupBy(ms => ms.MusicTrack.Id)
+                .GroupBy(ms => ms.MusicTrack!.Id)
                 .Select(g => new
                 {
                     MusicTrackId = g.Key,
@@ -338,7 +339,7 @@ namespace MusicApplicationWebAPI.Repository
                             MusicAlbums = track.MusicTrackAlbum
                                 .Select(mta => new MusicAlbumShortFormDto
                                 {
-                                    Id = mta.MusicAlbum.Id,
+                                    Id = mta.MusicAlbum!.Id,
                                     Title = mta.MusicAlbum.Title,
                                     CoverURL = mta.MusicAlbum.CoverURL,
                                     UploadedAt = mta.MusicAlbum.UploadedAt,
@@ -364,6 +365,51 @@ namespace MusicApplicationWebAPI.Repository
                 .ToList();
 
             return result;
+        }
+
+        public async Task<List<StreamCountPerDayDto>> GetMusicTrackStreamCountsInRange(
+            Guid trackId, DateTime startDate, DateTime endDate)
+        {
+            var start = startDate.Date;
+            var end = endDate.Date.AddDays(1);
+
+            return await _context.MusicStream
+                .Where(ms => ms.Counted
+                             && ms.EndTime >= start
+                             && ms.EndTime < end
+                             && ms.TrackId == trackId)
+                .GroupBy(ms => ms.EndTime!.Value.Date)
+                .Select(g => new StreamCountPerDayDto
+                {
+                    Date = g.Key,
+                    TotalStreams = g.Count()
+                })
+                .OrderBy(x => x.Date)
+                .ToListAsync();
+        }
+
+
+        public async Task<List<StreamCountPerDayDto>> GetMusicAlbumStreamCountsInRange(
+            Guid albumId, DateTime startDate, DateTime endDate)
+        {
+            var start = startDate.Date;
+            var end = endDate.Date.AddDays(1);
+
+            return await _context.MusicStream
+                .Where(ms => ms.Counted
+                             && ms.EndTime >= start
+                             && ms.EndTime < end
+                             && ms.MusicTrack != null
+                             && ms.MusicTrack.MusicTrackAlbum
+                                .Any(mta => mta.MusicAlbumId == albumId))
+                .GroupBy(ms => ms.EndTime!.Value.Date)
+                .Select(g => new StreamCountPerDayDto
+                {
+                    Date = g.Key,
+                    TotalStreams = g.Count()
+                })
+                .OrderBy(x => x.Date)
+                .ToListAsync();
         }
 
         public async Task<MusicStream> StartStream(Guid userId, Guid trackId)

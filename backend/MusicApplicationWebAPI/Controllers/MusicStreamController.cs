@@ -72,6 +72,20 @@ namespace MusicApplicationWebAPI.Controllers
             return Ok(musicAlbums);
         }
 
+        [HttpGet("stream-count/music-track/{id:guid}")]
+        public async Task<IActionResult> GetMusicTrackStreamCountsInRange(Guid id, DateTime startDate, DateTime endDate)
+        {
+            var musicAlbumStreamCount = await _musicStreamRepository.GetMusicTrackStreamCountsInRange(id, startDate, endDate);
+            return Ok(musicAlbumStreamCount);
+        }
+
+        [HttpGet("stream-count/music-album/{id:guid}")]
+        public async Task<IActionResult> GetMusicAlbumStreamCountsInRange(Guid id, DateTime startDate, DateTime endDate)
+        {
+            var musicTrackStreamCount = await _musicStreamRepository.GetMusicAlbumStreamCountsInRange(id, startDate, endDate);
+            return Ok(musicTrackStreamCount);
+        }
+
         [HttpPost("start")]
         public async Task<IActionResult> StartStream([FromBody] StartMusicStreamDto dto)
         {
