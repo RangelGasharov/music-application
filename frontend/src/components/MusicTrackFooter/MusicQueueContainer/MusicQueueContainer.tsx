@@ -8,6 +8,8 @@ import styles from "./MusicQueueContainer.module.css";
 import { DEFAULT_MUSIC_ARTIST_IMAGE_SOURCE } from "@/constants/constants";
 import { formatDuration } from "@/utils/formatDuration";
 import Image from "next/image";
+import { MusicArtistShort } from "@/types/MusicArtist";
+import Link from "next/link";
 
 export default function MusicQueueContainer() {
     const queueItems = usePlayerStore((state) => state.queueItems);
@@ -19,7 +21,6 @@ export default function MusicQueueContainer() {
     const handleButtonClick = () => {
         setIsOpen(!isOpen);
     };
-
 
     const handleDelete = async (id: string, position: string) => {
         try {
@@ -89,9 +90,16 @@ export default function MusicQueueContainer() {
                                                 className={styles["cover"]}
                                             />
                                             <div className={styles["info"]}>
-                                                <p className={styles["track-title"]}>{item.track?.title}</p>
+                                                <p className={styles["track-title"]}><Link href={`/search/track/${item.track?.id}`}>{item.track?.title}</Link></p>
                                                 <p className={styles["track-artist"]}>
-                                                    {item.track?.music_artists?.map((a) => a.name).join(", ")}
+                                                    {item.track?.music_artists?.map((artist: MusicArtistShort, index) => {
+                                                        return (
+                                                            <span key={artist.id} className={styles["artist-name"]}>
+                                                                <Link href={`/search/artist/${artist.id}`}>{artist.name}</Link>
+                                                                {index < item.track?.music_artists?.length - 1 && ", "}
+                                                            </span>
+                                                        )
+                                                    })}
                                                 </p>
                                             </div>
 

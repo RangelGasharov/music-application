@@ -30,9 +30,17 @@
     color: var(--text-color);
 }
 
+.music-track-title-container:hover {
+    text-decoration: underline;
+}
+
 .music-artists-container {
     font-size: .75rem;
-    color: #aaa;
+    color: var(--sub-heading-color);
+}
+
+.music-artist-name:hover {
+    text-decoration: underline;
 }
 
 .controls-container {

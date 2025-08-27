@@ -137,7 +137,7 @@ export default function MusicTrackFooter() {
                     <div className={styles["music-artists-container"]}>
                         {musicTrack.music_artists.length > 0 ? (
                             musicTrack.music_artists.map((artist: MusicArtistShort, index: number) => (
-                                <span key={artist.id}>
+                                <span key={artist.id} className={styles["music-artist-name"]}>
                                     <Link href={`/search/artist/${artist.id}`}>{artist.name}</Link>
                                     {index < musicTrack.music_artists.length - 1 && ", "}
                                 </span>

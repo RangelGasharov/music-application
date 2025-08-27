@@ -242,8 +242,6 @@ export const usePlayerStore = create<PlayerState>((set, get) => ({
                     throw new Error(errText || "Failed to end stream");
                 }
 
-                get().setStreamId(null);
-
                 return await res.json();
             } catch (error) {
                 console.error("End stream error:", error);
