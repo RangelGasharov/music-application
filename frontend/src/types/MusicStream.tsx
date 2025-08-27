@@ -7,3 +7,8 @@ export type MusicStream = {
     counted: boolean;
     processed: boolean;
 }
+
+export type StreamCountPerDay = {
+    date: string;
+    total_streams: number;
+}

@@ -14,6 +14,7 @@ import MusicTrackAlbumContainer from '@/components/MusicTrack/MusicTrackAlbumCon
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 import { Queue } from '@/types/Queue';
+import { StreamCountPerDay } from '@/types/MusicStream';
 
 type Params = Promise<{ musicAlbumId: string }>
 
@@ -69,6 +70,37 @@ async function getQueueByUserId(userId: string | undefined): Promise<Queue> {
     }
 }
 
+export async function getMusicAlbumStreamCounts(id: string, startDate?: Date, endDate?: Date): Promise<StreamCountPerDay[]> {
+    try {
+        const now = new Date();
+        const defaultEnd = endDate ? endDate : now;
+        const defaultStart = startDate
+            ? startDate
+            : new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
+
+        const startIso = defaultStart.toISOString();
+        const endIso = defaultEnd.toISOString();
+
+        const res = await fetch(
+            `${process.env.WEB_API_URL}/music-stream/stream-count/music-album/${id}?startDate=${startIso}&endDate=${endIso}`,
+            { cache: "no-store" }
+        );
+
+        if (!res.ok) {
+            throw new Error(`Failed to fetch album stream counts: ${res.statusText}`);
+        }
+
+        const data: StreamCountPerDay[] = await res.json();
+        return data;
+    } catch (error) {
+        console.error(
+            "An error occurred while fetching music album stream counts:",
+            error
+        );
+        throw error;
+    }
+}
+
 export default async function MusicAlbumPage({ params }: { params: Params }) {
     const { musicAlbumId } = await params;
     try {
@@ -76,6 +108,8 @@ export default async function MusicAlbumPage({ params }: { params: Params }) {
             getMusicAlbumById(musicAlbumId),
             (await getMusicTracksByAlbumId(musicAlbumId)).map(musicTrackWithPosition => musicTrackWithPosition.track)
         ]);
+
+        const musicAlbumStreamCounts: StreamCountPerDay[] = await getMusicAlbumStreamCounts(musicAlbum.id);
 
         const musicAlbumDate: Date = new Date(musicAlbum?.release_date);
         const musicAlbumDateFormatted: string = new Intl.DateTimeFormat(navigator.language, {
@@ -189,6 +223,18 @@ export default async function MusicAlbumPage({ params }: { params: Params }) {
                     <div>
                         <h2 className={styles["music-tracks-title"]}>Tracks</h2>
                         <MusicTrackAlbumContainer musicTracks={musicTracks} queueId={queueId} />
+                    </div>
+                )}
+
+                {musicAlbumStreamCounts.length === 0 ? (<p>No streams found</p>) : (
+                    <div>
+                        <h2>Streams</h2>
+                        {musicAlbumStreamCounts.map((musicAlbumStreamCount: StreamCountPerDay) => {
+                            return <div key={musicAlbumStreamCount.date}>
+                                <div>{musicAlbumStreamCount.date}</div>
+                                <div>{musicAlbumStreamCount.total_streams}</div>
+                            </div>
+                        })}
                     </div>
                 )}
             </div>
