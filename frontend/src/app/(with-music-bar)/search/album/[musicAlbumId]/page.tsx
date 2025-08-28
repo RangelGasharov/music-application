@@ -15,6 +15,7 @@ import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 import { Queue } from '@/types/Queue';
 import { StreamCountPerDay } from '@/types/MusicStream';
+import StreamsChart from '@/components/MusicAlbumStreamsChart/MusicAlbumStreamsChart';
 
 type Params = Promise<{ musicAlbumId: string }>
 
@@ -229,12 +230,7 @@ export default async function MusicAlbumPage({ params }: { params: Params }) {
                 {musicAlbumStreamCounts.length === 0 ? (<p>No streams found</p>) : (
                     <div>
                         <h2>Streams</h2>
-                        {musicAlbumStreamCounts.map((musicAlbumStreamCount: StreamCountPerDay) => {
-                            return <div key={musicAlbumStreamCount.date}>
-                                <div>{musicAlbumStreamCount.date}</div>
-                                <div>{musicAlbumStreamCount.total_streams}</div>
-                            </div>
-                        })}
+                        <StreamsChart data={musicAlbumStreamCounts} title="Album streams per day" />
                     </div>
                 )}
             </div>

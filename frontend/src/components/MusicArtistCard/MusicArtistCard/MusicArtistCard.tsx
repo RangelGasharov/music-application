@@ -14,7 +14,6 @@ export default function MusicArtistCard({ musicArtist }: MusicArtistCardType) {
         <Link href={`/search/artist/${musicArtist.id}`} className={styles["main-container"]}>
             <div>
                 <Image
-                    quality={50}
                     src={musicArtist?.primary_photo?.file_path || DEFAULT_MUSIC_ARTIST_IMAGE_SOURCE}
                     alt={musicArtist.name}
                     width={200}
