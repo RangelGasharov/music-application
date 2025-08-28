@@ -7,6 +7,8 @@ import PlayArrowIcon from '@mui/icons-material/PlayArrow';
 import { getDurationInSeconds } from '@/utils/getDurationInSeconds'; import MusicCoverDialog from '@/components/MusicCoverDialog/MusicCoverDialog';
 import { MusicGenreShort } from '@/types/MusicGenre';
 import { MusicAlbumShortDto } from '@/types/MusicAlbum';
+import { StreamCountPerDay } from '@/types/MusicStream';
+import StreamsChart from '@/components/MusicAlbumStreamsChart/MusicAlbumStreamsChart';
 
 type Params = Promise<{ musicTrackId: string }>
 
@@ -26,6 +28,37 @@ async function getMusicTrackById(musicTrackId: string): Promise<MusicTrackFull> 
     }
 }
 
+export async function getMusicTrackStreamCounts(id: string, startDate?: Date, endDate?: Date): Promise<StreamCountPerDay[]> {
+    try {
+        const now = new Date();
+        const defaultEnd = endDate ? endDate : now;
+        const defaultStart = startDate
+            ? startDate
+            : new Date(now.getTime() - 14 * 24 * 60 * 60 * 1000);
+
+        const startIso = defaultStart.toISOString();
+        const endIso = defaultEnd.toISOString();
+
+        const res = await fetch(
+            `${process.env.WEB_API_URL}/music-stream/stream-count/music-track/${id}?startDate=${startIso}&endDate=${endIso}`,
+            { cache: "no-store" }
+        );
+
+        if (!res.ok) {
+            throw new Error(`Failed to fetch track stream counts: ${res.statusText}`);
+        }
+
+        const data: StreamCountPerDay[] = await res.json();
+        return data;
+    } catch (error) {
+        console.error(
+            "An error occurred while fetching music track stream counts:",
+            error
+        );
+        throw error;
+    }
+}
+
 function getTotalMinutes(musicTrack: MusicTrackFull): number {
     const totalSeconds = getDurationInSeconds(musicTrack.duration);
     return Math.floor(totalSeconds / 60);
@@ -39,6 +72,7 @@ export default async function MusicTrackPage({ params }: { params: Params }) {
         year: 'numeric', month: 'short', day: 'numeric'
     }).format(musicTrackDate);
     const musicTrackLength = getTotalMinutes(musicTrack);
+    const musicTrackStreamCounts: StreamCountPerDay[] = await getMusicTrackStreamCounts(musicTrack.id);
 
     return (
         <div className={styles["main-container"]}>
@@ -97,6 +131,12 @@ export default async function MusicTrackPage({ params }: { params: Params }) {
                     </div>
                 </div>
             </div>
+            {musicTrackStreamCounts.length === 0 ? (<p>No streams found</p>) : (
+                <div>
+                    <h2>Streams</h2>
+                    <StreamsChart data={musicTrackStreamCounts} title={`${musicTrack.title} - streams per day`} />
+                </div>
+            )}
         </div>
     )
 }

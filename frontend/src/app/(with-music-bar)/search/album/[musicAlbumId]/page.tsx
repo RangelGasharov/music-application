@@ -230,7 +230,7 @@ export default async function MusicAlbumPage({ params }: { params: Params }) {
                 {musicAlbumStreamCounts.length === 0 ? (<p>No streams found</p>) : (
                     <div>
                         <h2>Streams</h2>
-                        <StreamsChart data={musicAlbumStreamCounts} title="Album streams per day" />
+                        <StreamsChart data={musicAlbumStreamCounts} title={`${musicAlbum.title} - streams per day`} />
                     </div>
                 )}
             </div>
